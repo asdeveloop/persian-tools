@@ -2,9 +2,9 @@ const faDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'] as
 
 export function toEnglishDigits(input: string): string {
   let out = input;
-  for (let i = 0; i <= 9; i += 1) {
-    out = out.replaceAll(faDigits[i], String(i));
-  }
+  faDigits.forEach((digit, i) => {
+    out = out.replaceAll(digit, String(i));
+  });
 
   out = out.replaceAll('٬', ',');
   out = out.replaceAll('٫', '.');
