@@ -10,8 +10,7 @@ export default function Card(props: Props) {
   return (
     <div
       className={cx(
-        'rounded-xl border border-slate-200 bg-white shadow-sm',
-        'transition-colors',
+        'bg-white/80 backdrop-blur-xl rounded-2xl border border-gray-200/50 shadow-lg hover:shadow-xl transition-all duration-300',
         props.className
       )}
     >

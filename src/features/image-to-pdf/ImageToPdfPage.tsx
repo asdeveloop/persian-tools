@@ -247,9 +247,10 @@ export default function ImageToPdfPage() {
                   </Button>
                   <Button
                     type="button"
+                    variant="danger"
                     onClick={onConvert}
                     disabled={!canConvert}
-                    className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 font-semibold"
+                    className="px-6 py-2 text-sm"
                   >
                     تبدیل به PDF
                   </Button>
@@ -327,9 +328,10 @@ export default function ImageToPdfPage() {
                   </Button>
                   <Button
                     type="button"
+                    variant="danger"
                     onClick={onConvert}
                     disabled={!canConvert}
-                    className="bg-red-600 hover:bg-red-700 text-white px-8 py-3 font-semibold"
+                    className="px-8 py-3"
                   >
                     {busy ? 'در حال تبدیل...' : 'تبدیل به PDF'}
                   </Button>

@@ -155,6 +155,7 @@ export default function ImageCompressPage(props: Props) {
                 accept="image/*"
                 onChange={(e) => onPickFile(e.target.files?.[0] ?? null)}
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                aria-label="انتخاب عکس"
               />
               
               <div className="space-y-6">
@@ -221,9 +222,10 @@ export default function ImageCompressPage(props: Props) {
                   </Button>
                   <Button
                     type="button"
+                    variant="danger"
                     onClick={onCompress}
                     disabled={!canCompress}
-                    className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 font-semibold"
+                    className="px-6 py-2"
                   >
                     فشرده‌سازی
                   </Button>
@@ -307,9 +309,10 @@ export default function ImageCompressPage(props: Props) {
                   </Button>
                   <Button
                     type="button"
+                    variant="danger"
                     onClick={onCompress}
                     disabled={!canCompress}
-                    className="bg-red-600 hover:bg-red-700 text-white px-8 py-3 font-semibold"
+                    className="px-8 py-3"
                   >
                     {busy ? 'در حال فشرده‌سازی...' : 'فشرده‌سازی عکس'}
                   </Button>
@@ -344,7 +347,7 @@ export default function ImageCompressPage(props: Props) {
                   <div className="text-sm text-green-600">حجم فایل</div>
                   <div className="text-lg font-semibold text-green-900">{formatBytesFa(result.outputBytes)}</div>
                   <div className="text-sm text-green-600 mt-1">
-                    کاهش حجم: {Math.round((1 - result.outputBytes / file.size) * 100)}%
+                    کاهش حجم: {file ? Math.round((1 - result.outputBytes / file.size) * 100) : 0}%
                   </div>
                 </div>
               </div>

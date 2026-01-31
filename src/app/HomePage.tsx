@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
 import Button from '../shared/ui/Button';
-import Card from '../shared/ui/Card';
 import ToolCard from '../shared/ui/ToolCard';
 import { IconCalculator, IconImage, IconMoney, IconPdf } from '../shared/ui/icons';
 
@@ -13,24 +12,24 @@ export default function HomePage() {
         <div className="relative px-6 py-16 md:px-12 lg:py-24">
           <div className="mx-auto max-w-4xl text-center">
             <h1 className="text-4xl font-bold md:text-5xl lg:text-6xl">
-              هر ابزاری که برای کار با PDF نیاز دارید
+              همه ابزارهایی که نیاز دارید اینجاست
             </h1>
             <p className="mt-6 text-lg md:text-xl text-red-100">
-              تمام ابزارهای PDF در یک مکان. 100% رایگان و آسان برای استفاده!
+              تمام ابزارهای لازم در یک مکان. رایگان و آسان برای استفاده!
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-4">
               <Link to="/image-to-pdf">
-                <Button 
-                  type="button" 
+                <Button
+                  type="button"
                   className="bg-white text-red-600 hover:bg-red-50 font-semibold px-8 py-3 text-lg"
                 >
                   شروع با ابزار PDF
                 </Button>
               </Link>
               <Link to="/loan">
-                <Button 
-                  type="button" 
-                  variant="secondary" 
+                <Button
+                  type="button"
+                  variant="secondary"
                   className="border-white text-white hover:bg-white/10 font-semibold px-8 py-3 text-lg"
                 >
                   محاسبه وام
