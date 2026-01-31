@@ -10,7 +10,7 @@ export default function HomePage() {
         </p>
       </div>
 
-      <div className="grid gap-3 md:grid-cols-3">
+      <div className="grid gap-3 md:grid-cols-2">
         <Link to="/loan" className="rounded-lg bg-white p-4 hover:bg-slate-50">
           <div className="font-semibold">محاسبه‌گر وام</div>
           <div className="mt-1 text-sm text-slate-700">قسط ماهانه، سود کل، پرداخت کل</div>
@@ -22,6 +22,10 @@ export default function HomePage() {
         <Link to="/image-to-pdf" className="rounded-lg bg-white p-4 hover:bg-slate-50">
           <div className="font-semibold">تبدیل عکس به PDF</div>
           <div className="mt-1 text-sm text-slate-700">کاملاً کلاینتی و بدون ارسال فایل</div>
+        </Link>
+        <Link to="/image-compress" className="rounded-lg bg-white p-4 hover:bg-slate-50">
+          <div className="font-semibold">فشرده‌سازی عکس</div>
+          <div className="mt-1 text-sm text-slate-700">کاهش حجم با سه سطح پیشنهادی</div>
         </Link>
       </div>
     </div>

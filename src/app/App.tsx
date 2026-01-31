@@ -3,6 +3,7 @@ import HomePage from './HomePage';
 import LoanPage from '../features/loan/LoanPage';
 import SalaryPage from '../features/salary/SalaryPage';
 import ImageToPdfPage from '../features/image-to-pdf/ImageToPdfPage';
+import ImageCompressPage from '../features/image-compress/ImageCompressPage';
 
 export default function App() {
   return (
@@ -22,6 +23,9 @@ export default function App() {
             <Link className="text-slate-700 hover:text-slate-900" to="/image-to-pdf">
               عکس به PDF
             </Link>
+            <Link className="text-slate-700 hover:text-slate-900" to="/image-compress">
+              فشرده‌سازی عکس
+            </Link>
           </nav>
         </div>
       </header>
@@ -32,6 +36,7 @@ export default function App() {
           <Route path="/loan" element={<LoanPage />} />
           <Route path="/salary" element={<SalaryPage />} />
           <Route path="/image-to-pdf" element={<ImageToPdfPage />} />
+          <Route path="/image-compress" element={<ImageCompressPage />} />
           <Route path="*" element={<div className="rounded-lg bg-white p-4">صفحه پیدا نشد.</div>} />
         </Routes>
       </main>
