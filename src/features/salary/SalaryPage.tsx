@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { formatMoneyFa, parseLooseNumber } from '../../shared/utils/number';
 import { getSessionJson, setSessionJson } from '../../shared/storage/sessionStorage';
+import Button from '../../shared/ui/Button';
+import Card from '../../shared/ui/Card';
 import { calculateSalary } from './salary.logic';
 import type { SalaryResult } from './salary.types';
 
@@ -63,14 +65,14 @@ export default function SalaryPage() {
 
   return (
     <div className="space-y-4">
-      <div className="rounded-lg bg-white p-4">
-        <h1 className="text-lg font-bold">محاسبه‌گر حقوق ساده</h1>
+      <Card className="p-4 md:p-6">
+        <h1 className="text-lg font-extrabold">محاسبه‌گر حقوق ساده</h1>
         <p className="mt-2 text-sm text-slate-700">
           این ابزار یک مدل ساده است و جایگزین محاسبه‌گر رسمی مالیات/بیمه نیست.
         </p>
-      </div>
+      </Card>
 
-      <div className="rounded-lg bg-white p-4">
+      <Card className="p-4 md:p-6">
         <div className="grid gap-4 md:grid-cols-2">
           <div>
             <label className="block text-sm font-medium" htmlFor="gross">
@@ -126,21 +128,17 @@ export default function SalaryPage() {
         </div>
 
         <div className="mt-4 flex items-center gap-3">
-          <button
-            type="button"
-            className="rounded-md bg-slate-900 px-4 py-2 text-sm font-semibold text-white"
-            onClick={onCalculate}
-          >
+          <Button type="button" onClick={onCalculate}>
             محاسبه
-          </button>
+          </Button>
 
           {error ? <div className="text-sm text-red-700">{error}</div> : null}
         </div>
-      </div>
+      </Card>
 
       {result ? (
-        <div className="rounded-lg bg-white p-4">
-          <h2 className="text-base font-bold">نتیجه</h2>
+        <Card className="p-4 md:p-6">
+          <h2 className="text-base font-extrabold">نتیجه</h2>
           <dl className="mt-3 grid gap-3 md:grid-cols-3">
             <div className="rounded-md bg-slate-50 p-3">
               <dt className="text-xs text-slate-600">مبلغ بیمه</dt>
@@ -155,7 +153,7 @@ export default function SalaryPage() {
               <dd className="mt-1 text-lg font-bold">{formatMoneyFa(result.netSalary)} تومان</dd>
             </div>
           </dl>
-        </div>
+        </Card>
       ) : null}
     </div>
   );
