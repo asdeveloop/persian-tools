@@ -1,14 +1,17 @@
-import { Metadata } from 'next';
 import Container from '@/components/ui/Container';
 import Navigation from '@/components/ui/Navigation';
 import Footer from '@/components/ui/Footer';
+import { buildMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
-  title: 'شماره صفحه PDF - جعبه ابزار فارسی',
-  description: 'افزودن شماره صفحه به فایل‌های PDF',
-  openGraph: {
+export const metadata = {
+  ...buildMetadata({
     title: 'شماره صفحه PDF - جعبه ابزار فارسی',
     description: 'افزودن شماره صفحه به فایل‌های PDF',
+    path: '/pdf-tools/paginate/add-page-numbers',
+  }),
+  robots: {
+    index: false,
+    follow: false,
   },
 };
 

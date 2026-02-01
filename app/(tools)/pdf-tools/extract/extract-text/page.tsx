@@ -1,14 +1,17 @@
-import { Metadata } from 'next';
 import Container from '@/components/ui/Container';
 import Navigation from '@/components/ui/Navigation';
 import Footer from '@/components/ui/Footer';
+import { buildMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
-  title: 'استخراج متن PDF - جعبه ابزار فارسی',
-  description: 'استخراج متن کامل از فایل‌های PDF',
-  openGraph: {
+export const metadata = {
+  ...buildMetadata({
     title: 'استخراج متن PDF - جعبه ابزار فارسی',
     description: 'استخراج متن کامل از فایل‌های PDF',
+    path: '/pdf-tools/extract/extract-text',
+  }),
+  robots: {
+    index: false,
+    follow: false,
   },
 };
 

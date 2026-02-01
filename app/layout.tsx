@@ -1,10 +1,23 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
+import {
+  defaultOgImage,
+  siteDescription,
+  siteName,
+  siteUrl,
+} from '@/lib/seo';
 import './globals.css';
 
+const googleVerification =
+  process.env['NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION'];
+const verification = googleVerification
+  ? { verification: { google: googleVerification } }
+  : {};
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: 'جعبه ابزار فارسی - ابزارهای آنلاین برای کار و زندگی',
-  description: 'مجموعه کامل و رایگان ابزارهای آنلاین برای کاربران فارسی‌زبان شامل ابزارهای PDF، محاسبات مالی، پردازش تصویر و ابزارهای کاربردی دیگر',
+  description: siteDescription,
   keywords: [
     'ابزارهای فارسی',
     'ابزار آنلاین فارسی',
@@ -17,18 +30,30 @@ export const metadata: Metadata = {
     'persian tools',
     'farsi tools',
   ],
+  applicationName: siteName,
   authors: [{ name: 'Persian Tools Team' }],
+  creator: 'Persian Tools Team',
   openGraph: {
     title: 'جعبه ابزار فارسی - ابزارهای آنلاین برای کار و زندگی',
-    description: 'مجموعه کامل و رایگان ابزارهای آنلاین برای کاربران فارسی‌زبان',
+    description: siteDescription,
     type: 'website',
     locale: 'fa_IR',
-    siteName: 'جعبه ابزار فارسی',
+    siteName,
+    url: siteUrl,
+    images: [
+      {
+        url: defaultOgImage,
+        width: 1200,
+        height: 630,
+        alt: 'جعبه ابزار فارسی',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'جعبه ابزار فارسی',
     description: 'ابزارهای آنلاین رایگان برای کاربران فارسی‌زبان',
+    images: [defaultOgImage],
   },
   robots: {
     index: true,
@@ -41,9 +66,19 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
-  verification: {
-    google: 'your-google-verification-code',
+  ...verification,
+  icons: {
+    icon: '/icon.svg',
+    apple: '/apple-touch-icon.svg',
   },
+  manifest: '/manifest.webmanifest',
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  themeColor: '#2563eb',
+  colorScheme: 'light',
 };
 
 export default function RootLayout({
@@ -51,13 +86,39 @@ export default function RootLayout({
 }: {
   children: ReactNode;
 }) {
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Organization',
+        name: siteName,
+        url: siteUrl,
+        logo: `${siteUrl}/icon.svg`,
+      },
+      {
+        '@type': 'WebSite',
+        name: siteName,
+        url: siteUrl,
+        description: siteDescription,
+        inLanguage: 'fa-IR',
+        publisher: {
+          '@type': 'Organization',
+          name: siteName,
+          url: siteUrl,
+        },
+      },
+    ],
+  };
+
   return (
     <html lang="fa" dir="rtl">
       <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="theme-color" content="#2563eb" />
-        <link rel="icon" href="/favicon.ico" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(structuredData),
+          }}
+        />
       </head>
       <body className="min-h-screen bg-[var(--bg-primary)]">
         {children}

@@ -1,12 +1,13 @@
-import { Metadata } from 'next';
 import PdfToolsPage from '@/components/features/pdf-tools/PdfToolsPage';
 import Container from '@/components/ui/Container';
 import Navigation from '@/components/ui/Navigation';
 import Footer from '@/components/ui/Footer';
+import { buildMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
+export const metadata = buildMetadata({
   title: 'ابزارهای PDF - جعبه ابزار فارسی',
-  description: 'مجموعه کامل ابزارهای PDF: تبدیل، فشرده‌سازی، ادغام، تقسیم، رمزگذاری و واترمارک - رایگان و آفلاین',
+  description:
+    'مجموعه کامل ابزارهای PDF: تبدیل، فشرده‌سازی، ادغام، تقسیم، رمزگذاری و واترمارک - رایگان و آفلاین',
   keywords: [
     'ابزار PDF',
     'تبدیل PDF',
@@ -17,11 +18,8 @@ export const metadata: Metadata = {
     'رمزگذاری PDF',
     'PDF فارسی',
   ],
-  openGraph: {
-    title: 'ابزارهای PDF - جعبه ابزار فارسی',
-    description: 'مجموعه کامل ابزارهای PDF: تبدیل، فشرده‌سازی، ادغام، تقسیم، رمزگذاری و واترمارک',
-  },
-};
+  path: '/pdf-tools',
+});
 
 export default function PdfToolsRoute() {
   return (

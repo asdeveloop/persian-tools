@@ -1,14 +1,17 @@
-import { Metadata } from 'next';
 import Container from '@/components/ui/Container';
 import Navigation from '@/components/ui/Navigation';
 import Footer from '@/components/ui/Footer';
+import { buildMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
-  title: 'تبدیل Word به PDF - جعبه ابزار فارسی',
-  description: 'تبدیل فایل‌های Word به PDF به صورت آنلاین',
-  openGraph: {
+export const metadata = {
+  ...buildMetadata({
     title: 'تبدیل Word به PDF - جعبه ابزار فارسی',
     description: 'تبدیل فایل‌های Word به PDF به صورت آنلاین',
+    path: '/pdf-tools/convert/word-to-pdf',
+  }),
+  robots: {
+    index: false,
+    follow: false,
   },
 };
 

@@ -1,12 +1,13 @@
-import { Metadata } from 'next';
 import ImageCompressPage from '@/components/features/image-tools/ImageCompressPage';
 import Container from '@/components/ui/Container';
 import Navigation from '@/components/ui/Navigation';
 import Footer from '@/components/ui/Footer';
+import { buildMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
+export const metadata = buildMetadata({
   title: 'فشرده‌سازی عکس - جعبه ابزار فارسی',
-  description: 'کاهش حجم عکس‌ها با سه سطح کیفیت پیشنهادی - پشتیبانی از فرمت‌های JPG, PNG, WebP',
+  description:
+    'کاهش حجم عکس‌ها با سه سطح کیفیت پیشنهادی - پشتیبانی از فرمت‌های JPG, PNG, WebP',
   keywords: [
     'فشرده سازی عکس',
     'کاهش حجم عکس',
@@ -17,11 +18,8 @@ export const metadata: Metadata = {
     'ابزار عکس',
     'بهینه سازی عکس',
   ],
-  openGraph: {
-    title: 'فشرده‌سازی عکس - جعبه ابزار فارسی',
-    description: 'کاهش حجم عکس‌ها با سه سطح کیفیت پیشنهادی',
-  },
-};
+  path: '/image-compress',
+});
 
 export default function ImageCompressRoute() {
   return (

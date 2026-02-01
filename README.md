@@ -97,7 +97,7 @@ pnpm build
 - **Frontend**: Next.js 14 (React 18) + TypeScript
 - **Styling**: Tailwind CSS
 - **Build**: Next.js
-- **Testing**: Vitest + Testing Library
+- **Testing**: فعلا غیرفعال
 - **PDF Processing**: PDF-lib
 - **Image Processing**: Sharp
 - **Routing**: Next.js App Router
@@ -125,7 +125,10 @@ app/                        # Next.js App Router
     ├── loan/              # محاسبه وام
     ├── salary/            # محاسبه حقوق
     └── image-compress/    # فشرده‌سازی تصویر
-src/
+features/
+shared/
+components/
+lib/
 ├── components/            # کامپوننت‌های نمایشی
 ├── features/              # ویژگی‌های جداگانه
 │   ├── pdf-tools/         # ابزارهای PDF

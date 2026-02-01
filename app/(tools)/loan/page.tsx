@@ -1,12 +1,13 @@
-import { Metadata } from 'next';
 import LoanPage from '@/components/features/loan/LoanPage';
 import Container from '@/components/ui/Container';
 import Navigation from '@/components/ui/Navigation';
 import Footer from '@/components/ui/Footer';
+import { buildMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
+export const metadata = buildMetadata({
   title: 'محاسبه‌گر وام - جعبه ابزار فارسی',
-  description: 'محاسبه قسط ماهانه، سود کل و پرداخت کل وام‌های مختلف (مسکن، خودرو، شخصی) - رایگان و دقیق',
+  description:
+    'محاسبه قسط ماهانه، سود کل و پرداخت کل وام‌های مختلف (مسکن، خودرو، شخصی) - رایگان و دقیق',
   keywords: [
     'محاسبه وام',
     'محاسبه قسط',
@@ -17,11 +18,8 @@ export const metadata: Metadata = {
     'محاسبه گر وام',
     'اقساط وام',
   ],
-  openGraph: {
-    title: 'محاسبه‌گر وام - جعبه ابزار فارسی',
-    description: 'محاسبه قسط ماهانه، سود کل و پرداخت کل وام‌های مختلف',
-  },
-};
+  path: '/loan',
+});
 
 export default function LoanRoute() {
   return (

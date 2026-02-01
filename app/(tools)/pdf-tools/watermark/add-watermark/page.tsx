@@ -1,17 +1,14 @@
-import { Metadata } from 'next';
 import AddWatermarkPage from '@/features/pdf-tools/watermark/add-watermark';
 import Container from '@/components/ui/Container';
 import Navigation from '@/components/ui/Navigation';
 import Footer from '@/components/ui/Footer';
+import { buildMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
+export const metadata = buildMetadata({
   title: 'افزودن واترمارک - جعبه ابزار فارسی',
   description: 'اضافه کردن متن یا تصویر واترمارک به صفحات PDF',
-  openGraph: {
-    title: 'افزودن واترمارک - جعبه ابزار فارسی',
-    description: 'اضافه کردن متن یا تصویر واترمارک به صفحات PDF',
-  },
-};
+  path: '/pdf-tools/watermark/add-watermark',
+});
 
 export default function AddWatermarkRoute() {
   return (

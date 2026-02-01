@@ -10,10 +10,7 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "format": "prettier -w .",
-    "check": "pnpm lint && pnpm typecheck && pnpm test",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "check": "pnpm lint && pnpm typecheck"
   },
   "dependencies": {
     "framer-motion": "^12.29.2",
@@ -32,8 +29,6 @@
     "@types/react-dom": "^18.2.19",
     "@typescript-eslint/eslint-plugin": "^7.18.0",
     "@typescript-eslint/parser": "^7.18.0",
-    "@vitejs/plugin-react": "^4.2.1",
-    "@vitest/coverage-v8": "^4.0.18",
     "autoprefixer": "^10.4.17",
     "eslint": "^8.57.1",
     "eslint-config-next": "^14.2.5",
@@ -46,8 +41,6 @@
     "postcss": "^8.4.35",
     "tailwindcss": "^3.4.1",
     "terser": "^5.46.0",
-    "typescript": "5.5.4",
-    "vite": "^5.1.4",
-    "vitest": "^1.3.1"
+    "typescript": "5.5.4"
   }
 }

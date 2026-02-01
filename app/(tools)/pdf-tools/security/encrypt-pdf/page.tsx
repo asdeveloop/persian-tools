@@ -1,17 +1,14 @@
-import { Metadata } from 'next';
 import EncryptPdfPage from '@/features/pdf-tools/security/encrypt-pdf';
 import Container from '@/components/ui/Container';
 import Navigation from '@/components/ui/Navigation';
 import Footer from '@/components/ui/Footer';
+import { buildMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
+export const metadata = buildMetadata({
   title: 'رمزگذاری PDF - جعبه ابزار فارسی',
   description: 'اضافه کردن رمز عبور روی فایل PDF',
-  openGraph: {
-    title: 'رمزگذاری PDF - جعبه ابزار فارسی',
-    description: 'اضافه کردن رمز عبور روی فایل PDF',
-  },
-};
+  path: '/pdf-tools/security/encrypt-pdf',
+});
 
 export default function EncryptPdfRoute() {
   return (

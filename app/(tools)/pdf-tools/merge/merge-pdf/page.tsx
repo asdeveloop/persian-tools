@@ -1,17 +1,14 @@
-import { Metadata } from 'next';
 import MergePdfPage from '@/features/pdf-tools/merge/merge-pdf';
 import Container from '@/components/ui/Container';
 import Navigation from '@/components/ui/Navigation';
 import Footer from '@/components/ui/Footer';
+import { buildMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
+export const metadata = buildMetadata({
   title: 'ادغام PDF - جعبه ابزار فارسی',
   description: 'ادغام چند فایل PDF در یک فایل واحد',
-  openGraph: {
-    title: 'ادغام PDF - جعبه ابزار فارسی',
-    description: 'ادغام چند فایل PDF در یک فایل واحد',
-  },
-};
+  path: '/pdf-tools/merge/merge-pdf',
+});
 
 export default function MergePdfRoute() {
   return (

@@ -1,7 +1,13 @@
 import type { Config } from 'tailwindcss';
 
 export default {
-  content: ['./app/**/*.{ts,tsx}', './components/**/*.{ts,tsx}', './src/**/*.{ts,tsx}'],
+  content: [
+    './app/**/*.{ts,tsx}',
+    './components/**/*.{ts,tsx}',
+    './features/**/*.{ts,tsx}',
+    './shared/**/*.{ts,tsx}',
+    './lib/**/*.{ts,tsx}',
+  ],
   theme: {
     extend: {
       // Persian Design System Tokens

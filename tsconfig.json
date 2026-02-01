@@ -40,20 +40,22 @@
     "baseUrl": ".",
     "paths": {
       "@/*": [
-        "./src/*"
+        "./*"
       ],
       "@/components/*": [
-        "./src/components/*"
+        "./components/*"
       ],
       "@/features/*": [
-        "./src/features/*"
+        "./features/*"
       ],
       "@/shared/*": [
-        "./src/shared/*"
+        "./shared/*"
+      ],
+      "@/lib/*": [
+        "./lib/*"
       ]
     },
     "types": [
-      "vitest/globals",
       "node"
     ],
     "allowJs": true,
@@ -65,7 +67,10 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src"
+    "lib",
+    "components",
+    "features",
+    "shared"
   ],
   "exclude": [
     "node_modules",

@@ -1,12 +1,13 @@
-import { Metadata } from 'next';
 import SalaryPage from '@/components/features/salary/SalaryPage';
 import Container from '@/components/ui/Container';
 import Navigation from '@/components/ui/Navigation';
 import Footer from '@/components/ui/Footer';
+import { buildMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
+export const metadata = buildMetadata({
   title: 'محاسبه‌گر حقوق - جعبه ابزار فارسی',
-  description: 'محاسبه حقوق خالص و بیمه از ورودی‌های حقوقی - محاسبه دقیق سهم کارمند و کارفرما',
+  description:
+    'محاسبه حقوق خالص و بیمه از ورودی‌های حقوقی - محاسبه دقیق سهم کارمند و کارفرما',
   keywords: [
     'محاسبه حقوق',
     'حقوق خالص',
@@ -17,11 +18,8 @@ export const metadata: Metadata = {
     'حقوق کارمند',
     'بیمه تامین اجتماعی',
   ],
-  openGraph: {
-    title: 'محاسبه‌گر حقوق - جعبه ابزار فارسی',
-    description: 'محاسبه حقوق خالص و بیمه از ورودی‌های حقوقی',
-  },
-};
+  path: '/salary',
+});
 
 export default function SalaryRoute() {
   return (
