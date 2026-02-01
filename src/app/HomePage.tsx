@@ -18,7 +18,7 @@ export default function HomePage() {
               تمام ابزارهای لازم در یک مکان. رایگان و آسان برای استفاده!
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-4">
-              <Link to="/image-to-pdf">
+              <Link to="/pdf-tools">
                 <Button
                   variant="tertiary"
                   size="lg"
@@ -52,7 +52,7 @@ export default function HomePage() {
 
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           <ToolCard
-            to="/image-to-pdf"
+            to="/pdf-tools"
             title="JPG به PDF"
             description="تبدیل عکس‌ها به PDF در چند ثانیه. تنظیم جهت‌گیری و حاشیه‌ها به راحتی."
             icon={<IconPdf className="h-8 w-8 text-[var(--color-danger)]" />}

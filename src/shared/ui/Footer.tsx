@@ -70,7 +70,7 @@ export default function Footer() {
               <ul className="space-y-2">
                 <li>
                   <Link 
-                    to="/image-to-pdf" 
+                    to="/pdf-tools" 
                     className="text-slate-400 hover:text-white transition-colors text-sm"
                   >
                     JPG به PDF

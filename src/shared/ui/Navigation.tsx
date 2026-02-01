@@ -140,7 +140,7 @@ export default function Navigation() {
                   aria-labelledby="pdf-dropdown-button"
                 >
                   <Link 
-                    to="/image-to-pdf" 
+                    to="/pdf-tools" 
                     className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-black/5 hover:text-black transition-all duration-200 group focus:outline-none focus-visible:bg-black/10 rounded-lg mx-2"
                     onClick={closeMobileMenu}
                     role="menuitem"
@@ -421,7 +421,7 @@ export default function Navigation() {
                       className="mr-4 mt-2 space-y-1 overflow-hidden"
                     >
                       <Link 
-                        to="/image-to-pdf" 
+                        to="/pdf-tools" 
                         className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-black/5 hover:text-black rounded-full transition-all duration-200"
                         onClick={closeMobileMenu}
                       >

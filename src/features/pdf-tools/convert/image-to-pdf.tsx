@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, useRef } from 'react';
 import Button from '../../shared/ui/Button';
 import Card from '../../shared/ui/Card';
-import { imagesToPdfBytes, type ImageToPdfItem } from './imageToPdf.logic';
+import { imagesToPdfBytes, type ImageToPdfItem, type Orientation, type Margin, type PageSize, type ImageToPdfOptions } from './imageToPdf.logic';
 
 type SelectedImage = {
   id: string;
@@ -11,6 +11,7 @@ type SelectedImage = {
 
 type Orientation = 'portrait' | 'landscape';
 type Margin = 'none' | 'small' | 'big';
+type PageSize = 'a4' | 'letter' | 'original';
 
 function uid(): string {
   return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
@@ -23,6 +24,10 @@ export default function ImageToPdfPage() {
   const [isDragging, setIsDragging] = useState(false);
   const [orientation, setOrientation] = useState<Orientation>('portrait');
   const [margin, setMargin] = useState<Margin>('small');
+  const [pageSize, setPageSize] = useState<PageSize>('original');
+  const [quality, setQuality] = useState(0.8);
+  const [draggedItem, setDraggedItem] = useState<string | null>(null);
+  const [progress, setProgress] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const canConvert = images.length > 0 && !busy;
@@ -64,15 +69,30 @@ export default function ImageToPdfPage() {
   async function onConvert() {
     setError(null);
     setBusy(true);
+    setProgress(0);
 
     try {
       const items: ImageToPdfItem[] = [];
-      for (const img of images) {
+      
+      for (let i = 0; i < images.length; i++) {
+        const img = images[i];
+        if (!img) continue;
         const buf = await img.file.arrayBuffer();
         items.push({ name: img.file.name, mimeType: img.file.type, bytes: new Uint8Array(buf) });
+        setProgress(((i + 1) / images.length) * 50);
       }
 
-      const pdfBytes = await imagesToPdfBytes(items);
+      const options: ImageToPdfOptions = {
+        orientation,
+        margin,
+        pageSize,
+        quality
+      };
+      
+      setProgress(50);
+      const pdfBytes = await imagesToPdfBytes(items, options);
+      setProgress(90);
+      
       const blob = new Blob([pdfBytes], { type: 'application/pdf' });
       const url = URL.createObjectURL(blob);
 
@@ -84,11 +104,13 @@ export default function ImageToPdfPage() {
       a.remove();
 
       URL.revokeObjectURL(url);
+      setProgress(100);
     } catch (e) {
       const message = e instanceof Error ? e.message : 'خطای نامشخص رخ داد.';
       setError(message);
     } finally {
       setBusy(false);
+      setTimeout(() => setProgress(0), 1000);
     }
   }
 
@@ -106,6 +128,36 @@ export default function ImageToPdfPage() {
     e.preventDefault();
     setIsDragging(false);
     onPickFiles(e.dataTransfer.files);
+  };
+
+  const handleDragStart = (e: React.DragEvent, itemId: string) => {
+    setDraggedItem(itemId);
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
+  const handleImageDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  };
+
+  const handleImageDrop = (e: React.DragEvent, targetId: string) => {
+    e.preventDefault();
+    if (!draggedItem || draggedItem === targetId) return;
+
+    const draggedIndex = images.findIndex(img => img.id === draggedItem);
+    const targetIndex = images.findIndex(img => img.id === targetId);
+
+    if (draggedIndex !== -1 && targetIndex !== -1) {
+      const newImages = [...images];
+      const draggedImage = newImages[draggedIndex];
+      if (draggedImage) {
+        newImages.splice(draggedIndex, 1);
+        newImages.splice(targetIndex, 0, draggedImage);
+        setImages(newImages);
+      }
+    }
+
+    setDraggedItem(null);
   };
 
   return (
@@ -234,6 +286,60 @@ export default function ImageToPdfPage() {
                       </button>
                     </div>
                   </div>
+
+                  {/* Page Size */}
+                  <div className="flex items-center space-x-3 space-x-reverse">
+                    <span className="text-sm font-medium text-slate-700">اندازه صفحه:</span>
+                    <div className="flex rounded-lg border border-slate-200 overflow-hidden">
+                      <button
+                        onClick={() => setPageSize('original')}
+                        className={`px-4 py-2 text-sm font-medium transition-colors ${
+                          pageSize === 'original'
+                            ? 'bg-red-600 text-white'
+                            : 'bg-white text-slate-700 hover:bg-slate-50'
+                        }`}
+                      >
+                        اصلی
+                      </button>
+                      <button
+                        onClick={() => setPageSize('a4')}
+                        className={`px-4 py-2 text-sm font-medium transition-colors ${
+                          pageSize === 'a4'
+                            ? 'bg-red-600 text-white'
+                            : 'bg-white text-slate-700 hover:bg-slate-50'
+                        }`}
+                      >
+                        A4
+                      </button>
+                      <button
+                        onClick={() => setPageSize('letter')}
+                        className={`px-4 py-2 text-sm font-medium transition-colors ${
+                          pageSize === 'letter'
+                            ? 'bg-red-600 text-white'
+                            : 'bg-white text-slate-700 hover:bg-slate-50'
+                        }`}
+                      >
+                        Letter
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Quality */}
+                  <div className="flex items-center space-x-3 space-x-reverse">
+                    <span className="text-sm font-medium text-slate-700">کیفیت:</span>
+                    <div className="flex items-center space-x-2 space-x-reverse">
+                      <input
+                        type="range"
+                        min="0.1"
+                        max="1"
+                        step="0.1"
+                        value={quality}
+                        onChange={(e) => setQuality(parseFloat(e.target.value))}
+                        className="w-24"
+                      />
+                      <span className="text-sm text-slate-600 w-10">{Math.round(quality * 100)}%</span>
+                    </div>
+                  </div>
                 </div>
 
                 <div className="flex items-center space-x-3 space-x-reverse">
@@ -266,7 +372,16 @@ export default function ImageToPdfPage() {
               
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {images.map((img, index) => (
-                  <div key={img.id} className="group relative border border-slate-200 rounded-lg overflow-hidden hover:shadow-lg transition-all duration-200">
+                  <div
+                    key={img.id}
+                    className={`group relative border border-slate-200 rounded-lg overflow-hidden hover:shadow-lg transition-all duration-200 cursor-move ${
+                      draggedItem === img.id ? 'opacity-50' : ''
+                    }`}
+                    draggable
+                    onDragStart={(e) => handleDragStart(e, img.id)}
+                    onDragOver={handleImageDragOver}
+                    onDrop={(e) => handleImageDrop(e, img.id)}
+                  >
                     <div className="aspect-square bg-slate-100 relative">
                       <img 
                         className="w-full h-full object-cover" 
@@ -276,14 +391,22 @@ export default function ImageToPdfPage() {
                       <div className="absolute top-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
                         {index + 1}
                       </div>
-                      <button
-                        onClick={() => remove(img.id)}
-                        className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1.5 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
-                      >
-                        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button
+                          onClick={() => remove(img.id)}
+                          className="bg-red-500 text-white rounded-full p-1.5 hover:bg-red-600"
+                          title="حذف"
+                        >
+                          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                      </div>
+                      <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity bg-black/20">
+                        <svg className="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8h16M4 16h16" />
                         </svg>
-                      </button>
+                      </div>
                     </div>
                     <div className="p-3 bg-white">
                       <p className="text-sm font-medium text-slate-900 truncate" title={img.file.name}>
@@ -349,9 +472,24 @@ export default function ImageToPdfPage() {
         {/* Loading State */}
         {busy && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-            <Card className="p-8 text-center">
+            <Card className="p-8 text-center max-w-sm w-full mx-4">
               <div className="animate-spin h-12 w-12 border-4 border-red-600 border-t-transparent rounded-full mx-auto mb-4"></div>
-              <p className="text-lg font-semibold text-slate-900">در حال تبدیل عکس‌ها به PDF...</p>
+              <p className="text-lg font-semibold text-slate-900 mb-4">در حال تبدیل عکس‌ها به PDF...</p>
+              
+              {progress > 0 && (
+                <div className="w-full bg-slate-200 rounded-full h-2 mb-2">
+                  <div 
+                    className="bg-red-600 h-2 rounded-full transition-all duration-300"
+                    style={{ width: `${progress}%` }}
+                  ></div>
+                </div>
+              )}
+              
+              <p className="text-sm text-slate-600">
+                {progress < 50 ? `در حال پردازش تصاویر (${Math.round(progress)}%)` :
+                 progress < 90 ? `در حال ساخت PDF (${Math.round(progress)}%)` :
+                 `در حال آماده‌سازی دانلود (${Math.round(progress)}%)`}
+              </p>
             </Card>
           </div>
         )}
