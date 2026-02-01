@@ -1,0 +1,8 @@
+{
+  "/_not-found/page": "app/_not-found/page.js",
+  "/(tools)/salary/page": "app/(tools)/salary/page.js",
+  "/(tools)/loan/page": "app/(tools)/loan/page.js",
+  "/(tools)/image-compress/page": "app/(tools)/image-compress/page.js",
+  "/(tools)/pdf-tools/page": "app/(tools)/pdf-tools/page.js",
+  "/page": "app/page.js"
+}
