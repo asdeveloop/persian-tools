@@ -3,7 +3,7 @@ trigger: glob
 globs: "**/*.{test,spec}.{ts,tsx,js,jsx}"
 description: "Testing rules for unit/integration tests"
 labels: testing,vitest,coverage
-author: your-name
+author: persian-tools-team
 modified: 2026-02-01
 ---
 

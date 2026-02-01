@@ -1,6 +1,8 @@
 ---
 name: code-review
 description: "Run a strict PR review: architecture, security, performance, tests, and UX. Use provided checklists/templates."
+author: persian-tools-team
+modified: 2026-02-01
 ---
 
 # Code Review Skill
@@ -18,3 +20,10 @@ Use these resources:
 - review-checklist.md
 - pr-template.md
 - security-checklist.md
+
+## Quality Gates
+
+- **Blocker**: Security issues, breaking changes, missing tests for critical paths
+- **Major**: Performance issues, accessibility violations, type safety problems  
+- **Minor**: Code style, documentation gaps, non-critical edge cases
+- **Nits**: Formatting, naming conventions, minor optimizations

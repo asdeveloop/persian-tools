@@ -2,7 +2,7 @@
 trigger: model_decision
 description: "Apply when implementing error handling, API boundaries, or user feedback"
 labels: errors,ux,logging
-author: your-name
+author: persian-tools-team
 modified: 2026-02-01
 ---
 

@@ -2,7 +2,7 @@
 trigger: always_on
 description: "TypeScript/React coding standards for this repo"
 labels: typescript,react,quality
-author: your-name
+author: persian-tools-team
 modified: 2026-02-01
 ---
 
