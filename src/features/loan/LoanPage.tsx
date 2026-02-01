@@ -586,7 +586,7 @@ export default function LoanPage() {
                               </tr>
                             </thead>
                             <tbody>
-                              {result.stepDetails.map((step, index) => (
+                              {result.stepDetails.map((step: any, index: number) => (
                                 <motion.tr 
                                   key={step.step}
                                   className="border-b border-gray-100 hover:bg-gray-100 transition-colors"

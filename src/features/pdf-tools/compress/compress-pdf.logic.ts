@@ -63,7 +63,7 @@ export async function compressPdfAdvanced(
   pdfBytes: Uint8Array,
   options: CompressPdfOptions = {}
 ): Promise<Uint8Array> {
-  const { quality = 0.8 } = options;
+  const { quality: _quality = 0.8 } = options;
   
   try {
     const pdfDoc = await PDFDocument.load(pdfBytes);

@@ -1,4 +1,4 @@
-import { PDFDocument, degrees } from 'pdf-lib';
+import { PDFDocument } from 'pdf-lib';
 
 export type ImageToPdfItem = {
   name: string;
@@ -81,7 +81,7 @@ export async function imagesToPdfBytes(
     orientation = 'portrait',
     margin = 'small',
     pageSize = 'original',
-    quality = 0.8
+    quality: _quality = 0.8
   } = options;
 
   const pdf = await PDFDocument.create();

@@ -2,14 +2,15 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import Container from './Container';
-import { 
-  IconPdf, 
-  IconImage, 
-  IconCalculator, 
+import { tokens } from '../constants/tokens';
+import {
+  IconPdf,
+  IconImage,
+  IconCalculator,
   IconMoney,
   IconChevronDown,
   IconMenu,
-  IconX
+  IconX,
 } from './icons';
 
 export default function Navigation() {
@@ -26,53 +27,53 @@ export default function Navigation() {
   };
 
   const dropdownVariants = {
-    hidden: { 
-      opacity: 0, 
+    hidden: {
+      opacity: 0,
       y: -10,
-      scale: 0.95
+      scale: 0.95,
     },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       y: 0,
       scale: 1,
       transition: {
         duration: 0.2,
-        ease: [0.25, 0.1, 0.25, 1.0] as const
-      }
+        ease: [0.25, 0.1, 0.25, 1.0] as const,
+      },
     },
-    exit: { 
-      opacity: 0, 
+    exit: {
+      opacity: 0,
       y: -10,
       scale: 0.95,
       transition: {
-        duration: 0.15
-      }
-    }
+        duration: 0.15,
+      },
+    },
   };
 
   const mobileMenuVariants = {
-    hidden: { 
-      opacity: 0, 
+    hidden: {
+      opacity: 0,
       height: 0,
-      y: -20
+      y: -20,
     },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       height: 'auto',
       y: 0,
       transition: {
         duration: 0.3,
-        ease: [0.25, 0.1, 0.25, 1.0] as const
-      }
+        ease: [0.25, 0.1, 0.25, 1.0] as const,
+      },
     },
-    exit: { 
-      opacity: 0, 
+    exit: {
+      opacity: 0,
       height: 0,
       y: -20,
       transition: {
-        duration: 0.2
-      }
-    }
+        duration: 0.2,
+      },
+    },
   };
 
   return (
@@ -84,15 +85,16 @@ export default function Navigation() {
           whileTap={{ scale: 0.95 }}
         >
           <Link to="/" className="flex items-center gap-3 text-black group focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 rounded-lg p-2">
-            <motion.span 
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-black text-white shadow-lg"
+            <motion.span
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full shadow-lg"
+              style={{ backgroundColor: tokens.color.primary.DEFAULT, color: tokens.color.text.inverted }}
               animate={{
-                rotate: [0, 5, -5, 0]
+                rotate: [0, 5, -5, 0],
               }}
               transition={{
                 duration: 4,
                 repeat: Infinity,
-                ease: "easeInOut"
+                ease: "easeInOut",
               }}
               aria-hidden="true"
             >
@@ -107,7 +109,11 @@ export default function Navigation() {
           {/* PDF Tools Dropdown */}
           <div className="relative group">
             <motion.button
-              className="flex items-center gap-2 px-4 py-2.5 text-sm font-bold text-gray-700 hover:text-black hover:bg-black/5 rounded-full transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2"
+              className="flex items-center gap-2 px-4 py-2.5 text-sm font-bold rounded-full transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2"
+              style={{ 
+                color: tokens.color.text.DEFAULT,
+                backgroundColor: 'transparent'
+              }}
               onMouseEnter={() => setOpenDropdown('pdf')}
               onMouseLeave={() => setOpenDropdown(null)}
               whileHover={{ scale: 1.05 }}
@@ -120,12 +126,12 @@ export default function Navigation() {
               ابزارهای PDF
               <motion.div
                 animate={{ rotate: openDropdown === 'pdf' ? 180 : 0 }}
-                transition={{ duration: 0.2 }}
+                transition={{ duration: parseFloat(tokens.motion.duration.fast) }}
               >
                 <IconChevronDown className="h-3 w-3" />
               </motion.div>
             </motion.button>
-            
+
             <AnimatePresence>
               {openDropdown === 'pdf' && (
                 <motion.div
@@ -139,55 +145,40 @@ export default function Navigation() {
                   role="menu"
                   aria-labelledby="pdf-dropdown-button"
                 >
-                  <Link 
-                    to="/pdf-tools" 
-                    className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-black/5 hover:text-black transition-all duration-200 group focus:outline-none focus-visible:bg-black/10 rounded-lg mx-2"
+                  <Link
+                    to="/pdf-tools"
+                    className="flex items-center gap-3 px-4 py-3 text-sm transition-all duration-200 group focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 rounded-lg mx-2"
+                    style={{ 
+                      color: tokens.color.text.DEFAULT,
+                      backgroundColor: 'transparent'
+                    }}
                     onClick={closeMobileMenu}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.color = tokens.color.primary.DEFAULT;
+                      e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.05)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.color = tokens.color.text.DEFAULT;
+                      e.currentTarget.style.backgroundColor = 'transparent';
+                    }}
                     role="menuitem"
                   >
-                    <motion.div 
-                      className="flex items-center justify-center w-8 h-8 rounded-full bg-red-100 group-hover:bg-red-200 transition-colors"
+                    <motion.div
+                      className="flex items-center justify-center w-8 h-8 rounded-full transition-colors"
+                      style={{ backgroundColor: tokens.color.status.danger + '20' }}
                       whileHover={{ scale: 1.1, rotate: 5 }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = tokens.color.status.danger + '30';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = tokens.color.status.danger + '20';
+                      }}
                     >
-                      <IconPdf className="h-4 w-4 text-red-600" />
+                      <IconPdf className="h-4 w-4" />
                     </motion.div>
                     <div className="flex-1">
-                      <div className="font-bold">JPG به PDF</div>
-                      <div className="text-xs text-gray-500">تبدیل عکس به PDF</div>
-                    </div>
-                  </Link>
-                  <div className="border-t border-gray-200/50 my-2"></div>
-                  <div className="px-4 py-2 text-xs font-bold text-gray-500 uppercase tracking-wider">
-                    ابزارهای دیگر
-                  </div>
-                  <Link 
-                    to="#" 
-                    className="flex items-center gap-3 px-4 py-3 text-sm text-gray-400 hover:bg-gray-100 transition-colors group"
-                  >
-                    <motion.div 
-                      className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100"
-                      whileHover={{ scale: 1.1 }}
-                    >
-                      <IconPdf className="h-4 w-4 text-gray-400" />
-                    </motion.div>
-                    <div className="flex-1">
-                      <div className="font-bold">ادغام PDF</div>
-                      <div className="text-xs text-gray-400">به زودی</div>
-                    </div>
-                  </Link>
-                  <Link 
-                    to="#" 
-                    className="flex items-center gap-3 px-4 py-3 text-sm text-gray-400 hover:bg-gray-100 transition-colors group"
-                  >
-                    <motion.div 
-                      className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100"
-                      whileHover={{ scale: 1.1 }}
-                    >
-                      <IconPdf className="h-4 w-4 text-gray-400" />
-                    </motion.div>
-                    <div className="flex-1">
-                      <div className="font-bold">فشرده‌سازی PDF</div>
-                      <div className="text-xs text-gray-400">به زودی</div>
+                      <div className="font-bold">همه ابزارهای PDF</div>
+                      <div className="text-xs" style={{ color: tokens.color.text.muted }}>تبدیل، فشرده‌سازی، ادغام و...</div>
                     </div>
                   </Link>
                 </motion.div>
@@ -198,7 +189,11 @@ export default function Navigation() {
           {/* Image Tools Dropdown */}
           <div className="relative group">
             <motion.button
-              className="flex items-center gap-2 px-4 py-2.5 text-sm font-bold text-gray-700 hover:text-black hover:bg-black/5 rounded-full transition-all duration-300"
+              className="flex items-center gap-2 px-4 py-2.5 text-sm font-bold rounded-full transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2"
+              style={{ 
+                color: tokens.color.text.DEFAULT,
+                backgroundColor: 'transparent'
+              }}
               onMouseEnter={() => setOpenDropdown('image')}
               onMouseLeave={() => setOpenDropdown(null)}
               whileHover={{ scale: 1.05 }}
@@ -208,12 +203,12 @@ export default function Navigation() {
               ابزارهای تصویر
               <motion.div
                 animate={{ rotate: openDropdown === 'image' ? 180 : 0 }}
-                transition={{ duration: 0.2 }}
+                transition={{ duration: parseFloat(tokens.motion.duration.fast) }}
               >
                 <IconChevronDown className="h-3 w-3" />
               </motion.div>
             </motion.button>
-            
+
             <AnimatePresence>
               {openDropdown === 'image' && (
                 <motion.div
@@ -225,54 +220,77 @@ export default function Navigation() {
                   onMouseEnter={() => setOpenDropdown('image')}
                   onMouseLeave={() => setOpenDropdown(null)}
                 >
-                  <Link 
-                    to="/image-compress" 
-                    className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-black/5 hover:text-black transition-all duration-200 group"
+                  <Link
+                    to="/image-compress"
+                    className="flex items-center gap-3 px-4 py-3 text-sm transition-all duration-200 group focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 rounded-lg"
+                    style={{ 
+                      color: tokens.color.text.DEFAULT,
+                      backgroundColor: 'transparent'
+                    }}
                     onClick={closeMobileMenu}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.color = tokens.color.primary.DEFAULT;
+                      e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.05)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.color = tokens.color.text.DEFAULT;
+                      e.currentTarget.style.backgroundColor = 'transparent';
+                    }}
                   >
-                    <motion.div 
-                      className="flex items-center justify-center w-8 h-8 rounded-full bg-purple-100 group-hover:bg-purple-200 transition-colors"
+                    <motion.div
+                      className="flex items-center justify-center w-8 h-8 rounded-full transition-colors"
+                      style={{ backgroundColor: '#9333ea20' }}
                       whileHover={{ scale: 1.1, rotate: 5 }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = '#9333ea30';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = '#9333ea20';
+                      }}
                     >
-                      <IconImage className="h-4 w-4 text-purple-600" />
+                      <IconImage className="h-4 w-4" />
                     </motion.div>
                     <div className="flex-1">
                       <div className="font-bold">فشرده‌سازی عکس</div>
-                      <div className="text-xs text-gray-500">کاهش حجم عکس‌ها</div>
+                      <div className="text-xs" style={{ color: tokens.color.text.muted }}>کاهش حجم عکس‌ها</div>
                     </div>
                   </Link>
                   <div className="border-t border-gray-200/50 my-2"></div>
-                  <div className="px-4 py-2 text-xs font-bold text-gray-500 uppercase tracking-wider">
+                  <div className="px-4 py-2 text-xs font-bold uppercase tracking-wider" style={{ color: tokens.color.text.muted }}>
                     ابزارهای دیگر
                   </div>
-                  <Link 
-                    to="#" 
-                    className="flex items-center gap-3 px-4 py-3 text-sm text-gray-400 hover:bg-gray-100 transition-colors group"
+                  <Link
+                    to="#"
+                    className="flex items-center gap-3 px-4 py-3 text-sm transition-colors group"
+                    style={{ color: tokens.color.text.muted }}
                   >
-                    <motion.div 
-                      className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100"
+                    <motion.div
+                      className="flex items-center justify-center w-8 h-8 rounded-full"
+                      style={{ backgroundColor: tokens.color.border.DEFAULT }}
                       whileHover={{ scale: 1.1 }}
                     >
-                      <IconImage className="h-4 w-4 text-gray-400" />
+                      <IconImage className="h-4 w-4" />
                     </motion.div>
                     <div className="flex-1">
-                      <div className="font-bold">تغییر اندازه عکس</div>
-                      <div className="text-xs text-gray-400">به زودی</div>
+                      <div className="font-bold">افزودن عکس به PDF</div>
+                      <div className="text-xs" style={{ color: tokens.color.text.muted }}>به زودی</div>
                     </div>
                   </Link>
-                  <Link 
-                    to="#" 
-                    className="flex items-center gap-3 px-4 py-3 text-sm text-gray-400 hover:bg-gray-100 transition-colors group"
+                  <Link
+                    to="#"
+                    className="flex items-center gap-3 px-4 py-3 text-sm transition-colors group"
+                    style={{ color: tokens.color.text.muted }}
                   >
-                    <motion.div 
-                      className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100"
+                    <motion.div
+                      className="flex items-center justify-center w-8 h-8 rounded-full"
+                      style={{ backgroundColor: tokens.color.border.DEFAULT }}
                       whileHover={{ scale: 1.1 }}
                     >
-                      <IconImage className="h-4 w-4 text-gray-400" />
+                      <IconImage className="h-4 w-4" />
                     </motion.div>
                     <div className="flex-1">
-                      <div className="font-bold">تبدیل فرمت</div>
-                      <div className="text-xs text-gray-400">به زودی</div>
+                      <div className="font-bold">تبدیل PDF به عکس</div>
+                      <div className="text-xs" style={{ color: tokens.color.text.muted }}>به زودی</div>
                     </div>
                   </Link>
                 </motion.div>
@@ -298,7 +316,7 @@ export default function Navigation() {
                 <IconChevronDown className="h-3 w-3" />
               </motion.div>
             </motion.button>
-            
+
             <AnimatePresence>
               {openDropdown === 'financial' && (
                 <motion.div
@@ -310,12 +328,12 @@ export default function Navigation() {
                   onMouseEnter={() => setOpenDropdown('financial')}
                   onMouseLeave={() => setOpenDropdown(null)}
                 >
-                  <Link 
-                    to="/loan" 
+                  <Link
+                    to="/loan"
                     className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-black/5 hover:text-black transition-all duration-200 group"
                     onClick={closeMobileMenu}
                   >
-                    <motion.div 
+                    <motion.div
                       className="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 group-hover:bg-blue-200 transition-colors"
                       whileHover={{ scale: 1.1, rotate: 5 }}
                     >
@@ -326,12 +344,12 @@ export default function Navigation() {
                       <div className="text-xs text-gray-500">محاسبه قسط و سود وام</div>
                     </div>
                   </Link>
-                  <Link 
-                    to="/salary" 
+                  <Link
+                    to="/salary"
                     className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-black/5 hover:text-black transition-all duration-200 group"
                     onClick={closeMobileMenu}
                   >
-                    <motion.div 
+                    <motion.div
                       className="flex items-center justify-center w-8 h-8 rounded-full bg-green-100 group-hover:bg-green-200 transition-colors"
                       whileHover={{ scale: 1.1, rotate: 5 }}
                     >
@@ -410,7 +428,7 @@ export default function Navigation() {
                     <IconChevronDown className="h-3 w-3" />
                   </motion.div>
                 </motion.button>
-                
+
                 <AnimatePresence>
                   {openDropdown === 'pdf' && (
                     <motion.div
@@ -420,46 +438,22 @@ export default function Navigation() {
                       transition={{ duration: 0.3 }}
                       className="mr-4 mt-2 space-y-1 overflow-hidden"
                     >
-                      <Link 
-                        to="/pdf-tools" 
+                      <Link
+                        to="/pdf-tools"
                         className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-black/5 hover:text-black rounded-full transition-all duration-200"
                         onClick={closeMobileMenu}
                       >
-                        <motion.div 
+                        <motion.div
                           className="flex items-center justify-center w-8 h-8 rounded-full bg-red-100"
                           whileHover={{ scale: 1.1 }}
                         >
                           <IconPdf className="h-4 w-4 text-red-600" />
                         </motion.div>
                         <div className="flex-1">
-                          <div className="font-bold">JPG به PDF</div>
-                          <div className="text-xs text-gray-500">تبدیل عکس به PDF</div>
+                          <div className="font-bold">همه ابزارهای PDF</div>
+                          <div className="text-xs text-gray-500">تبدیل، فشرده‌سازی، ادغام و...</div>
                         </div>
                       </Link>
-                      <div className="flex items-center gap-3 px-4 py-3 text-sm text-gray-400 rounded-full">
-                        <motion.div 
-                          className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100"
-                          whileHover={{ scale: 1.1 }}
-                        >
-                          <IconPdf className="h-4 w-4 text-gray-400" />
-                        </motion.div>
-                        <div className="flex-1">
-                          <div className="font-bold">ادغام PDF</div>
-                          <div className="text-xs text-gray-400">به زودی</div>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-3 px-4 py-3 text-sm text-gray-400 rounded-full">
-                        <motion.div 
-                          className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100"
-                          whileHover={{ scale: 1.1 }}
-                        >
-                          <IconPdf className="h-4 w-4 text-gray-400" />
-                        </motion.div>
-                        <div className="flex-1">
-                          <div className="font-bold">فشرده‌سازی PDF</div>
-                          <div className="text-xs text-gray-400">به زودی</div>
-                        </div>
-                      </div>
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -483,7 +477,7 @@ export default function Navigation() {
                     <IconChevronDown className="h-3 w-3" />
                   </motion.div>
                 </motion.button>
-                
+
                 <AnimatePresence>
                   {openDropdown === 'image' && (
                     <motion.div
@@ -493,12 +487,12 @@ export default function Navigation() {
                       transition={{ duration: 0.3 }}
                       className="mr-4 mt-2 space-y-1 overflow-hidden"
                     >
-                      <Link 
-                        to="/image-compress" 
+                      <Link
+                        to="/image-compress"
                         className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-black/5 hover:text-black rounded-full transition-all duration-200"
                         onClick={closeMobileMenu}
                       >
-                        <motion.div 
+                        <motion.div
                           className="flex items-center justify-center w-8 h-8 rounded-full bg-purple-100"
                           whileHover={{ scale: 1.1 }}
                         >
@@ -510,7 +504,7 @@ export default function Navigation() {
                         </div>
                       </Link>
                       <div className="flex items-center gap-3 px-4 py-3 text-sm text-gray-400 rounded-full">
-                        <motion.div 
+                        <motion.div
                           className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100"
                           whileHover={{ scale: 1.1 }}
                         >
@@ -544,7 +538,7 @@ export default function Navigation() {
                     <IconChevronDown className="h-3 w-3" />
                   </motion.div>
                 </motion.button>
-                
+
                 <AnimatePresence>
                   {openDropdown === 'financial' && (
                     <motion.div
@@ -554,12 +548,12 @@ export default function Navigation() {
                       transition={{ duration: 0.3 }}
                       className="mr-4 mt-2 space-y-1 overflow-hidden"
                     >
-                      <Link 
-                        to="/loan" 
+                      <Link
+                        to="/loan"
                         className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-black/5 hover:text-black rounded-full transition-all duration-200"
                         onClick={closeMobileMenu}
                       >
-                        <motion.div 
+                        <motion.div
                           className="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100"
                           whileHover={{ scale: 1.1 }}
                         >
@@ -570,12 +564,12 @@ export default function Navigation() {
                           <div className="text-xs text-gray-500">محاسبه قسط و سود وام</div>
                         </div>
                       </Link>
-                      <Link 
-                        to="/salary" 
+                      <Link
+                        to="/salary"
                         className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-black/5 hover:text-black rounded-full transition-all duration-200"
                         onClick={closeMobileMenu}
                       >
-                        <motion.div 
+                        <motion.div
                           className="flex items-center justify-center w-8 h-8 rounded-full bg-green-100"
                           whileHover={{ scale: 1.1 }}
                         >

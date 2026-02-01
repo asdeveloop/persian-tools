@@ -33,19 +33,17 @@ export default function SplitPdfPage() {
     if (!files || files.length === 0) return;
 
     const file = files[0];
-    if (file.type !== 'application/pdf') {
+    if (!file || file.type !== 'application/pdf') {
       setError('فقط فایل‌های PDF قابل انتخاب هستند.');
       return;
     }
 
     try {
       const url = URL.createObjectURL(file);
-      setSelectedFile({ file, url });
-      setResults([]);
-      
-      // Get page count (simplified - in real implementation would use PDF.js)
       const pageCount = 10; // Placeholder
+      
       setSelectedFile({ file, url, pageCount });
+      setResults([]);
       
       // Suggest split options
       const suggestions = suggestSplitOptions(pageCount);

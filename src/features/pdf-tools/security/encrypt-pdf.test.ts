@@ -1,22 +1,22 @@
 import { describe, expect, it } from 'vitest';
-import { 
-  encryptPdf, 
-  validatePassword, 
+import {
+  encryptPdf,
+  validatePassword,
   getPasswordStrength,
-  checkPdfProtection 
+  checkPdfProtection,
 } from './encrypt-pdf.logic';
 
 describe('encryptPdf', () => {
   it('should throw when password is too short', async () => {
     const pdfBytes = new Uint8Array([1, 2, 3, 4, 5]);
-    
+
     await expect(encryptPdf(pdfBytes, { password: '123' }))
       .rejects.toThrow('خطا در رمز عبور: رمز عبور باید حداقل 4 کاراکتر باشد');
   });
 
   it('should handle PDF loading errors', async () => {
     const invalidPdfBytes = new Uint8Array([1, 2, 3, 4, 5]);
-    
+
     await expect(encryptPdf(invalidPdfBytes, { password: 'valid123' }))
       .rejects.toThrow('خطا در رمزگذاری PDF');
   });
@@ -107,9 +107,9 @@ describe('getPasswordStrength', () => {
 describe('checkPdfProtection', () => {
   it('should return encrypted for invalid PDF bytes', async () => {
     const pdfBytes = new Uint8Array([1, 2, 3, 4, 5]);
-    
+
     const protection = await checkPdfProtection(pdfBytes);
-    
+
     expect(protection.isEncrypted).toBe(true);
     expect(protection.hasPassword).toBe(true);
     expect(protection.permissions).toEqual([]);
@@ -117,9 +117,9 @@ describe('checkPdfProtection', () => {
 
   it('should return encrypted for empty PDF bytes', async () => {
     const emptyPdfBytes = new Uint8Array();
-    
+
     const protection = await checkPdfProtection(emptyPdfBytes);
-    
+
     expect(protection.isEncrypted).toBe(true);
     expect(protection.hasPassword).toBe(true);
     expect(protection.permissions).toEqual([]);

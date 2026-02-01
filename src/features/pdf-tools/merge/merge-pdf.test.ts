@@ -9,9 +9,9 @@ describe('mergePdfs', () => {
   it('should merge PDFs with default options', async () => {
     const items = [
       { name: 'test1.pdf', bytes: new Uint8Array([1, 2, 3]), order: 0 },
-      { name: 'test2.pdf', bytes: new Uint8Array([4, 5, 6]), order: 1 }
+      { name: 'test2.pdf', bytes: new Uint8Array([4, 5, 6]), order: 1 },
     ];
-    
+
     const merged = await mergePdfs(items);
     expect(merged.length).toBeGreaterThan(0);
   });
@@ -19,14 +19,14 @@ describe('mergePdfs', () => {
   it('should merge PDFs with custom options', async () => {
     const items = [
       { name: 'test1.pdf', bytes: new Uint8Array([1, 2, 3]), order: 0 },
-      { name: 'test2.pdf', bytes: new Uint8Array([4, 5, 6]), order: 1 }
+      { name: 'test2.pdf', bytes: new Uint8Array([4, 5, 6]), order: 1 },
     ];
-    
+
     const merged = await mergePdfs(items, {
       preserveBookmarks: false,
-      preserveForms: false
+      preserveForms: false,
     });
-    
+
     expect(merged.length).toBeGreaterThan(0);
   });
 });
@@ -34,9 +34,9 @@ describe('mergePdfs', () => {
 describe('getPdfInfo', () => {
   it('should get PDF info', async () => {
     const pdfBytes = new Uint8Array([1, 2, 3, 4, 5]);
-    
+
     const info = await getPdfInfo(pdfBytes);
-    
+
     expect(info.pageCount).toBeGreaterThan(0);
   });
 });
@@ -46,11 +46,11 @@ describe('reorderItems', () => {
     const items = [
       { name: 'test1.pdf', bytes: new Uint8Array([1]), order: 0 },
       { name: 'test2.pdf', bytes: new Uint8Array([2]), order: 1 },
-      { name: 'test3.pdf', bytes: new Uint8Array([3]), order: 2 }
+      { name: 'test3.pdf', bytes: new Uint8Array([3]), order: 2 },
     ];
-    
+
     const reordered = reorderItems(items, 0, 2);
-    
+
     expect(reordered[0].name).toBe('test2.pdf');
     expect(reordered[1].name).toBe('test3.pdf');
     expect(reordered[2].name).toBe('test1.pdf');
@@ -59,11 +59,11 @@ describe('reorderItems', () => {
   it('should handle same index', () => {
     const items = [
       { name: 'test1.pdf', bytes: new Uint8Array([1]), order: 0 },
-      { name: 'test2.pdf', bytes: new Uint8Array([2]), order: 1 }
+      { name: 'test2.pdf', bytes: new Uint8Array([2]), order: 1 },
     ];
-    
+
     const reordered = reorderItems(items, 0, 0);
-    
+
     expect(reordered).toEqual(items);
   });
 });

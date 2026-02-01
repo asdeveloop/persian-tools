@@ -2,7 +2,8 @@ import { Route, Routes } from 'react-router-dom';
 import HomePage from './HomePage';
 import LoanPage from '../features/loan/LoanPage';
 import SalaryPage from '../features/salary/SalaryPage';
-import ImageCompressPage from '../features/image-compress/ImageCompressPage';
+import ImageCompressPage from '../features/image-tools/ImageCompressPage';
+import PdfToolsPage from '../features/pdf-tools/PdfToolsPage';
 import Container from '../shared/ui/Container';
 import Navigation from '../shared/ui/Navigation';
 import Footer from '../shared/ui/Footer';
@@ -19,6 +20,7 @@ export default function App() {
             <Route path="/loan" element={<LoanPage />} />
             <Route path="/salary" element={<SalaryPage />} />
             <Route path="/image-compress" element={<ImageCompressPage />} />
+            <Route path="/pdf-tools" element={<PdfToolsPage />} />
             <Route path="*" element={
               <div className="card p-6 text-center rtl-fix">
                 صفحه‌ای پیدا نشد

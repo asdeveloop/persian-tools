@@ -73,20 +73,20 @@ export default function Footer() {
                     to="/pdf-tools" 
                     className="text-slate-400 hover:text-white transition-colors text-sm"
                   >
-                    JPG به PDF
+                    همه ابزارهای PDF
                   </Link>
                 </li>
                 <li>
-                  <span className="text-slate-600 text-sm">ادغام PDF (به زودی)</span>
+                  <span className="text-slate-600 text-sm">تبدیل عکس به PDF</span>
                 </li>
                 <li>
-                  <span className="text-slate-600 text-sm">فشرده‌سازی PDF (به زودی)</span>
+                  <span className="text-slate-600 text-sm">فشرده‌سازی PDF</span>
                 </li>
                 <li>
-                  <span className="text-slate-600 text-sm">تقسیم PDF (به زودی)</span>
+                  <span className="text-slate-600 text-sm">ادغام و تقسیم PDF</span>
                 </li>
                 <li>
-                  <span className="text-slate-600 text-sm">چرخش PDF (به زودی)</span>
+                  <span className="text-slate-600 text-sm">رمزگذاری و واترمارک</span>
                 </li>
               </ul>
             </div>

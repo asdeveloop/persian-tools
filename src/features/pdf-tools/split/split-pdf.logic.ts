@@ -1,6 +1,8 @@
 import { PDFDocument } from 'pdf-lib';
 import type { SplitPdfOptions } from '../types';
 
+export type { SplitPdfOptions } from '../types';
+
 export interface SplitPdfResult {
   filename: string;
   bytes: Uint8Array;
@@ -77,7 +79,7 @@ function parsePageRange(range: string, totalPages: number): number[] {
     if (trimmed.includes('-')) {
       // Range like "1-5" or "3-7"
       const [start, end] = trimmed.split('-').map(p => parseInt(p.trim()));
-      if (!isNaN(start) && !isNaN(end)) {
+      if (start !== undefined && end !== undefined && !isNaN(start) && !isNaN(end)) {
         for (let i = start; i <= end; i++) {
           if (i >= 1 && i <= totalPages) {
             pages.push(i);
@@ -129,6 +131,8 @@ export async function splitPdfWithProgress(
       } else {
         for (let i = 0; i < ranges.length; i++) {
           const range = ranges[i];
+          if (!range) continue;
+          
           const pageNumbers = parsePageRange(range, pageCount);
           if (pageNumbers.length === 0) continue;
 
@@ -174,9 +178,9 @@ export function suggestSplitOptions(pageCount: number): {
 } {
   const suggestions = {
     individual: pageCount <= 20,
-    ranges: [],
-    descriptions: []
-  } as const;
+    ranges: [] as string[],
+    descriptions: [] as string[]
+  };
 
   if (pageCount <= 10) {
     suggestions.ranges = ['1-' + pageCount];

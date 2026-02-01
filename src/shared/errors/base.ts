@@ -3,6 +3,12 @@
  * Follows PROJECT_STANDARDS.md error handling requirements
  */
 
+declare global {
+  interface ErrorConstructor {
+    captureStackTrace?(target: Error, constructorOpt?: Function): void;
+  }
+}
+
 // Base error class with error codes
 export abstract class BaseError extends Error {
   abstract readonly code: string;

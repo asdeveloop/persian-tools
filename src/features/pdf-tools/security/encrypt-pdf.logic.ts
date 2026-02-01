@@ -2,6 +2,8 @@ import { PDFDocument, StandardFonts, rgb, PDFFont } from 'pdf-lib';
 import type { EncryptPdfOptions } from '../types';
 import { createError, createPdfError } from '../../../shared/errors';
 
+export type { EncryptPdfOptions } from '../types';
+
 type PasswordValidationResult = {
   readonly isValid: boolean;
   readonly error?: string;
@@ -46,7 +48,7 @@ export async function encryptPdf(
   pdfBytes: Uint8Array,
   options: EncryptPdfOptions
 ): Promise<Uint8Array> {
-  const { password, permissions = {} } = options;
+  const { password } = options;
 
   if (!password || password.length < MIN_PASSWORD_LENGTH) {
     throw createPasswordError(`رمز عبور باید حداقل ${MIN_PASSWORD_LENGTH} کاراکتر باشد`);
@@ -132,7 +134,7 @@ export function validatePassword(password: string): PasswordValidationResult {
 
 export function getPasswordStrength(password: string): PasswordStrengthLevel {
   const score = calculatePasswordScore(password);
-  return PASSWORD_STRENGTH_LEVELS[score];
+  return PASSWORD_STRENGTH_LEVELS[score] ?? PASSWORD_STRENGTH_LEVELS[0];
 }
 
 function calculatePasswordScore(password: string): number {

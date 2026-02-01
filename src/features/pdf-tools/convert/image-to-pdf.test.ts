@@ -54,7 +54,7 @@ describe('imagesToPdfBytes', () => {
     const marginOptions: ImageToPdfOptions[] = [
       { margin: 'none' },
       { margin: 'small' },
-      { margin: 'big' }
+      { margin: 'big' },
     ];
 
     for (const options of marginOptions) {
@@ -98,7 +98,7 @@ describe('imagesToPdfBytes', () => {
       orientation: 'landscape',
       margin: 'big',
       pageSize: 'a4',
-      quality: 0.9
+      quality: 0.9,
     };
     const out = await imagesToPdfBytes([
       { name: 'a.png', mimeType: 'image/png', bytes: b64ToBytes(oneByOnePngBase64) },

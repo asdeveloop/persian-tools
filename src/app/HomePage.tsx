@@ -12,10 +12,10 @@ export default function HomePage() {
         <div className="relative px-6 py-16 md:px-12 lg:py-24">
           <div className="mx-auto max-w-4xl text-center">
             <h1 id="hero-heading" className="text-4xl font-bold md:text-5xl lg:text-6xl">
-              همه ابزارهایی که نیاز دارید اینجاست
+              ابزارهای فارسی برای کار و زندگی
             </h1>
             <p className="mt-6 text-lg md:text-xl text-[var(--text-inverted)]/80">
-              تمام ابزارهای لازم در یک مکان. رایگان و آسان برای استفاده!
+              ابزارهای PDF، محاسبات مالی و پردازش تصویر - همه در یک مکان، رایگان و آسان
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-4">
               <Link to="/pdf-tools">
@@ -53,8 +53,8 @@ export default function HomePage() {
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           <ToolCard
             to="/pdf-tools"
-            title="JPG به PDF"
-            description="تبدیل عکس‌ها به PDF در چند ثانیه. تنظیم جهت‌گیری و حاشیه‌ها به راحتی."
+            title="ابزارهای PDF"
+            description="مجموعه کامل ابزارهای PDF: تبدیل، فشرده‌سازی، ادغام، تقسیم، رمزگذاری و واترمارک"
             icon={<IconPdf className="h-8 w-8 text-[var(--color-danger)]" />}
             className="hover:border-[var(--color-danger)] hover:bg-[var(--color-danger)]/5 group"
           />

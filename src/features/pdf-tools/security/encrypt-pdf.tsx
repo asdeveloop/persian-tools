@@ -29,7 +29,7 @@ export default function EncryptPdfPage() {
     if (!files || files.length === 0) return;
 
     const file = files[0];
-    if (file.type !== 'application/pdf') {
+    if (!file || file.type !== 'application/pdf') {
       setError('فقط فایل‌های PDF قابل انتخاب هستند.');
       return;
     }

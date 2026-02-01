@@ -72,7 +72,6 @@ export default defineConfig({
         manualChunks: {
           vendor: ['react', 'react-dom'],
           ui: ['framer-motion'],
-          utils: ['date-fns', 'lodash-es'],
         },
       },
     },

@@ -4,11 +4,11 @@ import { splitPdf, validatePageRanges, suggestSplitOptions } from './split-pdf.l
 describe('splitPdf', () => {
   it('should split PDF by individual pages', async () => {
     const pdfBytes = new Uint8Array([1, 2, 3, 4, 5]);
-    
+
     const results = await splitPdf(pdfBytes, {
-      splitBy: 'pages'
+      splitBy: 'pages',
     });
-    
+
     expect(results.length).toBeGreaterThan(0);
     results.forEach(result => {
       expect(result.filename).toMatch(/^page-\d+\.pdf$/);
@@ -19,15 +19,15 @@ describe('splitPdf', () => {
 
   it('should split PDF by page ranges', async () => {
     const pdfBytes = new Uint8Array([1, 2, 3, 4, 5]);
-    
+
     const results = await splitPdf(pdfBytes, {
       splitBy: 'pages',
-      ranges: ['1-3', '4-5']
+      ranges: ['1-3', '4-5'],
     });
-    
+
     expect(results.length).toBe(2);
-    expect(results[0].filename).toBe('pages-1-3.pdf');
-    expect(results[1].filename).toBe('pages-4-5.pdf');
+    expect(results[0]?.filename).toBe('pages-1-3.pdf');
+    expect(results[1]?.filename).toBe('pages-4-5.pdf');
   });
 });
 
@@ -52,7 +52,7 @@ describe('validatePageRanges', () => {
 describe('suggestSplitOptions', () => {
   it('should suggest options for small PDF', () => {
     const suggestions = suggestSplitOptions(5);
-    
+
     expect(suggestions.individual).toBe(true);
     expect(suggestions.ranges).toContain('1-5');
     expect(suggestions.descriptions).toContain('همه صفحات در یک فایل');
@@ -60,7 +60,7 @@ describe('suggestSplitOptions', () => {
 
   it('should suggest options for medium PDF', () => {
     const suggestions = suggestSplitOptions(15);
-    
+
     expect(suggestions.individual).toBe(false);
     expect(suggestions.ranges).toHaveLength(2);
     expect(suggestions.ranges[0]).toBe('1-8');
@@ -69,7 +69,7 @@ describe('suggestSplitOptions', () => {
 
   it('should suggest options for large PDF', () => {
     const suggestions = suggestSplitOptions(25);
-    
+
     expect(suggestions.individual).toBe(false);
     expect(suggestions.ranges).toHaveLength(4);
     expect(suggestions.descriptions).toHaveLength(4);

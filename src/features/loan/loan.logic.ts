@@ -1,6 +1,10 @@
-import type { LoanInput, LoanResult } from './loan.types';
+import type { LegacyLoanInput, LegacyLoanResult } from './loan.types';
 
-function calculateRegularLoan(principal: number, annualRate: number, months: number): LoanResult {
+// Import new calculator
+export { calculateLoan as calculateEnhancedLoan } from './loan-calculator';
+
+// Legacy functions for backward compatibility
+function calculateRegularLoan(principal: number, annualRate: number, months: number): LegacyLoanResult {
   const monthlyRate = annualRate / 100 / 12;
 
   if (monthlyRate === 0) {
@@ -18,7 +22,7 @@ function calculateRegularLoan(principal: number, annualRate: number, months: num
   return { monthlyPayment, totalPayment, totalInterest };
 }
 
-function calculateQarzolhasanehLoan(principal: number, annualRate: number, months: number): LoanResult {
+function calculateQarzolhasanehLoan(principal: number, annualRate: number, months: number): LegacyLoanResult {
   // Qarzolhasaneh loans typically have very low rates (0-4%)
   // According to Central Bank regulations, these are calculated differently
   const monthlyRate = annualRate / 100 / 12;
@@ -56,8 +60,8 @@ function calculateSteppedLoan(
   totalMonths: number, 
   stepMonths: number, 
   rateIncrease: number
-): LoanResult {
-  const stepDetails: LoanResult['stepDetails'] = [];
+): LegacyLoanResult {
+  const stepDetails: LegacyLoanResult['stepDetails'] = [];
   let remainingPrincipal = principal;
   let totalPayment = 0;
   let totalInterest = 0;
@@ -102,7 +106,7 @@ function calculateSteppedLoan(
   };
 }
 
-export function calculateLoan(input: LoanInput): LoanResult {
+export function calculateLoan(input: LegacyLoanInput): LegacyLoanResult {
   const { 
     principal, 
     annualInterestRatePercent, 

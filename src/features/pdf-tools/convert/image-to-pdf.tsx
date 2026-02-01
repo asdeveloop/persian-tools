@@ -1,17 +1,13 @@
 import { useEffect, useMemo, useState, useRef } from 'react';
-import Button from '../../shared/ui/Button';
-import Card from '../../shared/ui/Card';
-import { imagesToPdfBytes, type ImageToPdfItem, type Orientation, type Margin, type PageSize, type ImageToPdfOptions } from './imageToPdf.logic';
+import Button from '../../../shared/ui/Button';
+import Card from '../../../shared/ui/Card';
+import { imagesToPdfBytes, type ImageToPdfItem, type ImageToPdfOptions, type Orientation, type Margin, type PageSize } from './imageToPdf.logic';
 
 type SelectedImage = {
   id: string;
   file: File;
   url: string;
 };
-
-type Orientation = 'portrait' | 'landscape';
-type Margin = 'none' | 'small' | 'big';
-type PageSize = 'a4' | 'letter' | 'original';
 
 function uid(): string {
   return `${Date.now()}-${Math.random().toString(16).slice(2)}`;

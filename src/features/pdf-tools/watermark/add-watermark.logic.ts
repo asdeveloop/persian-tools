@@ -1,7 +1,7 @@
 import { PDFDocument, PDFPage, StandardFonts, rgb } from 'pdf-lib';
 import type { WatermarkOptions } from '../types';
 
-export { WatermarkOptions } from '../types';
+export type { WatermarkOptions } from '../types';
 
 export async function addWatermark(
   pdfBytes: Uint8Array,
@@ -88,7 +88,7 @@ async function addTextWatermark(
     font,
     color: rgb(0.5, 0.5, 0.5),
     opacity,
-    rotate: { type: 'degrees', angle: rotation }
+    rotate: { type: 'degrees' as const, angle: rotation }
   });
 }
 
@@ -135,7 +135,7 @@ async function addImageWatermark(
       width: scaledWidth,
       height: scaledHeight,
       opacity,
-      rotate: { type: 'degrees', angle: rotation }
+      rotate: { type: 'degrees' as const, angle: rotation }
     });
   } catch (error) {
     throw new Error('خطا در پردازش تصویر واترمارک');
