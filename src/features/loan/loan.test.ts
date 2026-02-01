@@ -3,24 +3,24 @@ import { calculateLoan } from './loan.logic';
 
 describe('calculateLoan', () => {
   it('should calculate regular zero-interest loan', () => {
-    const r = calculateLoan({ 
-      principal: 120_000_000, 
-      annualInterestRatePercent: 0, 
+    const r = calculateLoan({
+      principal: 120_000_000,
+      annualInterestRatePercent: 0,
       months: 12,
       loanType: 'regular',
-      calculationType: 'installment'
+      calculationType: 'installment',
     });
     expect(r.monthlyPayment).toBeCloseTo(10_000_000);
     expect(r.totalInterest).toBeCloseTo(0);
   });
 
   it('should calculate regular annuity loan with interest', () => {
-    const r = calculateLoan({ 
-      principal: 100_000_000, 
-      annualInterestRatePercent: 24, 
+    const r = calculateLoan({
+      principal: 100_000_000,
+      annualInterestRatePercent: 24,
       months: 24,
       loanType: 'regular',
-      calculationType: 'installment'
+      calculationType: 'installment',
     });
     expect(r.monthlyPayment).toBeGreaterThan(0);
     expect(r.totalPayment).toBeGreaterThan(100_000_000);
@@ -28,12 +28,12 @@ describe('calculateLoan', () => {
   });
 
   it('should calculate qarzolhasaneh loan', () => {
-    const r = calculateLoan({ 
-      principal: 50_000_000, 
-      annualInterestRatePercent: 4, 
+    const r = calculateLoan({
+      principal: 50_000_000,
+      annualInterestRatePercent: 4,
       months: 24,
       loanType: 'qarzolhasaneh',
-      calculationType: 'installment'
+      calculationType: 'installment',
     });
     expect(r.monthlyPayment).toBeGreaterThan(0);
     expect(r.effectiveRate).toBeDefined();
@@ -41,14 +41,14 @@ describe('calculateLoan', () => {
   });
 
   it('should calculate stepped loan', () => {
-    const r = calculateLoan({ 
-      principal: 100_000_000, 
-      annualInterestRatePercent: 18, 
+    const r = calculateLoan({
+      principal: 100_000_000,
+      annualInterestRatePercent: 18,
       months: 36,
       loanType: 'stepped',
       calculationType: 'installment',
       stepMonths: 12,
-      stepRateIncrease: 2
+      stepRateIncrease: 2,
     });
     expect(r.monthlyPayment).toBeGreaterThan(0);
     expect(r.stepDetails).toBeDefined();
@@ -63,43 +63,43 @@ describe('calculateLoan', () => {
   });
 
   it('should reject qarzolhasaneh loan with rate > 4%', () => {
-    expect(() => calculateLoan({ 
-      principal: 100_000_000, 
-      annualInterestRatePercent: 5, 
+    expect(() => calculateLoan({
+      principal: 100_000_000,
+      annualInterestRatePercent: 5,
       months: 24,
       loanType: 'qarzolhasaneh',
-      calculationType: 'installment'
+      calculationType: 'installment',
     })).toThrow('نرخ سود وام قرض‌الحسنه نباید بیشتر از 4٪ باشد.');
   });
 
   it('should reject invalid months', () => {
-    expect(() => calculateLoan({ 
-      principal: 100_000_000, 
-      annualInterestRatePercent: 24, 
+    expect(() => calculateLoan({
+      principal: 100_000_000,
+      annualInterestRatePercent: 24,
       months: 0,
       loanType: 'regular',
-      calculationType: 'installment'
+      calculationType: 'installment',
     })).toThrow();
   });
 
   it('should reject invalid stepped loan parameters', () => {
-    expect(() => calculateLoan({ 
-      principal: 100_000_000, 
-      annualInterestRatePercent: 24, 
+    expect(() => calculateLoan({
+      principal: 100_000_000,
+      annualInterestRatePercent: 24,
       months: 24,
       loanType: 'stepped',
       calculationType: 'installment',
-      stepMonths: 0
+      stepMonths: 0,
     })).toThrow();
   });
 
   it('should reject unsupported calculation types for regular loans', () => {
-    expect(() => calculateLoan({ 
-      principal: 100_000_000, 
-      annualInterestRatePercent: 24, 
+    expect(() => calculateLoan({
+      principal: 100_000_000,
+      annualInterestRatePercent: 24,
       months: 24,
       loanType: 'regular',
-      calculationType: 'rate'
+      calculationType: 'rate',
     })).toThrow('محاسبه نرخ سود برای وام عادی در حال حاضر پشتیبانی نمی‌شود.');
   });
 });

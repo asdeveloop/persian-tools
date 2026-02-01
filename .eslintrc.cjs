@@ -7,11 +7,14 @@ module.exports = {
     jest: true
   },
   extends: [
-    'eslint:recommended'
+    'eslint:recommended',
+    'plugin:react/recommended',
+    'plugin:react-hooks/recommended',
+    'plugin:jsx-a11y/recommended'
   ],
   ignorePatterns: ['dist', 'node_modules', 'build', 'coverage'],
   parser: '@typescript-eslint/parser',
-  plugins: ['react-refresh', '@typescript-eslint', 'react-hooks'],
+  plugins: ['react-refresh', '@typescript-eslint', 'react-hooks', 'jsx-a11y'],
   parserOptions: {
     ecmaVersion: 'latest',
     sourceType: 'module',
@@ -80,6 +83,24 @@ module.exports = {
   settings: {
     react: {
       version: 'detect'
+    },
+    'jsx-a11y': {
+      components: {
+        Button: 'button',
+        Link: 'a'
+      }
     }
-  }
+  },
+  overrides: [
+    {
+      files: ['**/*.test.{ts,tsx}', '**/*.spec.{ts,tsx}'],
+      env: {
+        jest: true
+      },
+      rules: {
+        '@typescript-eslint/no-explicit-any': 'off',
+        'jsx-a11y/no-autofocus': 'off'
+      }
+    }
+  ]
 };

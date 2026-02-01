@@ -76,14 +76,14 @@ export default function Navigation() {
   };
 
   return (
-    <header className="sticky top-0 z-50 glass-strong border-b border-white/20 shadow-lg">
+    <header className="sticky top-0 z-50 glass-strong border-b border-white/20 shadow-lg" role="banner">
       <Container className="flex flex-wrap items-center justify-between gap-3 py-4">
         {/* Logo */}
         <motion.div
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
-          <Link to="/" className="flex items-center gap-3 text-black group">
+          <Link to="/" className="flex items-center gap-3 text-black group focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 rounded-lg p-2">
             <motion.span 
               className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-black text-white shadow-lg"
               animate={{
@@ -94,6 +94,7 @@ export default function Navigation() {
                 repeat: Infinity,
                 ease: "easeInOut"
               }}
+              aria-hidden="true"
             >
               <span className="text-sm font-bold">P</span>
             </motion.span>
@@ -102,15 +103,18 @@ export default function Navigation() {
         </motion.div>
 
         {/* Desktop Navigation */}
-        <nav className="hidden lg:flex items-center gap-2">
+        <nav className="hidden lg:flex items-center gap-2" role="navigation" aria-label="Main navigation">
           {/* PDF Tools Dropdown */}
           <div className="relative group">
             <motion.button
-              className="flex items-center gap-2 px-4 py-2.5 text-sm font-bold text-gray-700 hover:text-black hover:bg-black/5 rounded-full transition-all duration-300"
+              className="flex items-center gap-2 px-4 py-2.5 text-sm font-bold text-gray-700 hover:text-black hover:bg-black/5 rounded-full transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2"
               onMouseEnter={() => setOpenDropdown('pdf')}
               onMouseLeave={() => setOpenDropdown(null)}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              aria-expanded={openDropdown === 'pdf'}
+              aria-haspopup="true"
+              id="pdf-dropdown-button"
             >
               <IconPdf className="h-4 w-4" />
               ابزارهای PDF
@@ -132,11 +136,14 @@ export default function Navigation() {
                   className="absolute top-full left-0 mt-2 w-80 glass-strong rounded-2xl shadow-2xl border border-white/20 py-4 overflow-hidden"
                   onMouseEnter={() => setOpenDropdown('pdf')}
                   onMouseLeave={() => setOpenDropdown(null)}
+                  role="menu"
+                  aria-labelledby="pdf-dropdown-button"
                 >
                   <Link 
                     to="/image-to-pdf" 
-                    className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-black/5 hover:text-black transition-all duration-200 group"
+                    className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-black/5 hover:text-black transition-all duration-200 group focus:outline-none focus-visible:bg-black/10 rounded-lg mx-2"
                     onClick={closeMobileMenu}
+                    role="menuitem"
                   >
                     <motion.div 
                       className="flex items-center justify-center w-8 h-8 rounded-full bg-red-100 group-hover:bg-red-200 transition-colors"

@@ -15,19 +15,12 @@ import {
 } from './rules/overtime';
 
 import { 
-  calculateTotalAllowances,
   getAllowanceDetails 
 } from './rules/allowances';
 
 import { 
-  calculateWorkerInsurance,
   getInsuranceDetails 
 } from './rules/insurance';
-
-import { 
-  calculateLegalDeductions,
-  getDeductionDetails 
-} from './rules/deductions';
 
 import { 
   calculateMonthlyTax,
@@ -89,18 +82,18 @@ export function calculateSalary(input: SalaryInput): SalaryOutput {
 
   // 3. محاسبه مزایا
   const allowancesDetails = getAllowanceDetails(baseCalculated, {
-    isMarried: input.isMarried,
-    numberOfChildren: input.numberOfChildren,
-    missionDays: input.missionDays,
-    hasTransportation: input.hasTransportation,
-    hasWorkerCoupon: input.hasWorkerCoupon
+    isMarried: input.isMarried ?? false,
+    numberOfChildren: input.numberOfChildren ?? 0,
+    missionDays: input.missionDays ?? 0,
+    hasTransportation: input.hasTransportation ?? false,
+    hasWorkerCoupon: input.hasWorkerCoupon ?? false
   });
 
   // 4. محاسبه حقوق ناخالص
   const grossSalary = baseCalculated + overtimeTotal + allowancesDetails.total + (input.otherBenefits || 0);
 
   // 5. محاسبه بیمه
-  const insuranceDetails = getInsuranceDetails(grossSalary, 0, input.customInsuranceRate);
+  const insuranceDetails = getInsuranceDetails(grossSalary, 0);
 
   // 6. محاسبه مالیات
   const monthlyTaxableIncome = grossSalary - insuranceDetails.workerShare;

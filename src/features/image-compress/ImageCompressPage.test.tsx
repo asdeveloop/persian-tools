@@ -5,7 +5,7 @@ import ImageCompressPage from './ImageCompressPage';
 describe('ImageCompressPage', () => {
   it('should render page title and upload area', () => {
     render(<ImageCompressPage />);
-    
+
     expect(screen.getByText('فشرده‌سازی عکس')).toBeInTheDocument();
     expect(screen.getByText('کاهش حجم عکس‌ها با کیفیت بالا. پردازش کاملاً روی دستگاه شما انجام می‌شود.')).toBeInTheDocument();
     expect(screen.getByLabelText('انتخاب عکس')).toBeInTheDocument();
@@ -24,10 +24,10 @@ describe('ImageCompressPage', () => {
             outputBytes: blob.size,
             outputWidth: 10,
             outputHeight: 10,
-            noteFa: null
+            noteFa: null,
           };
         }}
-      />
+      />,
     );
 
     const fileInput = screen.getByLabelText('انتخاب عکس');
@@ -52,10 +52,10 @@ describe('ImageCompressPage', () => {
             outputBytes: blob.size,
             outputWidth: 10,
             outputHeight: 10,
-            noteFa: null
+            noteFa: null,
           };
         }}
-      />
+      />,
     );
 
     const fileInput = screen.getByLabelText('انتخاب عکس');

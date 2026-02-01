@@ -1,0 +1,16 @@
+# Dependencies / build
+node_modules
+dist
+build
+.next
+coverage
+
+# Secrets
+.env
+.env.*
+*.pem
+*.key
+
+# Large generated files
+*.min.js
+*.map

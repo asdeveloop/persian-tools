@@ -10,7 +10,7 @@ import Footer from '../shared/ui/Footer';
 
 export default function App() {
   return (
-    <div className="min-h-dvh bg-gradient-to-br from-gray-50 via-white to-gray-100 flex flex-col">
+    <div className="min-h-dvh bg-[var(--bg-primary)] flex flex-col" dir="rtl">
       <Navigation />
 
       <main className="flex-1">
@@ -21,7 +21,11 @@ export default function App() {
             <Route path="/salary" element={<SalaryPage />} />
             <Route path="/image-to-pdf" element={<ImageToPdfPage />} />
             <Route path="/image-compress" element={<ImageCompressPage />} />
-            <Route path="*" element={<div className="card-glass p-6 text-center">صفحه پیدا نشد.</div>} />
+            <Route path="*" element={
+              <div className="card p-6 text-center rtl-fix">
+                صفحه‌ای پیدا نشد
+              </div>
+            } />
           </Routes>
         </Container>
       </main>

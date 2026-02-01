@@ -3,40 +3,39 @@
  * نسخه: 2.0.0
  */
 
-import { 
-  calculateSalary, 
-  calculateMinimumWage, 
+import {
+  calculateSalary,
+  calculateMinimumWage,
   calculateGrossFromNet,
   validateInput,
-  getSalaryLaws
+  getSalaryLaws,
 } from './index';
 
-import { 
+import {
   calculateTotalBaseSalary,
-  calculateExperienceBonus 
+  calculateExperienceBonus,
 } from './rules/baseSalary';
 
-import { 
-  calculateTotalOvertime 
+import {
+  calculateTotalOvertime,
 } from './rules/overtime';
 
-import { 
-  calculateTotalAllowances 
+import {
+  calculateTotalAllowances,
 } from './rules/allowances';
 
-import { 
-  calculateWorkerInsurance 
+import {
+  calculateWorkerInsurance,
 } from './rules/insurance';
 
-import { 
+import {
   calculateMonthlyTax,
-  calculateProgressiveTax 
+  calculateProgressiveTax,
 } from './utils/tax';
 
-import { 
+import {
   MINIMUM_WAGE_1404,
   WORKER_INSURANCE_RATE,
-  ANNUAL_TAX_EXEMPTION_1404
 } from './constants';
 
 // =================================
@@ -49,7 +48,7 @@ describe('Salary Engine Tests', () => {
       const input = {
         baseSalary: 15000000,
         isMarried: false,
-        numberOfChildren: 0
+        numberOfChildren: 0,
       };
 
       const result = calculateSalary(input);
@@ -65,7 +64,7 @@ describe('Salary Engine Tests', () => {
         baseSalary: 15000000,
         overtimeHours: 10,
         isMarried: false,
-        numberOfChildren: 0
+        numberOfChildren: 0,
       };
 
       const result = calculateSalary(input);
@@ -78,7 +77,7 @@ describe('Salary Engine Tests', () => {
       const input = {
         baseSalary: 15000000,
         isMarried: true,
-        numberOfChildren: 2
+        numberOfChildren: 2,
       };
 
       const result = calculateSalary(input);
@@ -92,7 +91,7 @@ describe('Salary Engine Tests', () => {
         baseSalary: 30000000,
         isDevelopmentZone: true,
         isMarried: false,
-        numberOfChildren: 0
+        numberOfChildren: 0,
       };
 
       const result = calculateSalary(input);
@@ -105,7 +104,7 @@ describe('Salary Engine Tests', () => {
         baseSalary: 15000000,
         overtimeHours: 0,
         isMarried: false,
-        numberOfChildren: 0
+        numberOfChildren: 0,
       };
 
       const result = calculateSalary(input);
@@ -127,7 +126,7 @@ describe('Salary Engine Tests', () => {
 
     test('should include experience bonus', () => {
       const result = calculateMinimumWage({
-        workExperienceYears: 5
+        workExperienceYears: 5,
       });
 
       expect(result.experienceBonus).toBeGreaterThan(0);
@@ -137,7 +136,7 @@ describe('Salary Engine Tests', () => {
     test('should include family allowances', () => {
       const result = calculateMinimumWage({
         isMarried: true,
-        numberOfChildren: 2
+        numberOfChildren: 2,
       });
 
       expect(result.familyAllowance).toBeGreaterThan(0);
@@ -155,7 +154,7 @@ describe('Salary Engine Tests', () => {
       const netSalary = 12000000;
       const input = {
         isMarried: false,
-        numberOfChildren: 0
+        numberOfChildren: 0,
       };
 
       const result = calculateGrossFromNet(netSalary, input);
@@ -170,7 +169,7 @@ describe('Salary Engine Tests', () => {
       const input = {
         baseSalary: 15000000,
         isMarried: false,
-        numberOfChildren: 0
+        numberOfChildren: 0,
       };
 
       const result = validateInput(input);
@@ -183,7 +182,7 @@ describe('Salary Engine Tests', () => {
       const input = {
         baseSalary: -1000,
         isMarried: false,
-        numberOfChildren: 0
+        numberOfChildren: 0,
       };
 
       const result = validateInput(input);
@@ -196,7 +195,7 @@ describe('Salary Engine Tests', () => {
       const input = {
         baseSalary: 5000000,
         isMarried: false,
-        numberOfChildren: 0
+        numberOfChildren: 0,
       };
 
       const result = validateInput(input);
@@ -276,7 +275,7 @@ describe('Allowances Rules Tests', () => {
   test('should calculate housing allowance', () => {
     const result = calculateTotalAllowances(15000000, {
       isMarried: false,
-      numberOfChildren: 0
+      numberOfChildren: 0,
     });
     expect(result).toBeGreaterThan(0);
   });
@@ -284,7 +283,7 @@ describe('Allowances Rules Tests', () => {
   test('should include child allowance', () => {
     const result = calculateTotalAllowances(15000000, {
       isMarried: true,
-      numberOfChildren: 2
+      numberOfChildren: 2,
     });
     expect(result).toBeGreaterThan(0);
   });
@@ -357,7 +356,7 @@ describe('Integration Tests', () => {
       hasTransportation: true,
       otherBenefits: 500000,
       otherDeductions: 200000,
-      isDevelopmentZone: false
+      isDevelopmentZone: false,
     };
 
     const result = calculateSalary(input);
@@ -379,7 +378,7 @@ describe('Integration Tests', () => {
     const input = {
       baseSalary: MINIMUM_WAGE_1404,
       isMarried: false,
-      numberOfChildren: 0
+      numberOfChildren: 0,
     };
 
     const result = calculateSalary(input);
@@ -396,18 +395,18 @@ describe('Integration Tests', () => {
 describe('Performance Tests', () => {
   test('should calculate salary quickly', () => {
     const start = performance.now();
-    
+
     for (let i = 0; i < 1000; i++) {
       calculateSalary({
         baseSalary: 15000000,
         isMarried: i % 2 === 0,
-        numberOfChildren: i % 4
+        numberOfChildren: i % 4,
       });
     }
-    
+
     const end = performance.now();
     const duration = end - start;
-    
+
     // باید کمتر از ۱ ثانیه برای ۱۰۰۰ محاسبه طول بکشد
     expect(duration).toBeLessThan(1000);
   });

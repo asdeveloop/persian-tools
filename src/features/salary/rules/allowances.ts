@@ -25,7 +25,7 @@ export interface AllowanceInput {
  * @param baseSalary حقوق پایه (تومان)
  * @returns مبلغ حق مسکن (تومان)
  */
-export function calculateHousingAllowance(baseSalary: number): number {
+export function calculateHousingAllowance(_baseSalary: number): number {
   // حق مسکن برای همه کارگران ثابت است
   return HOUSING_ALLOWANCE_1404;
 }
@@ -35,7 +35,7 @@ export function calculateHousingAllowance(baseSalary: number): number {
  * @param baseSalary حقوق پایه (تومان)
  * @returns مبلغ کمک هزینه غذا (تومان)
  */
-export function calculateFoodAllowance(baseSalary: number): number {
+export function calculateFoodAllowance(_baseSalary: number): number {
   // کمک هزینه غذا برای همه کارگران ثابت است
   return FOOD_ALLOWANCE_1404;
 }

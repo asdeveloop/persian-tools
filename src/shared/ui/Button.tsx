@@ -1,14 +1,17 @@
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
-import { cx } from './cx';
-import { colors, components } from './theme';
 
-type Variant = 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info';
+// Button variants based on PROJECT_STANDARDS.md
+type Variant = 'primary' | 'secondary' | 'tertiary' | 'danger';
+
+// Button sizes based on PROJECT_STANDARDS.md
+type Size = 'sm' | 'md' | 'lg';
 
 type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
   children: ReactNode;
   variant?: Variant;
-  size?: 'sm' | 'md' | 'lg';
+  size?: Size;
   fullWidth?: boolean;
+  isLoading?: boolean;
 };
 
 export default function Button({ 
@@ -16,37 +19,69 @@ export default function Button({
   variant = 'primary', 
   size = 'md',
   fullWidth = false,
+  isLoading = false,
+  disabled,
+  children,
   ...rest 
 }: Props) {
-  const baseClasses = components.button.base;
+  const baseClasses = 'btn inline-flex items-center justify-center font-medium rounded-md transition-all duration-[150ms] focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none';
   
   const sizeClasses = {
-    sm: 'px-6 py-2 text-xs',
-    md: 'px-8 py-3 text-sm',
-    lg: 'px-10 py-4 text-base',
+    sm: 'btn-sm h-8',
+    md: 'btn-md h-10', 
+    lg: 'btn-lg h-12',
   };
   
   const variantClasses = {
-    primary: `text-white bg-blue-600 border border-blue-600 hover:bg-blue-700 focus:ring-blue-500`,
-    secondary: `text-black bg-white border border-black hover:bg-gray-100 focus:ring-black`,
-    success: `text-white bg-green-600 border border-green-600 hover:bg-green-700 focus:ring-green-500`,
-    warning: `text-white bg-amber-600 border border-amber-600 hover:bg-amber-700 focus:ring-amber-500`,
-    danger: `text-white bg-red-600 border border-red-600 hover:bg-red-700 focus:ring-red-500`,
-    info: `text-white bg-blue-500 border border-blue-500 hover:bg-blue-600 focus:ring-blue-400`,
+    primary: 'btn-primary',
+    secondary: 'btn-secondary',
+    tertiary: 'btn-tertiary',
+    danger: 'btn-danger',
   };
   
   const widthClass = fullWidth ? 'w-full' : '';
+  const loadingClass = isLoading ? 'opacity-75 cursor-wait' : '';
   
   return (
     <button 
-      className={cx(
-        baseClasses,
-        sizeClasses[size],
-        variantClasses[variant],
-        widthClass,
-        className
-      )} 
-      {...rest} 
-    />
+      className={`
+        ${baseClasses}
+        ${sizeClasses[size]}
+        ${variantClasses[variant]}
+        ${widthClass}
+        ${loadingClass}
+        ${className || ''}
+      `.trim()}
+      disabled={disabled || isLoading}
+      {...rest}
+    >
+      {isLoading ? (
+        <>
+          <svg 
+            className="animate-spin -me-2 h-4 w-4" 
+            xmlns="http://www.w3.org/2000/svg" 
+            fill="none" 
+            viewBox="0 0 24 24"
+          >
+            <circle 
+              className="opacity-25" 
+              cx="12" 
+              cy="12" 
+              r="10" 
+              stroke="currentColor" 
+              strokeWidth="4"
+            />
+            <path 
+              className="opacity-75" 
+              fill="currentColor" 
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            />
+          </svg>
+          {children}
+        </>
+      ) : (
+        children
+      )}
+    </button>
   );
 }

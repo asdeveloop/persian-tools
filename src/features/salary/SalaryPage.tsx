@@ -10,7 +10,7 @@ import {
 } from './index';
 import type { SalaryInput, SalaryOutput, MinimumWageOutput } from './salary.types';
 import { AnimatedCard, StaggerContainer, StaggerItem, FadeIn } from '../../shared/ui/AnimatedComponents';
-import { colors, toolCategories, getGradientColors } from '../../shared/ui/theme';
+import { colors, toolCategories } from '../../shared/ui/theme';
 
 type CalculationMode = 'gross-to-net' | 'net-to-gross' | 'minimum-wage';
 

@@ -5,7 +5,7 @@ import { getSessionJson, setSessionJson } from '../../shared/storage/sessionStor
 import { calculateLoan } from './loan.logic';
 import type { LoanResult, LoanType, CalculationType } from './loan.types';
 import { AnimatedCard, StaggerContainer, StaggerItem, FadeIn } from '../../shared/ui/AnimatedComponents';
-import { colors, toolCategories } from '../../shared/ui/theme';
+import { toolCategories } from '../../shared/ui/theme';
 
 type LoanFormState = {
   calculationType: CalculationType;
@@ -61,8 +61,8 @@ export default function LoanPage() {
         months: Math.trunc(months || 0),
         loanType: form.loanType,
         calculationType: form.calculationType,
-        stepMonths: form.loanType === 'stepped' && stepMonths ? Math.trunc(stepMonths) : undefined,
-        stepRateIncrease: form.loanType === 'stepped' && stepRateIncrease ? stepRateIncrease : undefined
+        stepMonths: form.loanType === 'stepped' && stepMonths ? Math.trunc(stepMonths) : 0,
+        stepRateIncrease: form.loanType === 'stepped' && stepRateIncrease ? stepRateIncrease : 0
       });
       setResult(r);
     } catch (e) {

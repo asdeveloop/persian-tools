@@ -20,7 +20,7 @@ describe('imagesToPdfBytes', () => {
 
   it('should create a PDF for PNG images', async () => {
     const out = await imagesToPdfBytes([
-      { name: 'a.png', mimeType: 'image/png', bytes: b64ToBytes(oneByOnePngBase64) }
+      { name: 'a.png', mimeType: 'image/png', bytes: b64ToBytes(oneByOnePngBase64) },
     ]);
     expect(out.length).toBeGreaterThan(100);
     expect(String.fromCharCode(out[0] ?? 0)).toBe('%');
@@ -28,7 +28,7 @@ describe('imagesToPdfBytes', () => {
 
   it('should reject unsupported mime type', async () => {
     await expect(
-      imagesToPdfBytes([{ name: 'a.gif', mimeType: 'image/gif', bytes: new Uint8Array([1, 2, 3]) }])
+      imagesToPdfBytes([{ name: 'a.gif', mimeType: 'image/gif', bytes: new Uint8Array([1, 2, 3]) }]),
     ).rejects.toThrow();
   });
 });
