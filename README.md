@@ -92,13 +92,13 @@ pnpm build
 
 ## 🛠️ تکنولوژی‌ها
 
-- **Frontend**: React 18 + TypeScript
+- **Frontend**: Next.js 14 (React 18) + TypeScript
 - **Styling**: Tailwind CSS
-- **Build**: Vite
+- **Build**: Next.js
 - **Testing**: Vitest + Testing Library
 - **PDF Processing**: PDF-lib
 - **Image Processing**: Sharp
-- **Routing**: React Router
+- **Routing**: Next.js App Router
 
 ---
 
@@ -115,10 +115,16 @@ pnpm build
 ## 🏗️ ساختار پروژه
 
 ```
+app/                        # Next.js App Router
+├── layout.tsx             # لایه اصلی
+├── page.tsx               # صفحه اصلی
+└── (tools)/               # مسیر ابزارها
+    ├── pdf-tools/         # ابزارهای PDF
+    ├── loan/              # محاسبه وام
+    ├── salary/            # محاسبه حقوق
+    └── image-compress/    # فشرده‌سازی تصویر
 src/
-├── app/                    # کامپوننت‌های اصلی اپلیکیشن
-│   ├── App.tsx            # کامپوننت اصلی
-│   └── HomePage.tsx       # صفحه اصلی
+├── components/            # کامپوننت‌های نمایشی
 ├── features/              # ویژگی‌های جداگانه
 │   ├── pdf-tools/         # ابزارهای PDF
 │   ├── loan/              # محاسبه وام

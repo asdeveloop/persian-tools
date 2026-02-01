@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useMemo, useState, useRef } from 'react';
 import Button from '../../../shared/ui/Button';
 import Card from '../../../shared/ui/Card';
