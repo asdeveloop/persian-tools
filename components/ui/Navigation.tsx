@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import Container from '@/shared/ui/Container';
-import { tokens } from '@/shared/constants/tokens';
+import { tokens, withAlpha } from '@/shared/constants/tokens';
 import {
   IconPdf,
   IconImage,
@@ -177,13 +177,13 @@ export default function Navigation() {
                   >
                     <motion.div
                       className="flex items-center justify-center w-8 h-8 rounded-full transition-colors"
-                      style={{ backgroundColor: `${tokens.color.status.danger }20` }}
+                      style={{ backgroundColor: withAlpha(tokens.color.statusRgb.danger, 0.2) }}
                       whileHover={{ scale: 1.1, rotate: 5 }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = `${tokens.color.status.danger }30`;
+                        e.currentTarget.style.backgroundColor = withAlpha(tokens.color.statusRgb.danger, 0.3);
                       }}
                       onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = `${tokens.color.status.danger }20`;
+                        e.currentTarget.style.backgroundColor = withAlpha(tokens.color.statusRgb.danger, 0.2);
                       }}
                     >
                       <IconPdf className="h-4 w-4" />

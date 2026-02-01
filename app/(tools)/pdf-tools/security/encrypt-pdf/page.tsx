@@ -4,11 +4,17 @@ import Navigation from '@/components/ui/Navigation';
 import Footer from '@/components/ui/Footer';
 import { buildMetadata } from '@/lib/seo';
 
-export const metadata = buildMetadata({
-  title: 'رمزگذاری PDF - جعبه ابزار فارسی',
-  description: 'اضافه کردن رمز عبور روی فایل PDF',
-  path: '/pdf-tools/security/encrypt-pdf',
-});
+export const metadata = {
+  ...buildMetadata({
+    title: 'رمزگذاری PDF - جعبه ابزار فارسی',
+    description: 'اضافه کردن رمز عبور روی فایل PDF',
+    path: '/pdf-tools/security/encrypt-pdf',
+  }),
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
 
 export default function EncryptPdfRoute() {
   return (

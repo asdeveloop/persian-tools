@@ -1,4 +1,4 @@
-import ImageCompressPage from '@/components/features/image-tools/ImageCompressPage';
+import ImageCompressPage from '@/features/image-tools/image-compress';
 import Container from '@/components/ui/Container';
 import Navigation from '@/components/ui/Navigation';
 import Footer from '@/components/ui/Footer';
@@ -7,7 +7,7 @@ import { buildMetadata } from '@/lib/seo';
 export const metadata = buildMetadata({
   title: 'فشرده‌سازی عکس - جعبه ابزار فارسی',
   description:
-    'کاهش حجم عکس‌ها با سه سطح کیفیت پیشنهادی - پشتیبانی از فرمت‌های JPG, PNG, WebP',
+    'کاهش حجم عکس‌ها با کنترل کیفیت و فرمت خروجی - پشتیبانی از فرمت‌های JPG, PNG, WebP',
   keywords: [
     'فشرده سازی عکس',
     'کاهش حجم عکس',

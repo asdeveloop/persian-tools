@@ -6,7 +6,7 @@ import { buildMetadata } from '@/lib/seo';
 
 export const metadata = buildMetadata({
   title: 'افزودن واترمارک - جعبه ابزار فارسی',
-  description: 'اضافه کردن متن یا تصویر واترمارک به صفحات PDF',
+  description: 'اضافه کردن متن واترمارک به صفحات PDF',
   path: '/pdf-tools/watermark/add-watermark',
 });
 

@@ -1,0 +1,204 @@
+'use client';
+
+import { useEffect, useMemo, useState } from 'react';
+import { PDFDocument } from 'pdf-lib';
+import { getDocument, GlobalWorkerOptions, PasswordResponses } from 'pdfjs-dist';
+import type { PDFPageProxy } from 'pdfjs-dist/types/src/display/api';
+import { Button, Card } from '@/components/ui';
+
+function formatBytes(bytes: number): string {
+  if (!Number.isFinite(bytes) || bytes <= 0) {
+    return '0 B';
+  }
+  const units = ['B', 'KB', 'MB', 'GB'];
+  const index = Math.min(units.length - 1, Math.floor(Math.log(bytes) / Math.log(1024)));
+  const value = bytes / Math.pow(1024, index);
+  return `${value.toFixed(2)} ${units[index]}`;
+}
+
+async function renderPageToPng(page: PDFPageProxy, scale: number) {
+  const viewport = page.getViewport({ scale });
+  const canvas = document.createElement('canvas');
+  canvas.width = Math.ceil(viewport.width);
+  canvas.height = Math.ceil(viewport.height);
+  const context = canvas.getContext('2d', { alpha: false });
+  if (!context) {
+    throw new Error('مرورگر از پردازش تصویر پشتیبانی نمی کند.');
+  }
+
+  await page.render({ canvasContext: context, viewport }).promise;
+
+  const blob = await new Promise<Blob | null>((resolve) => {
+    canvas.toBlob(resolve, 'image/png');
+  });
+  if (!blob) {
+    throw new Error('تبدیل صفحه ناموفق بود.');
+  }
+  return new Uint8Array(await blob.arrayBuffer());
+}
+
+export default function DecryptPdfPage() {
+  const [file, setFile] = useState<File | null>(null);
+  const [password, setPassword] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
+  const [resultSize, setResultSize] = useState<number | null>(null);
+
+  useEffect(() => {
+    GlobalWorkerOptions.workerSrc = new URL(
+      'pdfjs-dist/build/pdf.worker.min.mjs',
+      import.meta.url,
+    ).toString();
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (downloadUrl) {
+        URL.revokeObjectURL(downloadUrl);
+      }
+    };
+  }, [downloadUrl]);
+
+  const originalSize = useMemo(() => file?.size ?? 0, [file]);
+
+  const onSelectFile = (fileList: FileList | null) => {
+    setError(null);
+    setDownloadUrl(null);
+    setResultSize(null);
+
+    if (!fileList || fileList.length === 0) {
+      return;
+    }
+
+    const selected = fileList[0];
+    if (!selected || selected.type !== 'application/pdf') {
+      setError('فقط فایل PDF قابل انتخاب است.');
+      return;
+    }
+
+    setFile(selected);
+  };
+
+  const onDecrypt = async () => {
+    setError(null);
+    if (!file) {
+      setError('ابتدا فایل PDF را انتخاب کنید.');
+      return;
+    }
+
+    setBusy(true);
+    try {
+      const buffer = await file.arrayBuffer();
+      const pdfTask = getDocument({
+        data: new Uint8Array(buffer),
+        password: password || undefined,
+      });
+
+      pdfTask.onPassword = (callback: (password: string) => void, reason: number) => {
+        if (reason === PasswordResponses.NEED_PASSWORD) {
+          callback(password || '');
+        } else if (reason === PasswordResponses.INCORRECT_PASSWORD) {
+          callback(password || '');
+        }
+      };
+
+      const pdf = await pdfTask.promise;
+      const output = await PDFDocument.create();
+
+      for (let i = 1; i <= pdf.numPages; i += 1) {
+        const page = await pdf.getPage(i);
+        const pngBytes = await renderPageToPng(page, 2);
+        const image = await output.embedPng(pngBytes);
+        const { width, height } = image.scale(1);
+        const newPage = output.addPage([width, height]);
+        newPage.drawImage(image, { x: 0, y: 0, width, height });
+      }
+
+      const bytes = await output.save();
+      const blob = new Blob([bytes], { type: 'application/pdf' });
+
+      if (downloadUrl) {
+        URL.revokeObjectURL(downloadUrl);
+      }
+      setDownloadUrl(URL.createObjectURL(blob));
+      setResultSize(blob.size);
+    } catch (e) {
+      const message = e instanceof Error ? e.message : 'خطای نامشخص رخ داد.';
+      setError(message);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-50">
+      <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
+        <div className="text-center">
+          <h1 className="text-3xl font-bold text-slate-900 mb-2">حذف رمز PDF</h1>
+          <p className="text-lg text-slate-600">بازسازی PDF بدون رمز (صفحات به صورت تصویر ذخیره می شوند)</p>
+        </div>
+
+        <Card className="p-6 space-y-4">
+          <div className="flex flex-col gap-3">
+            <label className="text-sm font-semibold text-slate-700">انتخاب فایل PDF رمزدار</label>
+            <input
+              type="file"
+              accept="application/pdf"
+              onChange={(e) => onSelectFile(e.target.files)}
+              className="input-field"
+            />
+          </div>
+
+          {file && (
+            <div className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600">
+              {file.name} | حجم اولیه: {formatBytes(originalSize)}
+            </div>
+          )}
+
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-semibold text-slate-700">رمز عبور</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="رمز فایل را وارد کنید"
+              className="input-field"
+            />
+          </div>
+
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <Button type="button" variant="secondary" onClick={() => setFile(null)} disabled={busy || !file}>
+              تغییر فایل
+            </Button>
+            <Button type="button" onClick={onDecrypt} disabled={busy}>
+              {busy ? 'در حال پردازش...' : 'حذف رمز'}
+            </Button>
+          </div>
+
+          {error && (
+            <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+              {error}
+            </div>
+          )}
+
+          {downloadUrl && resultSize !== null && (
+            <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700 space-y-2">
+              <div>
+                حجم خروجی: {formatBytes(resultSize)}
+              </div>
+              <div>
+                <a className="font-semibold underline" href={downloadUrl} download="decrypted.pdf">
+                  دانلود فایل
+                </a>
+              </div>
+              <div className="text-xs text-emerald-700/80">
+                خروجی به صورت صفحات تصویری ذخیره می شود و قابل جستجو نیست.
+              </div>
+            </div>
+          )}
+        </Card>
+      </div>
+    </div>
+  );
+}

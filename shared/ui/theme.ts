@@ -10,16 +10,16 @@
 export const colors = {
   // رنگ‌های اصلی
   primary: {
-    50: '#f0f9ff',
-    100: '#e0f2fe',
-    200: '#bae6fd',
-    300: '#7dd3fc',
-    400: '#38bdf8',
-    500: '#0ea5e9', // رنگ اصلی - آبی
-    600: '#0284c7',
-    700: '#0369a1',
-    800: '#075985',
-    900: '#0c4a6e',
+    50: 'var(--color-primary-50)',
+    100: 'var(--color-primary-100)',
+    200: 'var(--color-primary-200)',
+    300: 'var(--color-primary-300)',
+    400: 'var(--color-primary-400)',
+    500: 'var(--color-primary-500)',
+    600: 'var(--color-primary-600)',
+    700: 'var(--color-primary-700)',
+    800: 'var(--color-primary-800)',
+    900: 'var(--color-primary-900)',
   },
 
   // رنگ‌های خنثی
@@ -38,33 +38,33 @@ export const colors = {
 
   // رنگ‌های متن
   text: {
-    primary: '#171717', // متن اصلی - مشکی
-    secondary: '#525252', // متن ثانویه
-    tertiary: '#737373', // متن کم‌اهمیت
-    inverse: '#ffffff', // متن روی پس‌زمینه تیره
+    primary: 'var(--text-primary)',
+    secondary: 'var(--text-secondary)',
+    tertiary: 'var(--text-muted)',
+    inverse: 'var(--text-inverted)',
   },
 
   // رنگ‌های پس‌زمینه
   background: {
-    primary: '#ffffff', // پس‌زمینه اصلی - سفید
-    secondary: '#fafafa', // پس‌زمینه ثانویه
-    tertiary: '#f5f5f5', // پس‌زمینه کم‌اهمیت
-    accent: '#0ea5e9', // پس‌زمینه تاکیدی
+    primary: 'var(--bg-primary)',
+    secondary: 'var(--bg-secondary)',
+    tertiary: 'var(--bg-subtle)',
+    accent: 'var(--color-primary)',
   },
 
   // رنگ‌های مرزی
   border: {
-    primary: '#e5e5e5', // حاشیه اصلی
-    secondary: '#d4d4d4', // حاشیه ثانویه
-    focus: '#0ea5e9', // حاشیه فوکوس
+    primary: 'var(--border-primary)',
+    secondary: 'var(--border-medium)',
+    focus: 'var(--color-primary)',
   },
 
   // رنگ‌های وضعیت
   status: {
-    success: '#10b981', // موفقیت - سبز
-    warning: '#f59e0b', // هشدار - نارنجی
-    error: '#ef4444', // خطا - قرمز
-    info: '#3b82f6', // اطلاعات - آبی
+    success: 'var(--color-success)',
+    warning: 'var(--color-warning)',
+    error: 'var(--color-danger)',
+    info: 'var(--color-info)',
   },
 };
 
@@ -74,22 +74,22 @@ export const colors = {
 
 export const toolCategories = {
   financial: {
-    primary: '#10b981', // سبز برای ابزارهای مالی
+    primary: 'var(--color-financial)',
     name: 'مالی',
     icon: '💰',
   },
   document: {
-    primary: '#3b82f6', // آبی برای ابزارهای مستندات
+    primary: 'var(--color-document)',
     name: 'مستندات',
     icon: '📄',
   },
   image: {
-    primary: '#8b5cf6', // بنفش برای ابزارهای تصویر
+    primary: 'var(--color-image)',
     name: 'تصویر',
     icon: '🖼️',
   },
   utility: {
-    primary: '#f59e0b', // نارنجی برای ابزارهای کاربردی
+    primary: 'var(--color-utility)',
     name: 'کاربردی',
     icon: '🛠️',
   },
@@ -124,7 +124,7 @@ export const borderRadius = {
 
 export const typography = {
   fontFamily: {
-    sans: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+    sans: ['var(--font-family-sans)', 'system-ui', 'sans-serif'],
   },
   fontSize: {
     xs: '0.75rem', // 12px
@@ -195,28 +195,28 @@ export const components = {
     ].join(' '),
     variants: {
       primary: [
-        `text-white bg-${colors.primary[500]}`,
-        `border border-${colors.primary[500]}`,
-        `hover:bg-${colors.primary[600]}`,
-        `focus:ring-${colors.primary[500]}`,
+        'text-white bg-[var(--color-primary-500)]',
+        'border border-[var(--color-primary-500)]',
+        'hover:bg-[var(--color-primary-600)]',
+        'focus:ring-[var(--color-primary-500)]',
       ].join(' '),
       secondary: [
         'text-black bg-white border border-black',
         'hover:bg-gray-100 focus:ring-black',
       ].join(' '),
       success: [
-        `text-white bg-${colors.status.success}`,
-        `border border-${colors.status.success}`,
+        'text-white bg-[var(--color-success)]',
+        'border border-[var(--color-success)]',
         'hover:bg-green-700 focus:ring-green-500',
       ].join(' '),
       warning: [
-        `text-white bg-${colors.status.warning}`,
-        `border border-${colors.status.warning}`,
+        'text-white bg-[var(--color-warning)]',
+        'border border-[var(--color-warning)]',
         'hover:bg-amber-700 focus:ring-amber-500',
       ].join(' '),
       danger: [
-        `text-white bg-${colors.status.error}`,
-        `border border-${colors.status.error}`,
+        'text-white bg-[var(--color-danger)]',
+        'border border-[var(--color-danger)]',
         'hover:bg-red-700 focus:ring-red-500',
       ].join(' '),
     },
@@ -276,22 +276,22 @@ export function getGradientColors(type: 'primary' | 'success' | 'error' | 'warni
 // =================================
 
 export const cssVariables = {
-  '--color-primary-50': colors.primary[50],
-  '--color-primary-500': colors.primary[500],
-  '--color-primary-600': colors.primary[600],
-  '--color-text-primary': colors.text.primary,
-  '--color-text-secondary': colors.text.secondary,
-  '--color-bg-primary': colors.background.primary,
-  '--color-bg-secondary': colors.background.secondary,
-  '--color-border-primary': colors.border.primary,
-  '--color-success': colors.status.success,
-  '--color-warning': colors.status.warning,
-  '--color-error': colors.status.error,
-  '--color-info': colors.status.info,
-  '--color-financial': toolCategories.financial.primary,
-  '--color-document': toolCategories.document.primary,
-  '--color-image': toolCategories.image.primary,
-  '--color-utility': toolCategories.utility.primary,
+  '--color-primary-50': 'var(--color-primary-50)',
+  '--color-primary-500': 'var(--color-primary-500)',
+  '--color-primary-600': 'var(--color-primary-600)',
+  '--color-text-primary': 'var(--text-primary)',
+  '--color-text-secondary': 'var(--text-secondary)',
+  '--color-bg-primary': 'var(--bg-primary)',
+  '--color-bg-secondary': 'var(--bg-secondary)',
+  '--color-border-primary': 'var(--border-primary)',
+  '--color-success': 'var(--color-success)',
+  '--color-warning': 'var(--color-warning)',
+  '--color-error': 'var(--color-danger)',
+  '--color-info': 'var(--color-info)',
+  '--color-financial': 'var(--color-financial)',
+  '--color-document': 'var(--color-document)',
+  '--color-image': 'var(--color-image)',
+  '--color-utility': 'var(--color-utility)',
 };
 
 const theme = {

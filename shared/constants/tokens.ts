@@ -7,7 +7,7 @@ export const tokens = {
   // Typography
   font: {
     family: {
-      sans: '"IRANSansX", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Arial',
+      sans: 'var(--font-family-sans)',
     },
     size: {
       xs: '12px', // توضیحات ریز/متا
@@ -25,69 +25,75 @@ export const tokens = {
 
   // Spacing (4px scale)
   space: {
-    1: '4px',
-    2: '8px',
-    3: '12px',
-    4: '16px',
-    5: '20px',
-    6: '24px',
-    8: '32px',
-    10: '40px',
-    12: '48px',
+    1: 'var(--space-1)',
+    2: 'var(--space-2)',
+    3: 'var(--space-3)',
+    4: 'var(--space-4)',
+    5: 'var(--space-5)',
+    6: 'var(--space-6)',
+    8: 'var(--space-8)',
+    10: 'var(--space-10)',
+    12: 'var(--space-12)',
   },
 
   // Colors - Semantic naming
   color: {
     background: {
-      DEFAULT: 'rgba(255, 255, 255, 0.95)',
-      subtle: 'rgba(250, 250, 250, 0.8)',
+      DEFAULT: 'var(--bg-primary)',
+      subtle: 'var(--bg-subtle)',
     },
     surface: {
-      1: 'rgba(244, 244, 245, 0.7)',
-      2: 'rgba(255, 255, 255, 0.8)',
-      3: 'rgba(255, 255, 255, 0.6)',
+      1: 'var(--surface-1)',
+      2: 'var(--surface-2)',
+      3: 'var(--surface-3)',
     },
     text: {
-      DEFAULT: '#000000',
-      muted: '#71717a',
-      inverted: '#ffffff',
+      DEFAULT: 'var(--text-primary)',
+      muted: 'var(--text-muted)',
+      inverted: 'var(--text-inverted)',
     },
     border: {
-      DEFAULT: 'rgba(0, 0, 0, 0.1)',
-      strong: 'rgba(0, 0, 0, 0.2)',
+      DEFAULT: 'var(--border-default)',
+      strong: 'var(--border-medium)',
     },
     primary: {
-      DEFAULT: '#000000',
-      hover: '#171717',
-      pressed: '#404040',
+      DEFAULT: 'var(--color-primary)',
+      hover: 'var(--color-primary-hover)',
+      pressed: 'var(--color-primary-hover)',
     },
     status: {
-      success: '#10b981',
-      warning: '#f59e0b',
-      danger: '#ef4444',
-      info: '#3b82f6',
+      success: 'var(--color-success)',
+      warning: 'var(--color-warning)',
+      danger: 'var(--color-danger)',
+      info: 'var(--color-info)',
+    },
+    statusRgb: {
+      success: 'var(--color-success-rgb)',
+      warning: 'var(--color-warning-rgb)',
+      danger: 'var(--color-danger-rgb)',
+      info: 'var(--color-info-rgb)',
     },
   },
 
   // Border Radius
   radius: {
-    sm: '8px',
-    md: '12px',
-    lg: '16px',
+    sm: 'var(--radius-sm)',
+    md: 'var(--radius-md)',
+    lg: 'var(--radius-lg)',
   },
 
   // Shadow
   shadow: {
-    subtle: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
-    medium: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
+    subtle: 'var(--shadow-subtle)',
+    medium: 'var(--shadow-medium)',
   },
 
   // Motion
   motion: {
     duration: {
-      fast: '150ms', // Micro interactions
-      medium: '240ms', // Transition صفحه/بخش
-      modal: '210ms', // Modal enter/exit (avg of 180-240ms)
+      fast: '0.15', // seconds
+      medium: '0.24', // seconds
+      modal: '0.21', // seconds
     },
     easing: {
       ease: 'cubic-bezier(0.2, 0.8, 0.2, 1)',
@@ -127,6 +133,8 @@ export const getToken = {
   radius: (name: RadiusToken) => tokens.radius[name],
   motion: (duration: keyof typeof tokens.motion.duration) => tokens.motion.duration[duration],
 };
+
+export const withAlpha = (rgbVar: string, alpha: number) => `rgb(${rgbVar} / ${alpha})`;
 
 // CSS Variable names (matching index.css)
 export const cssVars = {

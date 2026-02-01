@@ -1,0 +1,8 @@
+{
+  "/page": "app/page.js",
+  "/manifest.webmanifest/route": "app/manifest.webmanifest/route.js",
+  "/(tools)/pdf-tools/page": "app/(tools)/pdf-tools/page.js",
+  "/(tools)/loan/page": "app/(tools)/loan/page.js",
+  "/(tools)/salary/page": "app/(tools)/salary/page.js",
+  "/(tools)/image-compress/page": "app/(tools)/image-compress/page.js"
+}
