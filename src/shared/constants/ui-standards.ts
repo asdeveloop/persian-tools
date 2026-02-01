@@ -315,10 +315,12 @@ export const PERFORMANCE_STANDARDS = {
   },
 } as const;
 
-export default {
+const uiStandards = {
   UI_STANDARDS,
   COMPONENT_STANDARDS,
   ANIMATION_STANDARDS,
   A11Y_STANDARDS,
   PERFORMANCE_STANDARDS,
 };
+
+export default uiStandards;

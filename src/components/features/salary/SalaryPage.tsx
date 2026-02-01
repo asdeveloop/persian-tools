@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { formatMoneyFa, parseLooseNumber } from '@/shared/utils/number';
 import { getSessionJson, setSessionJson } from '@/shared/storage/sessionStorage';
@@ -71,7 +71,7 @@ export default function SalaryPage() {
     setSessionJson(sessionKey, form);
   }, [form]);
 
-  function onCalculate() {
+  const onCalculate = useCallback(() => {
     setError(null);
     setResult(null);
     setMinimumWageResult(null);
@@ -145,13 +145,13 @@ export default function SalaryPage() {
       const message = e instanceof Error ? e.message : 'خطای نامشخص رخ داد.';
       setError(message);
     }
-  }
+  }, [form]);
 
   const laws = getSalaryLaws();
 
   useEffect(() => {
     onCalculate();
-  }, [form]);
+  }, [onCalculate]);
 
   return (
     <div className="min-h-screen">

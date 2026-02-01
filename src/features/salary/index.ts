@@ -356,7 +356,7 @@ export function isTaxable(annualIncome: number): boolean {
 // Export تمام توابع اصلی
 // =================================
 
-export default {
+const salaryApi = {
   calculateSalary,
   calculateMinimumWage,
   calculateGrossFromNet,
@@ -364,3 +364,5 @@ export default {
   getSalaryLaws,
   isTaxable,
 };
+
+export default salaryApi;

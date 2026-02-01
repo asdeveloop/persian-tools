@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { useReducedMotion } from './useReducedMotion';
 
 // CSS-based animation components following PROJECT_STANDARDS.md
 // These use CSS transitions instead of external animation libraries
@@ -83,15 +84,6 @@ export function PulseElement({ children, className = '' }: PulseElementProps) {
       {children}
     </div>
   );
-}
-
-// Utility hook for reduced motion
-export function useReducedMotion() {
-  if (typeof window === 'undefined') {
-    return false;
-  }
-
-  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
 // Component that respects reduced motion

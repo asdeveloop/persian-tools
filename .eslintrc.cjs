@@ -94,6 +94,12 @@ module.exports = {
   },
   overrides: [
     {
+      files: ['app/**/*.{ts,tsx}'],
+      rules: {
+        'react-refresh/only-export-components': 'off'
+      }
+    },
+    {
       files: ['**/*.test.{ts,tsx}', '**/*.spec.{ts,tsx}'],
       env: {
         jest: true

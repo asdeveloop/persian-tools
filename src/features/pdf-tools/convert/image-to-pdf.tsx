@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState, useRef } from 'react';
 import type { DragEvent } from 'react';
+import Image from 'next/image';
 import Button from '../../../shared/ui/Button';
 import Card from '../../../shared/ui/Card';
 import { imagesToPdfBytes, type ImageToPdfOptions, type Orientation, type Margin, type PageSize } from './imageToPdf.logic';
@@ -390,10 +391,13 @@ export default function ImageToPdfPage() {
                     onDrop={(e) => handleImageDrop(e, img.id)}
                   >
                     <div className="aspect-square bg-slate-100 relative">
-                      <img
-                        className="w-full h-full object-cover"
+                      <Image
                         src={img.url}
                         alt={img.file.name}
+                        fill
+                        sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+                        className="object-cover"
+                        unoptimized
                       />
                       <div className="absolute top-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
                         {index + 1}

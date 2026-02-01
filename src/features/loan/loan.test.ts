@@ -51,14 +51,14 @@ describe('calculateLoan', () => {
       stepRateIncrease: 2,
     });
     expect(r.monthlyPayment).toBeGreaterThan(0);
-    expect(r.stepDetails).toBeDefined();
-    expect(r.stepDetails!.length).toBeGreaterThanOrEqual(1);
-    if (r.stepDetails && r.stepDetails.length > 0) {
-      expect(r.stepDetails[0]?.rate).toBe(18);
+    const stepDetails = r.stepDetails ?? [];
+    expect(stepDetails.length).toBeGreaterThanOrEqual(1);
+    if (stepDetails.length > 0) {
+      expect(stepDetails[0]?.rate).toBe(18);
     }
     // Check that we have multiple steps for a 36-month loan with 12-month steps
-    if (r.stepDetails && r.stepDetails.length > 1) {
-      expect(r.stepDetails[1]?.rate).toBe(20);
+    if (stepDetails.length > 1) {
+      expect(stepDetails[1]?.rate).toBe(20);
     }
   });
 

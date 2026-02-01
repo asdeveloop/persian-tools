@@ -294,7 +294,7 @@ export const cssVariables = {
   '--color-utility': toolCategories.utility.primary,
 };
 
-export default {
+const theme = {
   colors,
   toolCategories,
   spacing,
@@ -308,3 +308,5 @@ export default {
   getGradientColors,
   cssVariables,
 };
+
+export default theme;

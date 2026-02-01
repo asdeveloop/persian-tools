@@ -208,7 +208,7 @@ export const CICD_STANDARDS = {
   },
 } as const;
 
-export default {
+const testingStandards = {
   TESTING_STANDARDS,
   MOCKING_STANDARDS,
   A11Y_TESTING_STANDARDS,
@@ -217,3 +217,5 @@ export default {
   REPORTING_STANDARDS,
   CICD_STANDARDS,
 };
+
+export default testingStandards;

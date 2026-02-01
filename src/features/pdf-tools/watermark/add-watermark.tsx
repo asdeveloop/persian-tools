@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
+import Image from 'next/image';
 import Button from '../../../shared/ui/Button';
 import Card from '../../../shared/ui/Card';
 import { addWatermark, validateWatermarkOptions, type WatermarkOptions } from './add-watermark.logic';
@@ -84,6 +85,7 @@ export default function AddWatermarkPage() {
     if (!selectedFile) {
       return;
     }
+    const currentWatermarkImage = watermarkImage;
 
     setError(null);
     setBusy(true);
@@ -96,8 +98,11 @@ export default function AddWatermarkPage() {
       let content: string | Uint8Array;
       if (watermarkType === 'text') {
         content = watermarkText.trim();
+      } else if (currentWatermarkImage) {
+        content = currentWatermarkImage.bytes;
       } else {
-        content = watermarkImage!.bytes;
+        setError('لطفاً تصویر واترمارک را انتخاب کنید.');
+        return;
       }
 
       const options: WatermarkOptions = {
@@ -277,10 +282,13 @@ export default function AddWatermarkPage() {
                     {watermarkImage ? (
                       <div className="flex items-center justify-between p-4 border border-slate-200 rounded-lg">
                         <div className="flex items-center space-x-3 space-x-reverse">
-                          <img
+                          <Image
                             src={watermarkImage.url}
                             alt="Watermark"
+                            width={48}
+                            height={48}
                             className="h-12 w-12 object-cover rounded"
+                            unoptimized
                           />
                           <div>
                             <p className="text-sm font-medium text-slate-900">{watermarkImage.file.name}</p>
