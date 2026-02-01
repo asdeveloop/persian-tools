@@ -19,14 +19,20 @@ export default function DecryptPdfPage() {
   const [password, setPassword] = useState('');
   const [isChecking, setIsChecking] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const passwordInputId = 'decrypt-pdf-password';
 
   const canDecrypt = selectedFile !== null && !busy && password;
 
   const handleFileSelect = async (files: FileList | null) => {
     setError(null);
-    if (!files || files.length === 0) return;
+    if (!files || files.length === 0) {
+      return;
+    }
 
     const file = files[0];
+    if (!file) {
+      return;
+    }
     if (file.type !== 'application/pdf') {
       setError('فقط فایل‌های PDF قابل انتخاب هستند.');
       return;
@@ -36,16 +42,16 @@ export default function DecryptPdfPage() {
       const url = URL.createObjectURL(file);
       setSelectedFile({ file, url });
       setPassword('');
-      
+
       // Check if file is protected
       setIsChecking(true);
       const buffer = await file.arrayBuffer();
       const pdfBytes = new Uint8Array(buffer);
       const protection = await checkPdfProtection(pdfBytes);
-      
+
       setSelectedFile({ file, url, isProtected: protection.isEncrypted });
       setIsChecking(false);
-      
+
       if (!protection.isEncrypted) {
         setError('این فایل PDF رمزگذاری نشده است.');
       }
@@ -56,7 +62,9 @@ export default function DecryptPdfPage() {
   };
 
   const onDecrypt = async () => {
-    if (!selectedFile || !password) return;
+    if (!selectedFile || !password) {
+      return;
+    }
 
     setError(null);
     setBusy(true);
@@ -67,7 +75,7 @@ export default function DecryptPdfPage() {
       const pdfBytes = new Uint8Array(buffer);
 
       setProgress(30);
-      
+
       // First verify password
       const isValid = await verifyPassword(pdfBytes, password);
       if (!isValid) {
@@ -77,7 +85,7 @@ export default function DecryptPdfPage() {
       setProgress(60);
       const decryptedBytes = await decryptPdf(pdfBytes, password);
       setProgress(90);
-      
+
       const blob = new Blob([decryptedBytes], { type: 'application/pdf' });
       const url = URL.createObjectURL(blob);
 
@@ -100,11 +108,13 @@ export default function DecryptPdfPage() {
   };
 
   const formatFileSize = (bytes: number): string => {
-    if (bytes === 0) return '0 Bytes';
+    if (bytes === 0) {
+      return '0 Bytes';
+    }
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2)) } ${ sizes[i]}`;
   };
 
   return (
@@ -127,7 +137,7 @@ export default function DecryptPdfPage() {
                 onChange={(e) => handleFileSelect(e.target.files)}
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
               />
-              
+
               <div className="space-y-6">
                 <div className="mx-auto h-20 w-20 rounded-full bg-red-100 flex items-center justify-center">
                   <svg className="h-10 w-10 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -160,8 +170,8 @@ export default function DecryptPdfPage() {
                     حجم: {formatFileSize(selectedFile.file.size)}
                     {selectedFile.isProtected !== undefined && (
                       <span className="mr-2">
-                        • وضعیت: {selectedFile.isProtected ? 
-                          <span className="text-red-600 font-medium">رمزگذاری شده</span> : 
+                        • وضعیت: {selectedFile.isProtected ?
+                          <span className="text-red-600 font-medium">رمزگذاری شده</span> :
                           <span className="text-green-600 font-medium">بدون رمز عبور</span>
                         }
                       </span>
@@ -186,13 +196,17 @@ export default function DecryptPdfPage() {
             {selectedFile.isProtected && (
               <Card className="p-6">
                 <h2 className="text-lg font-semibold text-slate-900 mb-4">رمز عبور</h2>
-                
+
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                    <label
+                      htmlFor={passwordInputId}
+                      className="block text-sm font-medium text-slate-700 mb-2"
+                    >
                       رمز عبور فایل PDF را وارد کنید
                     </label>
                     <input
+                      id={passwordInputId}
                       type="password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
@@ -264,20 +278,20 @@ export default function DecryptPdfPage() {
             <Card className="p-8 text-center max-w-sm w-full mx-4">
               <div className="animate-spin h-12 w-12 border-4 border-red-600 border-t-transparent rounded-full mx-auto mb-4"></div>
               <p className="text-lg font-semibold text-slate-900 mb-4">در حال باز کردن قفل PDF...</p>
-              
+
               {progress > 0 && (
                 <div className="w-full bg-slate-200 rounded-full h-2 mb-2">
-                  <div 
+                  <div
                     className="bg-red-600 h-2 rounded-full transition-all duration-300"
                     style={{ width: `${progress}%` }}
                   ></div>
                 </div>
               )}
-              
+
               <p className="text-sm text-slate-600">
                 {progress < 40 ? `در حال تایید رمز عبور (${Math.round(progress)}%)` :
-                 progress < 80 ? `در حال حذف رمز عبور (${Math.round(progress)}%)` :
-                 `در حال آماده‌سازی دانلود (${Math.round(progress)}%)`}
+                  progress < 80 ? `در حال حذف رمز عبور (${Math.round(progress)}%)` :
+                    `در حال آماده‌سازی دانلود (${Math.round(progress)}%)`}
               </p>
             </Card>
           </div>

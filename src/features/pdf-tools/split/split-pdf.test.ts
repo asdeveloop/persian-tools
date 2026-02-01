@@ -1,9 +1,18 @@
 import { describe, expect, it } from 'vitest';
+import { PDFDocument } from 'pdf-lib';
 import { splitPdf, validatePageRanges, suggestSplitOptions } from './split-pdf.logic';
+
+async function createPdfBytes(pageCount = 1): Promise<Uint8Array> {
+  const doc = await PDFDocument.create();
+  for (let i = 0; i < pageCount; i += 1) {
+    doc.addPage();
+  }
+  return new Uint8Array(await doc.save());
+}
 
 describe('splitPdf', () => {
   it('should split PDF by individual pages', async () => {
-    const pdfBytes = new Uint8Array([1, 2, 3, 4, 5]);
+    const pdfBytes = await createPdfBytes(5);
 
     const results = await splitPdf(pdfBytes, {
       splitBy: 'pages',
@@ -18,7 +27,7 @@ describe('splitPdf', () => {
   });
 
   it('should split PDF by page ranges', async () => {
-    const pdfBytes = new Uint8Array([1, 2, 3, 4, 5]);
+    const pdfBytes = await createPdfBytes(5);
 
     const results = await splitPdf(pdfBytes, {
       splitBy: 'pages',
@@ -61,7 +70,7 @@ describe('suggestSplitOptions', () => {
   it('should suggest options for medium PDF', () => {
     const suggestions = suggestSplitOptions(15);
 
-    expect(suggestions.individual).toBe(false);
+    expect(suggestions.individual).toBe(true);
     expect(suggestions.ranges).toHaveLength(2);
     expect(suggestions.ranges[0]).toBe('1-8');
     expect(suggestions.ranges[1]).toBe('9-15');

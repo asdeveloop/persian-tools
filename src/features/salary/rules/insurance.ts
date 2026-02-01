@@ -2,10 +2,10 @@
  * قوانین مربوط به محاسبه بیمه تامین اجتماعی
  */
 
-import { 
-  WORKER_INSURANCE_RATE, 
-  EMPLOYER_INSURANCE_RATE, 
-  TOTAL_INSURANCE_RATE 
+import {
+  WORKER_INSURANCE_RATE,
+  EMPLOYER_INSURANCE_RATE,
+  TOTAL_INSURANCE_RATE,
 } from '../constants';
 
 /**
@@ -15,8 +15,8 @@ import {
  * @returns مبلغ بیمه سهم کارگر (تومان)
  */
 export function calculateWorkerInsurance(
-  grossSalary: number, 
-  customRate?: number
+  grossSalary: number,
+  customRate?: number,
 ): number {
   const rate = customRate ?? WORKER_INSURANCE_RATE;
   return (grossSalary * rate) / 100;
@@ -29,8 +29,8 @@ export function calculateWorkerInsurance(
  * @returns مبلغ بیمه سهم کارفرما (تومان)
  */
 export function calculateEmployerInsurance(
-  grossSalary: number, 
-  customRate?: number
+  grossSalary: number,
+  customRate?: number,
 ): number {
   const rate = customRate ?? EMPLOYER_INSURANCE_RATE;
   return (grossSalary * rate) / 100;
@@ -52,8 +52,8 @@ export function calculateTotalInsurance(grossSalary: number): number {
  * @returns درآمد مشمول بیمه (تومان)
  */
 export function calculateInsuranceableIncome(
-  grossSalary: number, 
-  exemptAmount: number = 0
+  grossSalary: number,
+  exemptAmount = 0,
 ): number {
   return Math.max(0, grossSalary - exemptAmount);
 }
@@ -65,11 +65,11 @@ export function calculateInsuranceableIncome(
  * @returns جزئیات محاسبه بیمه
  */
 export function getInsuranceDetails(
-  grossSalary: number, 
-  exemptAmount: number = 0
+  grossSalary: number,
+  exemptAmount = 0,
 ) {
   const insuranceableIncome = calculateInsuranceableIncome(grossSalary, exemptAmount);
-  
+
   return {
     grossSalary,
     exemptAmount,
@@ -79,7 +79,7 @@ export function getInsuranceDetails(
     total: calculateTotalInsurance(insuranceableIncome),
     workerRate: WORKER_INSURANCE_RATE,
     employerRate: EMPLOYER_INSURANCE_RATE,
-    totalRate: TOTAL_INSURANCE_RATE
+    totalRate: TOTAL_INSURANCE_RATE,
   };
 }
 

@@ -3,14 +3,14 @@ import type { ResizeOptions, ImageProcessingError } from '../types';
 
 export async function resizeImage(
   image: Buffer,
-  options: ResizeOptions
+  options: ResizeOptions,
 ): Promise<Buffer> {
   const { width, height, fit = 'cover' } = options;
 
   if (!width && !height) {
     const error: ImageProcessingError = {
       code: 'INVALID_INPUT',
-      message: 'حداقل یکی از پارامترهای width یا height باید مشخص شود'
+      message: 'حداقل یکی از پارامترهای width یا height باید مشخص شود',
     };
     throw new Error(error.message);
   }
@@ -19,7 +19,7 @@ export async function resizeImage(
     const pipeline = sharp(image)
       .resize(width, height, {
         fit,
-        withoutEnlargement: true
+        withoutEnlargement: true,
       });
 
     return await pipeline.toBuffer();
@@ -27,7 +27,7 @@ export async function resizeImage(
   } catch (error) {
     const processingError: ImageProcessingError = {
       code: 'PROCESSING_FAILED',
-      message: error instanceof Error ? error.message : 'خطا در تغییر اندازه تصویر'
+      message: error instanceof Error ? error.message : 'خطا در تغییر اندازه تصویر',
     };
     throw new Error(processingError.message);
   }

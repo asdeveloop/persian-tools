@@ -2,11 +2,11 @@ import { useEffect, useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { formatMoneyFa, parseLooseNumber } from '../../shared/utils/number';
 import { getSessionJson, setSessionJson } from '../../shared/storage/sessionStorage';
-import { 
-  calculateSalary, 
-  calculateMinimumWage, 
+import {
+  calculateSalary,
+  calculateMinimumWage,
   calculateGrossFromNet,
-  getSalaryLaws 
+  getSalaryLaws,
 } from './index';
 import type { SalaryInput, SalaryOutput, MinimumWageOutput } from './salary.types';
 import { AnimatedCard, StaggerContainer, StaggerItem, FadeIn } from '../../shared/ui/AnimatedComponents';
@@ -21,25 +21,25 @@ type SalaryFormState = {
   netSalaryText: string;
   workingDaysText: string;
   workExperienceYearsText: string;
-  
+
   // اضافه‌کاری
   overtimeHoursText: string;
   nightOvertimeHoursText: string;
   holidayOvertimeHoursText: string;
-  
+
   // مأموریت
   missionDaysText: string;
-  
+
   // اطلاعات خانوادگی
   isMarried: boolean;
   numberOfChildrenText: string;
-  
+
   // مزایا و کسورات
   hasWorkerCoupon: boolean;
   hasTransportation: boolean;
   otherBenefitsText: string;
   otherDeductionsText: string;
-  
+
   // اطلاعات منطقه‌ای
   isDevelopmentZone: boolean;
 };
@@ -65,7 +65,7 @@ export default function SalaryPage() {
         hasTransportation: true,
         otherBenefitsText: '0',
         otherDeductionsText: '0',
-        isDevelopmentZone: false
+        isDevelopmentZone: false,
       }
     );
   }, []);
@@ -75,6 +75,10 @@ export default function SalaryPage() {
   const [result, setResult] = useState<SalaryOutput | null>(null);
   const [minimumWageResult, setMinimumWageResult] = useState<MinimumWageOutput | null>(null);
   const [showDetails, setShowDetails] = useState(false);
+  const isMarriedId = 'salary-is-married';
+  const hasWorkerCouponId = 'salary-has-worker-coupon';
+  const hasTransportationId = 'salary-has-transportation';
+  const isDevelopmentZoneId = 'salary-is-development-zone';
 
   useEffect(() => {
     setSessionJson(sessionKey, form);
@@ -87,60 +91,64 @@ export default function SalaryPage() {
 
     try {
       if (form.mode === 'minimum-wage') {
-        const workExperienceYears = parseLooseNumber(form.workExperienceYearsText) || 0;
-        const numberOfChildren = parseLooseNumber(form.numberOfChildrenText) || 0;
-        const otherDeductions = parseLooseNumber(form.otherDeductionsText) || 0;
-        
+        const workExperienceYears = parseLooseNumber(form.workExperienceYearsText) ?? 0;
+        const numberOfChildren = parseLooseNumber(form.numberOfChildrenText) ?? 0;
+        const otherDeductions = parseLooseNumber(form.otherDeductionsText) ?? 0;
+
         const minWageResult = calculateMinimumWage({
           workExperienceYears,
           isMarried: form.isMarried,
           numberOfChildren,
           isDevelopmentZone: form.isDevelopmentZone,
-          otherDeductions
+          otherDeductions,
         });
-        
+
         setMinimumWageResult(minWageResult);
       } else if (form.mode === 'net-to-gross') {
         const netSalary = parseLooseNumber(form.netSalaryText);
-        if (netSalary === null) return setError('لطفاً حقوق خالص را به‌صورت عدد وارد کنید.');
-        
+        if (netSalary === null) {
+          return setError('لطفاً حقوق خالص را به‌صورت عدد وارد کنید.');
+        }
+
         const input: Omit<SalaryInput, 'baseSalary'> = {
-          workingDays: parseLooseNumber(form.workingDaysText) || 30,
-          workExperienceYears: parseLooseNumber(form.workExperienceYearsText) || 0,
-          overtimeHours: parseLooseNumber(form.overtimeHoursText) || 0,
-          nightOvertimeHours: parseLooseNumber(form.nightOvertimeHoursText) || 0,
-          holidayOvertimeHours: parseLooseNumber(form.holidayOvertimeHoursText) || 0,
-          missionDays: parseLooseNumber(form.missionDaysText) || 0,
+          workingDays: parseLooseNumber(form.workingDaysText) ?? 30,
+          workExperienceYears: parseLooseNumber(form.workExperienceYearsText) ?? 0,
+          overtimeHours: parseLooseNumber(form.overtimeHoursText) ?? 0,
+          nightOvertimeHours: parseLooseNumber(form.nightOvertimeHoursText) ?? 0,
+          holidayOvertimeHours: parseLooseNumber(form.holidayOvertimeHoursText) ?? 0,
+          missionDays: parseLooseNumber(form.missionDaysText) ?? 0,
           isMarried: form.isMarried,
-          numberOfChildren: parseLooseNumber(form.numberOfChildrenText) || 0,
+          numberOfChildren: parseLooseNumber(form.numberOfChildrenText) ?? 0,
           hasWorkerCoupon: form.hasWorkerCoupon,
           hasTransportation: form.hasTransportation,
-          otherBenefits: parseLooseNumber(form.otherBenefitsText) || 0,
-          otherDeductions: parseLooseNumber(form.otherDeductionsText) || 0,
-          isDevelopmentZone: form.isDevelopmentZone
+          otherBenefits: parseLooseNumber(form.otherBenefitsText) ?? 0,
+          otherDeductions: parseLooseNumber(form.otherDeductionsText) ?? 0,
+          isDevelopmentZone: form.isDevelopmentZone,
         };
 
         const calculationResult = calculateGrossFromNet(netSalary, input);
         setResult(calculationResult);
       } else {
         const baseSalary = parseLooseNumber(form.baseSalaryText);
-        if (baseSalary === null) return setError('لطفاً حقوق پایه را به‌صورت عدد وارد کنید.');
+        if (baseSalary === null) {
+          return setError('لطفاً حقوق پایه را به‌صورت عدد وارد کنید.');
+        }
 
         const input: SalaryInput = {
           baseSalary,
-          workingDays: parseLooseNumber(form.workingDaysText) || 30,
-          workExperienceYears: parseLooseNumber(form.workExperienceYearsText) || 0,
-          overtimeHours: parseLooseNumber(form.overtimeHoursText) || 0,
-          nightOvertimeHours: parseLooseNumber(form.nightOvertimeHoursText) || 0,
-          holidayOvertimeHours: parseLooseNumber(form.holidayOvertimeHoursText) || 0,
-          missionDays: parseLooseNumber(form.missionDaysText) || 0,
+          workingDays: parseLooseNumber(form.workingDaysText) ?? 30,
+          workExperienceYears: parseLooseNumber(form.workExperienceYearsText) ?? 0,
+          overtimeHours: parseLooseNumber(form.overtimeHoursText) ?? 0,
+          nightOvertimeHours: parseLooseNumber(form.nightOvertimeHoursText) ?? 0,
+          holidayOvertimeHours: parseLooseNumber(form.holidayOvertimeHoursText) ?? 0,
+          missionDays: parseLooseNumber(form.missionDaysText) ?? 0,
           isMarried: form.isMarried,
-          numberOfChildren: parseLooseNumber(form.numberOfChildrenText) || 0,
+          numberOfChildren: parseLooseNumber(form.numberOfChildrenText) ?? 0,
           hasWorkerCoupon: form.hasWorkerCoupon,
           hasTransportation: form.hasTransportation,
-          otherBenefits: parseLooseNumber(form.otherBenefitsText) || 0,
-          otherDeductions: parseLooseNumber(form.otherDeductionsText) || 0,
-          isDevelopmentZone: form.isDevelopmentZone
+          otherBenefits: parseLooseNumber(form.otherBenefitsText) ?? 0,
+          otherDeductions: parseLooseNumber(form.otherDeductionsText) ?? 0,
+          isDevelopmentZone: form.isDevelopmentZone,
         };
 
         const calculationResult = calculateSalary(input);
@@ -176,16 +184,16 @@ export default function SalaryPage() {
         {/* Header */}
         <FadeIn delay={0}>
           <div className="text-center max-w-4xl mx-auto">
-            <motion.div 
+            <motion.div
               className="inline-flex items-center justify-center w-16 h-16 rounded-full text-white shadow-xl mb-6"
               style={{ backgroundColor: toolCategories.financial.primary }}
               animate={{
-                rotate: [0, 5, -5, 0]
+                rotate: [0, 5, -5, 0],
               }}
               transition={{
                 duration: 4,
                 repeat: Infinity,
-                ease: "easeInOut"
+                ease: 'easeInOut',
               }}
             >
               <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -200,7 +208,7 @@ export default function SalaryPage() {
               شامل بیمه تامین اجتماعی، مزایا و کسورات مختلف.
             </p>
             <div className="mt-4 text-sm text-gray-500">
-              حداقل دستمزد: {formatMoneyFa(laws.minimumWage)} تومان | 
+              حداقل دستمزد: {formatMoneyFa(laws.minimumWage)} تومان |
               معافیت مالیات: {formatMoneyFa(laws.taxExemption)} تومان ماهانه
             </div>
           </div>
@@ -231,7 +239,7 @@ export default function SalaryPage() {
                         }`}
                         style={form.mode === mode ? {
                           backgroundColor: toolCategories.financial.primary,
-                          borderColor: toolCategories.financial.primary
+                          borderColor: toolCategories.financial.primary,
                         } : {}}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
@@ -261,7 +269,7 @@ export default function SalaryPage() {
                 </div>
                 اطلاعات حقوق
               </h2>
-              
+
               {form.mode === 'gross-to-net' && (
                 <div className="mb-6">
                   <label className="block text-sm font-bold text-gray-700 mb-2" htmlFor="baseSalary">
@@ -277,7 +285,7 @@ export default function SalaryPage() {
                   />
                 </div>
               )}
-              
+
               {form.mode === 'net-to-gross' && (
                 <div className="mb-6">
                   <label className="block text-sm font-bold text-gray-700 mb-2" htmlFor="netSalary">
@@ -310,7 +318,7 @@ export default function SalaryPage() {
                         placeholder="مثال: ۳۰"
                       />
                     </div>
-                    
+
                     <div>
                       <label className="block text-sm font-bold text-gray-700 mb-2" htmlFor="workExperience">
                         سابقه کار (سال)
@@ -342,7 +350,7 @@ export default function SalaryPage() {
                         placeholder="مثال: ۳"
                       />
                     </div>
-                    
+
                     <div>
                       <label className="block text-sm font-bold text-gray-700 mb-2" htmlFor="children">
                         تعداد فرزندان
@@ -384,7 +392,7 @@ export default function SalaryPage() {
                         placeholder="مثال: ۱۰"
                       />
                     </div>
-                    
+
                     <div>
                       <label className="block text-sm font-bold text-gray-700 mb-2" htmlFor="nightOvertime">
                         اضافه‌کاری شب (ساعت)
@@ -398,7 +406,7 @@ export default function SalaryPage() {
                         placeholder="مثال: ۵"
                       />
                     </div>
-                    
+
                     <div>
                       <label className="block text-sm font-bold text-gray-700 mb-2" htmlFor="holidayOvertime">
                         اضافه‌کاری تعطیلات (ساعت)
@@ -436,7 +444,7 @@ export default function SalaryPage() {
                         placeholder="مثال: ۲"
                       />
                     </div>
-                    
+
                     <div>
                       <label className="block text-sm font-bold text-gray-700 mb-2" htmlFor="otherBenefits">
                         سایر مزایا (تومان)
@@ -450,7 +458,7 @@ export default function SalaryPage() {
                         placeholder="مثال: ۵۰۰,۰۰۰"
                       />
                     </div>
-                    
+
                     <div>
                       <label className="block text-sm font-bold text-gray-700 mb-2" htmlFor="numberOfChildren">
                         تعداد فرزندان
@@ -464,7 +472,7 @@ export default function SalaryPage() {
                         placeholder="مثال: ۲"
                       />
                     </div>
-                    
+
                     <div>
                       <label className="block text-sm font-bold text-gray-700 mb-2" htmlFor="otherDeductions">
                         سایر کسورات (تومان)
@@ -492,9 +500,11 @@ export default function SalaryPage() {
                 شرایط خاص
               </h3>
               <div className="space-y-4">
-                <label className="flex items-center p-4 rounded-xl border border-gray-200 hover:border-blue-500 transition-colors cursor-pointer">
+                <div className="flex items-center p-4 rounded-xl border border-gray-200 hover:border-blue-500 transition-colors cursor-pointer">
                   <input
+                    id={isMarriedId}
                     type="checkbox"
+                    aria-label="متاهل"
                     className="ml-3 w-5 h-5 border-gray-300 rounded focus:ring-blue-500"
                     style={{ accentColor: toolCategories.financial.primary }}
                     checked={form.isMarried}
@@ -504,13 +514,15 @@ export default function SalaryPage() {
                     <span className="text-sm font-bold text-gray-700">متاهل</span>
                     <p className="text-xs text-gray-500">شامل حق اولاد همسر می‌شود</p>
                   </div>
-                </label>
-                
+                </div>
+
                 {form.mode !== 'minimum-wage' && (
                   <>
-                    <label className="flex items-center p-4 rounded-xl border border-gray-200 hover:border-blue-500 transition-colors cursor-pointer">
+                    <div className="flex items-center p-4 rounded-xl border border-gray-200 hover:border-blue-500 transition-colors cursor-pointer">
                       <input
+                        id={hasWorkerCouponId}
                         type="checkbox"
+                        aria-label="دریافت بن کارگری"
                         className="ml-3 w-5 h-5 border-gray-300 rounded focus:ring-blue-500"
                         style={{ accentColor: toolCategories.financial.primary }}
                         checked={form.hasWorkerCoupon}
@@ -520,11 +532,13 @@ export default function SalaryPage() {
                         <span className="text-sm font-bold text-gray-700">دریافت بن کارگری</span>
                         <p className="text-xs text-gray-500">ماهانه ۱۰۰,۰۰۰ تومان</p>
                       </div>
-                    </label>
-                    
-                    <label className="flex items-center p-4 rounded-xl border border-gray-200 hover:border-blue-500 transition-colors cursor-pointer">
+                    </div>
+
+                    <div className="flex items-center p-4 rounded-xl border border-gray-200 hover:border-blue-500 transition-colors cursor-pointer">
                       <input
+                        id={hasTransportationId}
                         type="checkbox"
+                        aria-label="دریافت کمک هزینه ایاب‌وذهاب"
                         className="ml-3 w-5 h-5 border-gray-300 rounded focus:ring-blue-500"
                         style={{ accentColor: toolCategories.financial.primary }}
                         checked={form.hasTransportation}
@@ -534,13 +548,15 @@ export default function SalaryPage() {
                         <span className="text-sm font-bold text-gray-700">دریافت کمک هزینه ایاب‌وذهاب</span>
                         <p className="text-xs text-gray-500">ماهانه ۱۵۰,۰۰۰ تومان</p>
                       </div>
-                    </label>
+                    </div>
                   </>
                 )}
-                
-                <label className="flex items-center p-4 rounded-xl border border-gray-200 hover:border-blue-500 transition-colors cursor-pointer">
+
+                <div className="flex items-center p-4 rounded-xl border border-gray-200 hover:border-blue-500 transition-colors cursor-pointer">
                   <input
+                    id={isDevelopmentZoneId}
                     type="checkbox"
+                    aria-label="اشتغال در منطقه کمتر توسعه‌یافته"
                     className="ml-3 w-5 h-5 border-gray-300 rounded focus:ring-blue-500"
                     style={{ accentColor: toolCategories.financial.primary }}
                     checked={form.isDevelopmentZone}
@@ -550,7 +566,7 @@ export default function SalaryPage() {
                     <span className="text-sm font-bold text-gray-700">اشتغال در منطقه کمتر توسعه‌یافته</span>
                     <p className="text-xs text-gray-500">۵۰٪ تخفیف مالیات</p>
                   </div>
-                </label>
+                </div>
               </div>
 
               <div className="mt-8 flex items-center gap-4">
@@ -565,7 +581,7 @@ export default function SalaryPage() {
                 </motion.button>
 
                 {error && (
-                  <motion.div 
+                  <motion.div
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     className="text-sm text-red-600 bg-red-50 px-4 py-2 rounded-lg"
@@ -603,16 +619,16 @@ export default function SalaryPage() {
                       {showDetails ? 'مخفی کردن جزئیات' : 'نمایش جزئیات'}
                     </motion.button>
                   </div>
-                  
+
                   <div className="grid gap-6 md:grid-cols-3">
-                    <motion.div 
+                    <motion.div
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.1 }}
                       className="rounded-2xl p-6 border"
                       style={{
                         background: `linear-gradient(135deg, ${colors.primary[50]}, ${colors.primary[100]})`,
-                        borderColor: colors.primary[200]
+                        borderColor: colors.primary[200],
                       }}
                     >
                       <div className="text-sm font-bold mb-2" style={{ color: colors.primary[600] }}>حقوق ناخالص</div>
@@ -620,15 +636,15 @@ export default function SalaryPage() {
                         {formatMoneyFa(result.grossSalary)} تومان
                       </div>
                     </motion.div>
-                    
-                    <motion.div 
+
+                    <motion.div
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.2 }}
                       className="rounded-2xl p-6 border"
                       style={{
                         background: `linear-gradient(135deg, ${colors.status.error}20, ${colors.status.error}30)`,
-                        borderColor: `${colors.status.error}40`
+                        borderColor: `${colors.status.error}40`,
                       }}
                     >
                       <div className="text-sm font-bold mb-2" style={{ color: colors.status.error }}>مجموع کسورات</div>
@@ -636,15 +652,15 @@ export default function SalaryPage() {
                         {formatMoneyFa(result.summary.totalDeductions)} تومان
                       </div>
                     </motion.div>
-                    
-                    <motion.div 
+
+                    <motion.div
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.3 }}
                       className="rounded-2xl p-6 border"
                       style={{
                         background: `linear-gradient(135deg, ${colors.status.success}20, ${colors.status.success}30)`,
-                        borderColor: `${colors.status.success}40`
+                        borderColor: `${colors.status.success}40`,
                       }}
                     >
                       <div className="text-sm font-bold mb-2" style={{ color: colors.status.success }}>حقوق خالص</div>
@@ -857,7 +873,7 @@ export default function SalaryPage() {
                     </div>
                     نتیجه محاسبه حداقل دستمزد
                   </h2>
-                  
+
                   <div className="grid gap-6 md:grid-cols-2">
                     <div>
                       <h3 className="text-lg font-bold text-black mb-4 flex items-center gap-2">

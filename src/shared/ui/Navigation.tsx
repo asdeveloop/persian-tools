@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import Container from './Container';
 import { tokens } from '../constants/tokens';
@@ -84,7 +84,14 @@ export default function Navigation() {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
-          <Link to="/" className="flex items-center gap-3 text-black group focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 rounded-lg p-2">
+          <Link
+            href="/"
+            className={[
+              'flex items-center gap-3 text-black group',
+              'focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]',
+              'focus-visible:ring-offset-2 rounded-lg p-2',
+            ].join(' ')}
+          >
             <motion.span
               className="inline-flex h-10 w-10 items-center justify-center rounded-full shadow-lg"
               style={{ backgroundColor: tokens.color.primary.DEFAULT, color: tokens.color.text.inverted }}
@@ -94,7 +101,7 @@ export default function Navigation() {
               transition={{
                 duration: 4,
                 repeat: Infinity,
-                ease: "easeInOut",
+                ease: 'easeInOut',
               }}
               aria-hidden="true"
             >
@@ -110,9 +117,9 @@ export default function Navigation() {
           <div className="relative group">
             <motion.button
               className="flex items-center gap-2 px-4 py-2.5 text-sm font-bold rounded-full transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2"
-              style={{ 
+              style={{
                 color: tokens.color.text.DEFAULT,
-                backgroundColor: 'transparent'
+                backgroundColor: 'transparent',
               }}
               onMouseEnter={() => setOpenDropdown('pdf')}
               onMouseLeave={() => setOpenDropdown(null)}
@@ -146,11 +153,11 @@ export default function Navigation() {
                   aria-labelledby="pdf-dropdown-button"
                 >
                   <Link
-                    to="/pdf-tools"
+                    href="/pdf-tools"
                     className="flex items-center gap-3 px-4 py-3 text-sm transition-all duration-200 group focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 rounded-lg mx-2"
-                    style={{ 
+                    style={{
                       color: tokens.color.text.DEFAULT,
-                      backgroundColor: 'transparent'
+                      backgroundColor: 'transparent',
                     }}
                     onClick={closeMobileMenu}
                     onMouseEnter={(e) => {
@@ -165,13 +172,13 @@ export default function Navigation() {
                   >
                     <motion.div
                       className="flex items-center justify-center w-8 h-8 rounded-full transition-colors"
-                      style={{ backgroundColor: tokens.color.status.danger + '20' }}
+                      style={{ backgroundColor: `${tokens.color.status.danger }20` }}
                       whileHover={{ scale: 1.1, rotate: 5 }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = tokens.color.status.danger + '30';
+                        e.currentTarget.style.backgroundColor = `${tokens.color.status.danger }30`;
                       }}
                       onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = tokens.color.status.danger + '20';
+                        e.currentTarget.style.backgroundColor = `${tokens.color.status.danger }20`;
                       }}
                     >
                       <IconPdf className="h-4 w-4" />
@@ -190,9 +197,9 @@ export default function Navigation() {
           <div className="relative group">
             <motion.button
               className="flex items-center gap-2 px-4 py-2.5 text-sm font-bold rounded-full transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2"
-              style={{ 
+              style={{
                 color: tokens.color.text.DEFAULT,
-                backgroundColor: 'transparent'
+                backgroundColor: 'transparent',
               }}
               onMouseEnter={() => setOpenDropdown('image')}
               onMouseLeave={() => setOpenDropdown(null)}
@@ -221,11 +228,11 @@ export default function Navigation() {
                   onMouseLeave={() => setOpenDropdown(null)}
                 >
                   <Link
-                    to="/image-compress"
+                    href="/image-compress"
                     className="flex items-center gap-3 px-4 py-3 text-sm transition-all duration-200 group focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 rounded-lg"
-                    style={{ 
+                    style={{
                       color: tokens.color.text.DEFAULT,
-                      backgroundColor: 'transparent'
+                      backgroundColor: 'transparent',
                     }}
                     onClick={closeMobileMenu}
                     onMouseEnter={(e) => {
@@ -259,10 +266,12 @@ export default function Navigation() {
                   <div className="px-4 py-2 text-xs font-bold uppercase tracking-wider" style={{ color: tokens.color.text.muted }}>
                     ابزارهای دیگر
                   </div>
-                  <Link
-                    to="#"
-                    className="flex items-center gap-3 px-4 py-3 text-sm transition-colors group"
+                  <button
+                    type="button"
+                    className="flex items-center gap-3 px-4 py-3 text-sm transition-colors group cursor-not-allowed"
                     style={{ color: tokens.color.text.muted }}
+                    disabled
+                    aria-disabled="true"
                   >
                     <motion.div
                       className="flex items-center justify-center w-8 h-8 rounded-full"
@@ -275,11 +284,13 @@ export default function Navigation() {
                       <div className="font-bold">افزودن عکس به PDF</div>
                       <div className="text-xs" style={{ color: tokens.color.text.muted }}>به زودی</div>
                     </div>
-                  </Link>
-                  <Link
-                    to="#"
-                    className="flex items-center gap-3 px-4 py-3 text-sm transition-colors group"
+                  </button>
+                  <button
+                    type="button"
+                    className="flex items-center gap-3 px-4 py-3 text-sm transition-colors group cursor-not-allowed"
                     style={{ color: tokens.color.text.muted }}
+                    disabled
+                    aria-disabled="true"
                   >
                     <motion.div
                       className="flex items-center justify-center w-8 h-8 rounded-full"
@@ -292,7 +303,7 @@ export default function Navigation() {
                       <div className="font-bold">تبدیل PDF به عکس</div>
                       <div className="text-xs" style={{ color: tokens.color.text.muted }}>به زودی</div>
                     </div>
-                  </Link>
+                  </button>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -329,7 +340,7 @@ export default function Navigation() {
                   onMouseLeave={() => setOpenDropdown(null)}
                 >
                   <Link
-                    to="/loan"
+                    href="/loan"
                     className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-black/5 hover:text-black transition-all duration-200 group"
                     onClick={closeMobileMenu}
                   >
@@ -345,7 +356,7 @@ export default function Navigation() {
                     </div>
                   </Link>
                   <Link
-                    to="/salary"
+                    href="/salary"
                     className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-black/5 hover:text-black transition-all duration-200 group"
                     onClick={closeMobileMenu}
                   >
@@ -439,7 +450,7 @@ export default function Navigation() {
                       className="mr-4 mt-2 space-y-1 overflow-hidden"
                     >
                       <Link
-                        to="/pdf-tools"
+                        href="/pdf-tools"
                         className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-black/5 hover:text-black rounded-full transition-all duration-200"
                         onClick={closeMobileMenu}
                       >
@@ -488,7 +499,7 @@ export default function Navigation() {
                       className="mr-4 mt-2 space-y-1 overflow-hidden"
                     >
                       <Link
-                        to="/image-compress"
+                        href="/image-compress"
                         className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-black/5 hover:text-black rounded-full transition-all duration-200"
                         onClick={closeMobileMenu}
                       >
@@ -549,7 +560,7 @@ export default function Navigation() {
                       className="mr-4 mt-2 space-y-1 overflow-hidden"
                     >
                       <Link
-                        to="/loan"
+                        href="/loan"
                         className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-black/5 hover:text-black rounded-full transition-all duration-200"
                         onClick={closeMobileMenu}
                       >
@@ -565,7 +576,7 @@ export default function Navigation() {
                         </div>
                       </Link>
                       <Link
-                        to="/salary"
+                        href="/salary"
                         className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-black/5 hover:text-black rounded-full transition-all duration-200"
                         onClick={closeMobileMenu}
                       >

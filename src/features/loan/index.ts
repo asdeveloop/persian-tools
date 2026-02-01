@@ -1,1 +1,21 @@
-// Enhanced Loan Calculator Module\nexport { calculateEnhancedLoan } from './loan.logic';\nexport { calculateLoan } from './loan.logic';\n\n// Types\nexport type {\n  LoanInput,\n  LoanOutput,\n  PaymentSchedule,\n  RepaymentType,\n  PaymentFrequency,\n  // Legacy types for backward compatibility\n  LegacyLoanInput,\n  LegacyLoanResult,\n  LoanType,\n  CalculationType\n} from './loan.types';\n\n// Pages\nexport { default as LoanPage } from './LoanPage';\nexport { default as EnhancedLoanPage } from './EnhancedLoanPage';
+// Enhanced Loan Calculator Module
+export { calculateEnhancedLoan } from './loan.logic';
+export { calculateLoan } from './loan.logic';
+
+// Types
+export type {
+  LoanInput,
+  LoanOutput,
+  PaymentSchedule,
+  RepaymentType,
+  PaymentFrequency,
+  // Legacy types for backward compatibility
+  LegacyLoanInput,
+  LegacyLoanResult,
+  LoanType,
+  CalculationType,
+} from './loan.types';
+
+// Pages
+export { default as LoanPage } from './LoanPage';
+export { default as EnhancedLoanPage } from './EnhancedLoanPage';

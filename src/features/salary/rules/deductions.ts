@@ -35,9 +35,9 @@ export function calculateLegalDeductions(input: LegalDeductionsInput = {}): numb
     unionFee = 0,
     penalty = 0,
     advancePayment = 0,
-    other = 0
+    other = 0,
   } = input;
-  
+
   return calculateOtherDeductions(loanPayment, unionFee, penalty, advancePayment, other);
 }
 
@@ -51,7 +51,7 @@ export function calculateLegalDeductions(input: LegalDeductionsInput = {}): numb
 export function calculateTotalDeductions(
   insuranceAmount: number,
   taxAmount: number,
-  otherDeductions: number = 0
+  otherDeductions = 0,
 ): number {
   return insuranceAmount + taxAmount + otherDeductions;
 }
@@ -66,23 +66,23 @@ export function calculateTotalDeductions(
 export function getDeductionDetails(
   insuranceAmount: number,
   taxAmount: number,
-  input: LegalDeductionsInput = {}
+  input: LegalDeductionsInput = {},
 ) {
   const legalDeductions = calculateLegalDeductions(input);
   const totalDeductions = calculateTotalDeductions(insuranceAmount, taxAmount, legalDeductions);
-  
+
   return {
     insurance: insuranceAmount,
     tax: taxAmount,
     legal: legalDeductions,
     total: totalDeductions,
     breakdown: {
-      loanPayment: input.loanPayment || 0,
-      unionFee: input.unionFee || 0,
-      penalty: input.penalty || 0,
-      advancePayment: input.advancePayment || 0,
-      other: input.other || 0
-    }
+      loanPayment: input.loanPayment ?? 0,
+      unionFee: input.unionFee ?? 0,
+      penalty: input.penalty ?? 0,
+      advancePayment: input.advancePayment ?? 0,
+      other: input.other ?? 0,
+    },
   };
 }
 

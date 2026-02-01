@@ -4,14 +4,14 @@ import { useEffect, useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { formatMoneyFa, parseLooseNumber } from '@/shared/utils/number';
 import { getSessionJson, setSessionJson } from '@/shared/storage/sessionStorage';
-import { 
-  calculateSalary, 
-  calculateMinimumWage, 
+import {
+  calculateSalary,
+  calculateMinimumWage,
   calculateGrossFromNet,
-  getSalaryLaws 
+  getSalaryLaws,
 } from '@/features/salary/index';
 import type { SalaryInput, SalaryOutput, MinimumWageOutput } from '@/features/salary/salary.types';
-import { AnimatedCard, StaggerContainer, StaggerItem, FadeIn } from '@/shared/ui/AnimatedComponents';
+import { AnimatedCard, FadeIn } from '@/shared/ui/AnimatedComponents';
 import { colors, toolCategories } from '@/shared/ui/theme';
 
 type CalculationMode = 'gross-to-net' | 'net-to-gross' | 'minimum-wage';
@@ -56,12 +56,12 @@ export default function SalaryPage() {
         hasTransportation: true,
         otherBenefitsText: '0',
         otherDeductionsText: '0',
-        isDevelopmentZone: false
+        isDevelopmentZone: false,
       }
     );
   }, []);
 
-  const [form, setForm] = useState<SalaryFormState>(initial);
+  const [form] = useState<SalaryFormState>(initial);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<SalaryOutput | null>(null);
   const [minimumWageResult, setMinimumWageResult] = useState<MinimumWageOutput | null>(null);
@@ -78,60 +78,64 @@ export default function SalaryPage() {
 
     try {
       if (form.mode === 'minimum-wage') {
-        const workExperienceYears = parseLooseNumber(form.workExperienceYearsText) || 0;
-        const numberOfChildren = parseLooseNumber(form.numberOfChildrenText) || 0;
-        const otherDeductions = parseLooseNumber(form.otherDeductionsText) || 0;
-        
+        const workExperienceYears = parseLooseNumber(form.workExperienceYearsText) ?? 0;
+        const numberOfChildren = parseLooseNumber(form.numberOfChildrenText) ?? 0;
+        const otherDeductions = parseLooseNumber(form.otherDeductionsText) ?? 0;
+
         const minWageResult = calculateMinimumWage({
           workExperienceYears,
           isMarried: form.isMarried,
           numberOfChildren,
           isDevelopmentZone: form.isDevelopmentZone,
-          otherDeductions
+          otherDeductions,
         });
-        
+
         setMinimumWageResult(minWageResult);
       } else if (form.mode === 'net-to-gross') {
         const netSalary = parseLooseNumber(form.netSalaryText);
-        if (netSalary === null) return setError('لطفاً حقوق خالص را به‌صورت عدد وارد کنید.');
-        
+        if (netSalary === null) {
+          return setError('لطفاً حقوق خالص را به‌صورت عدد وارد کنید.');
+        }
+
         const input: Omit<SalaryInput, 'baseSalary'> = {
-          workingDays: parseLooseNumber(form.workingDaysText) || 30,
-          workExperienceYears: parseLooseNumber(form.workExperienceYearsText) || 0,
-          overtimeHours: parseLooseNumber(form.overtimeHoursText) || 0,
-          nightOvertimeHours: parseLooseNumber(form.nightOvertimeHoursText) || 0,
-          holidayOvertimeHours: parseLooseNumber(form.holidayOvertimeHoursText) || 0,
-          missionDays: parseLooseNumber(form.missionDaysText) || 0,
+          workingDays: parseLooseNumber(form.workingDaysText) ?? 30,
+          workExperienceYears: parseLooseNumber(form.workExperienceYearsText) ?? 0,
+          overtimeHours: parseLooseNumber(form.overtimeHoursText) ?? 0,
+          nightOvertimeHours: parseLooseNumber(form.nightOvertimeHoursText) ?? 0,
+          holidayOvertimeHours: parseLooseNumber(form.holidayOvertimeHoursText) ?? 0,
+          missionDays: parseLooseNumber(form.missionDaysText) ?? 0,
           isMarried: form.isMarried,
-          numberOfChildren: parseLooseNumber(form.numberOfChildrenText) || 0,
+          numberOfChildren: parseLooseNumber(form.numberOfChildrenText) ?? 0,
           hasWorkerCoupon: form.hasWorkerCoupon,
           hasTransportation: form.hasTransportation,
-          otherBenefits: parseLooseNumber(form.otherBenefitsText) || 0,
-          otherDeductions: parseLooseNumber(form.otherDeductionsText) || 0,
-          isDevelopmentZone: form.isDevelopmentZone
+          otherBenefits: parseLooseNumber(form.otherBenefitsText) ?? 0,
+          otherDeductions: parseLooseNumber(form.otherDeductionsText) ?? 0,
+          isDevelopmentZone: form.isDevelopmentZone,
         };
 
         const calculationResult = calculateGrossFromNet(netSalary, input);
         setResult(calculationResult);
       } else {
         const baseSalary = parseLooseNumber(form.baseSalaryText);
-        if (baseSalary === null) return setError('لطفاً حقوق پایه را به‌صورت عدد وارد کنید.');
+        if (baseSalary === null) {
+          return setError('لطفاً حقوق پایه را به‌صورت عدد وارد کنید.');
+        }
 
         const input: SalaryInput = {
           baseSalary,
-          workingDays: parseLooseNumber(form.workingDaysText) || 30,
-          workExperienceYears: parseLooseNumber(form.workExperienceYearsText) || 0,
-          overtimeHours: parseLooseNumber(form.overtimeHoursText) || 0,
-          nightOvertimeHours: parseLooseNumber(form.nightOvertimeHoursText) || 0,
-          holidayOvertimeHours: parseLooseNumber(form.holidayOvertimeHoursText) || 0,
-          missionDays: parseLooseNumber(form.missionDaysText) || 0,
+          workingDays: parseLooseNumber(form.workingDaysText) ?? 30,
+          workExperienceYears: parseLooseNumber(form.workExperienceYearsText) ?? 0,
+          overtimeHours: parseLooseNumber(form.overtimeHoursText) ?? 0,
+          nightOvertimeHours: parseLooseNumber(form.nightOvertimeHoursText) ?? 0,
+          holidayOvertimeHours: parseLooseNumber(form.holidayOvertimeHoursText) ?? 0,
+          missionDays: parseLooseNumber(form.missionDaysText) ?? 0,
           isMarried: form.isMarried,
-          numberOfChildren: parseLooseNumber(form.numberOfChildrenText) || 0,
+          numberOfChildren: parseLooseNumber(form.numberOfChildrenText) ?? 0,
           hasWorkerCoupon: form.hasWorkerCoupon,
           hasTransportation: form.hasTransportation,
-          otherBenefits: parseLooseNumber(form.otherBenefitsText) || 0,
-          otherDeductions: parseLooseNumber(form.otherDeductionsText) || 0,
-          isDevelopmentZone: form.isDevelopmentZone
+          otherBenefits: parseLooseNumber(form.otherBenefitsText) ?? 0,
+          otherDeductions: parseLooseNumber(form.otherDeductionsText) ?? 0,
+          isDevelopmentZone: form.isDevelopmentZone,
         };
 
         const calculationResult = calculateSalary(input);
@@ -145,21 +149,9 @@ export default function SalaryPage() {
 
   const laws = getSalaryLaws();
 
-  const getCalculationModeLabel = (mode: CalculationMode) => {
-    switch (mode) {
-      case 'gross-to-net': return 'حقوق ناخالص به خالص';
-      case 'net-to-gross': return 'حقوق خالص به ناخالص';
-      case 'minimum-wage': return 'حداقل دستمزد';
-    }
-  };
-
-  const getCalculationModeDescription = (mode: CalculationMode) => {
-    switch (mode) {
-      case 'gross-to-net': return 'محاسبه حقوق دریافتی از حقوق پایه';
-      case 'net-to-gross': return 'محاسبه حقوق پیشنهادی به کارفرما';
-      case 'minimum-wage': return 'بر اساس سابقه و شرایط خانوادگی';
-    }
-  };
+  useEffect(() => {
+    onCalculate();
+  }, [form]);
 
   return (
     <div className="min-h-screen">
@@ -167,16 +159,16 @@ export default function SalaryPage() {
         {/* Header */}
         <FadeIn delay={0}>
           <div className="text-center max-w-4xl mx-auto">
-            <motion.div 
+            <motion.div
               className="inline-flex items-center justify-center w-16 h-16 rounded-full text-white shadow-xl mb-6"
               style={{ backgroundColor: toolCategories.financial.primary }}
               animate={{
-                rotate: [0, 5, -5, 0]
+                rotate: [0, 5, -5, 0],
               }}
               transition={{
                 duration: 4,
                 repeat: Infinity,
-                ease: "easeInOut"
+                ease: 'easeInOut',
               }}
             >
               <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -187,15 +179,26 @@ export default function SalaryPage() {
               محاسبه‌گر حقوق و دستمزد پیشرفته
             </h1>
             <p className="text-lg text-gray-600 leading-relaxed">
-              محاسبه حقوق و مالیات بر اساس قوانین سال {laws.year} با پشتیبانی از معافیت‌های قانونی و نرخ‌های تصاعدی.
-              شامل بیمه تامین اجتماعی، مزایا و کسورات مختلف.
+              {'محاسبه حقوق و مالیات بر اساس قوانین سال '}
+              {laws.year}
+              {' با پشتیبانی از معافیت‌های قانونی و نرخ‌های تصاعدی.'}
+              {' '}
+              {'شامل بیمه تامین اجتماعی، مزایا و کسورات مختلف.'}
             </p>
             <div className="mt-4 text-sm text-gray-500">
-              حداقل دستمزد: {formatMoneyFa(laws.minimumWage)} تومان | 
+              حداقل دستمزد: {formatMoneyFa(laws.minimumWage)} تومان |
               معافیت مالیات: {formatMoneyFa(laws.taxExemption)} تومان ماهانه
             </div>
           </div>
         </FadeIn>
+
+        {error && (
+          <div className="max-w-4xl mx-auto">
+            <div className="rounded-2xl border border-red-200 bg-red-50 px-6 py-4 text-sm text-red-700">
+              {error}
+            </div>
+          </div>
+        )}
 
         {/* Results Summary */}
         <AnimatePresence>
@@ -222,16 +225,20 @@ export default function SalaryPage() {
                       {showDetails ? 'مخفی کردن جزئیات' : 'نمایش جزئیات'}
                     </motion.button>
                   </div>
-                  
+
                   <div className="grid gap-6 md:grid-cols-3">
-                    <motion.div 
+                    <motion.div
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.1 }}
                       className="rounded-2xl p-6 border"
                       style={{
-                        background: `linear-gradient(135deg, ${colors.primary[50]}, ${colors.primary[100]})`,
-                        borderColor: colors.primary[200]
+                        background: [
+                          'linear-gradient(135deg,',
+                          `${colors.primary[50]},`,
+                          `${colors.primary[100]})`,
+                        ].join(' '),
+                        borderColor: colors.primary[200],
                       }}
                     >
                       <div className="text-sm font-bold mb-2" style={{ color: colors.primary[600] }}>حقوق ناخالص</div>
@@ -239,15 +246,19 @@ export default function SalaryPage() {
                         {formatMoneyFa(result.grossSalary)} تومان
                       </div>
                     </motion.div>
-                    
-                    <motion.div 
+
+                    <motion.div
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.2 }}
                       className="rounded-2xl p-6 border"
                       style={{
-                        background: `linear-gradient(135deg, ${colors.status.error}20, ${colors.status.error}30)`,
-                        borderColor: `${colors.status.error}40`
+                        background: [
+                          'linear-gradient(135deg,',
+                          `${colors.status.error}20,`,
+                          `${colors.status.error}30)`,
+                        ].join(' '),
+                        borderColor: `${colors.status.error}40`,
                       }}
                     >
                       <div className="text-sm font-bold mb-2" style={{ color: colors.status.error }}>مجموع کسورات</div>
@@ -255,15 +266,19 @@ export default function SalaryPage() {
                         {formatMoneyFa(result.summary.totalDeductions)} تومان
                       </div>
                     </motion.div>
-                    
-                    <motion.div 
+
+                    <motion.div
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.3 }}
                       className="rounded-2xl p-6 border"
                       style={{
-                        background: `linear-gradient(135deg, ${colors.status.success}20, ${colors.status.success}30)`,
-                        borderColor: `${colors.status.success}40`
+                        background: [
+                          'linear-gradient(135deg,',
+                          `${colors.status.success}20,`,
+                          `${colors.status.success}30)`,
+                        ].join(' '),
+                        borderColor: `${colors.status.success}40`,
                       }}
                     >
                       <div className="text-sm font-bold mb-2" style={{ color: colors.status.success }}>حقوق خالص</div>
@@ -292,7 +307,7 @@ export default function SalaryPage() {
                     </div>
                     نتیجه محاسبه حداقل دستمزد
                   </h2>
-                  
+
                   <div className="grid gap-6 md:grid-cols-2">
                     <div>
                       <h3 className="text-lg font-bold text-black mb-4 flex items-center gap-2">

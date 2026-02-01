@@ -9,7 +9,7 @@ export async function convertToWebp(image: Buffer): Promise<Buffer> {
   } catch (error) {
     const processingError: ImageProcessingError = {
       code: 'PROCESSING_FAILED',
-      message: error instanceof Error ? error.message : 'خطا در تبدیل به WebP'
+      message: error instanceof Error ? error.message : 'خطا در تبدیل به WebP',
     };
     throw new Error(processingError.message);
   }

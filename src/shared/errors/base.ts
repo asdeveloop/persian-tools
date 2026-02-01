@@ -3,24 +3,21 @@
  * Follows PROJECT_STANDARDS.md error handling requirements
  */
 
-declare global {
-  interface ErrorConstructor {
-    captureStackTrace?(target: Error, constructorOpt?: Function): void;
-  }
-}
-
 // Base error class with error codes
 export abstract class BaseError extends Error {
   abstract readonly code: string;
   abstract readonly category: 'validation' | 'processing' | 'network' | 'filesystem' | 'permission';
-  
+
   constructor(message: string, public override readonly cause?: Error) {
     super(message);
     this.name = this.constructor.name;
-    
+
     // Maintains proper stack trace for where our error was thrown
-    if (typeof Error.captureStackTrace === 'function' && Error.captureStackTrace) {
-      Error.captureStackTrace(this, this.constructor);
+    const captureStackTrace = (Error as ErrorConstructor & {
+      captureStackTrace?: (target: Error, constructorOpt?: Function) => void;
+    }).captureStackTrace;
+    if (typeof captureStackTrace === 'function') {
+      captureStackTrace(this, this.constructor);
     }
   }
 
@@ -51,7 +48,7 @@ export class ProcessingError extends BaseError {
   readonly category = 'processing' as const;
 
   constructor(operation: string, cause?: Error) {
-    super(`خطا در ${operation}: ${cause?.message || 'خطای نامشخص'}`, cause);
+    super(`خطا در ${operation}: ${cause?.message ?? 'خطای نامشخص'}`, cause);
   }
 }
 
@@ -61,7 +58,10 @@ export class FileError extends BaseError {
   readonly category = 'filesystem' as const;
 
   constructor(operation: string, filename?: string, cause?: Error) {
-    super(`خطا در ${operation}${filename ? ` فایل ${filename}` : ''}: ${cause?.message || 'خطای نامشخص'}`, cause);
+    super(
+      `خطا در ${operation}${filename ? ` فایل ${filename}` : ''}: ${cause?.message ?? 'خطای نامشخص'}`,
+      cause,
+    );
   }
 }
 
@@ -93,10 +93,10 @@ export function getUserMessage(error: unknown): string {
   if (isBaseError(error)) {
     return error.message;
   }
-  
+
   if (error instanceof Error) {
     return error.message;
   }
-  
+
   return 'خطای نامشخص رخ داد';
 }

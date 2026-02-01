@@ -12,9 +12,10 @@ export interface PdfToImageItem {
 
 export async function pdfToImages(
   pdfBytes: Uint8Array,
-  _options: PdfToImageOptions = {}
+  options: PdfToImageOptions = {},
 ): Promise<PdfToImageItem[]> {
   try {
+    const { dpi = 150 } = options;
     const pdfDoc = await PDFDocument.load(pdfBytes);
     const pageCount = pdfDoc.getPageCount();
     const images: PdfToImageItem[] = [];
@@ -43,28 +44,28 @@ export async function pdfToImages(
         pageNumber: i + 1,
         imageData: pagePdfBytes,
         width: scaledWidth,
-        height: scaledHeight
+        height: scaledHeight,
       });
     }
 
     return images;
   } catch (error) {
-    throw new Error('خطا در تبدیل PDF به تصویر: ' + (error instanceof Error ? error.message : 'خطای نامشخص'));
+    throw new Error(`خطا در تبدیل PDF به تصویر: ${ error instanceof Error ? error.message : 'خطای نامشخص'}`);
   }
 }
 
 export async function pdfPageToImage(
   pdfBytes: Uint8Array,
   pageNumber: number,
-  options: PdfToImageOptions = {}
+  options: PdfToImageOptions = {},
 ): Promise<PdfToImageItem> {
   const images = await pdfToImages(pdfBytes, options);
   const image = images.find(img => img.pageNumber === pageNumber);
-  
+
   if (!image) {
     throw new Error(`صفحه ${pageNumber} یافت نشد`);
   }
-  
+
   return image;
 }
 
@@ -73,32 +74,41 @@ export async function renderPdfPageToCanvas(
   pdfBytes: Uint8Array,
   pageNumber: number,
   canvas: HTMLCanvasElement,
-  options: PdfToImageOptions = {}
+  options: PdfToImageOptions = {},
 ): Promise<void> {
   const { dpi = 150 } = options;
-  
+
   try {
     // This would typically use PDF.js in a browser environment
     // For now, we'll provide a placeholder implementation
-    const pdfjsLib = (window as unknown as { pdfjsLib: { getDocument: (options: { data: Uint8Array }) => { promise: Promise<{ getPage: (num: number) => Promise<{ getViewport: (options: { scale: number }) => { width: number; height: number } }> }>} } }).pdfjsLib;
+    type PdfJsLib = {
+      getDocument: (docOptions: { data: Uint8Array }) => {
+        promise: Promise<{
+          getPage: (num: number) => Promise<{
+            getViewport: (viewOptions: { scale: number }) => { width: number; height: number };
+          }>;
+        }>;
+      };
+    };
+    const pdfjsLib = (window as unknown as { pdfjsLib: PdfJsLib }).pdfjsLib;
     const loadingTask = pdfjsLib.getDocument({ data: pdfBytes });
     const pdf = await loadingTask.promise;
     const page = await pdf.getPage(pageNumber);
-    
+
     const viewport = page.getViewport({ scale: dpi / 72 });
-    
+
     canvas.height = viewport.height;
     canvas.width = viewport.width;
-    
+
     const context = canvas.getContext('2d');
     if (!context) {
       throw new Error('Canvas context not available');
     }
-    
+
     // Note: page.render is part of PDF.js, not pdf-lib
     // This is a placeholder for the actual PDF.js implementation
-    console.log('Rendering page with PDF.js (placeholder)');
+    void context;
   } catch (error) {
-    throw new Error('خطا در رندر صفحه PDF: ' + (error instanceof Error ? error.message : 'خطای نامشخص'));
+    throw new Error(`خطا در رندر صفحه PDF: ${ error instanceof Error ? error.message : 'خطای نامشخص'}`);
   }
 }

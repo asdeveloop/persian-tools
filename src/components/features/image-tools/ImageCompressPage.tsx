@@ -11,10 +11,12 @@ export default function ImageCompressPage() {
 
   const handleFileSelect = async (files: FileList | null) => {
     setError(null);
-    if (!files || files.length === 0) return;
+    if (!files || files.length === 0) {
+      return;
+    }
 
     const file = files[0];
-    if (!file || !file.type.startsWith('image/')) {
+    if (!file?.type.startsWith('image/')) {
       setError('فقط فایل‌های تصویری قابل انتخاب هستند.');
       return;
     }
@@ -23,11 +25,13 @@ export default function ImageCompressPage() {
   };
 
   const formatFileSize = (bytes: number): string => {
-    if (bytes === 0) return '0 Bytes';
+    if (bytes === 0) {
+      return '0 Bytes';
+    }
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2)) } ${ sizes[i]}`;
   };
 
   return (
@@ -48,7 +52,7 @@ export default function ImageCompressPage() {
                 onChange={(e) => handleFileSelect(e.target.files)}
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
               />
-              
+
               <div className="space-y-6">
                 <div className="mx-auto h-20 w-20 rounded-full bg-blue-100 flex items-center justify-center">
                   <svg className="h-10 w-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">

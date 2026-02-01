@@ -18,7 +18,7 @@ export const UI_STANDARDS = {
     dangerDark: '#dc2626',
     info: '#3b82f6',
     infoDark: '#2563eb',
-    
+
     // رنگ‌های خاکستری
     gray: {
       50: '#fafafa',
@@ -31,9 +31,9 @@ export const UI_STANDARDS = {
       700: '#3f3f46',
       800: '#27272a',
       900: '#18181b',
-    }
+    },
   },
-  
+
   // سایه‌ها
   shadows: {
     sm: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
@@ -43,7 +43,7 @@ export const UI_STANDARDS = {
     '2xl': '0 25px 50px -12px rgb(0 0 0 / 0.25)',
     glow: '0 0 20px rgb(0 112 243 / 0.3)',
   },
-  
+
   // گوشه‌ها
   borderRadius: {
     sm: '0.375rem',
@@ -54,7 +54,7 @@ export const UI_STANDARDS = {
     '3xl': '2rem',
     full: '9999px',
   },
-  
+
   // فاصله‌ها
   spacing: {
     xs: '0.25rem',
@@ -65,7 +65,7 @@ export const UI_STANDARDS = {
     '2xl': '3rem',
     '3xl': '4rem',
   },
-  
+
   // تایپوگرافی
   typography: {
     fontFamily: '"IRANSansX", ui-sans-serif, system-ui',
@@ -94,7 +94,7 @@ export const UI_STANDARDS = {
       relaxed: '1.75',
     },
   },
-  
+
   // انیمیشن‌ها
   transitions: {
     fast: '150ms',
@@ -102,7 +102,7 @@ export const UI_STANDARDS = {
     slow: '300ms',
     slower: '500ms',
   },
-  
+
   // نقاطه شکست ریسپانسیو
   breakpoints: {
     sm: '640px',
@@ -111,7 +111,7 @@ export const UI_STANDARDS = {
     xl: '1280px',
     '2xl': '1536px',
   },
-  
+
   // زون‌ها
   zIndex: {
     hide: -1,
@@ -149,7 +149,7 @@ export const COMPONENT_STANDARDS = {
     },
     base: 'inline-flex items-center justify-center font-bold focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-sm hover:shadow-md rounded-full',
   },
-  
+
   // کارت‌ها
   card: {
     variants: {
@@ -159,7 +159,7 @@ export const COMPONENT_STANDARDS = {
     },
     base: 'rounded-2xl transition-all duration-300',
   },
-  
+
   // ورودی‌ها
   input: {
     variants: {
@@ -169,14 +169,14 @@ export const COMPONENT_STANDARDS = {
     },
     base: 'w-full px-4 py-3 rounded-xl text-gray-900 placeholder-gray-400 placeholder-opacity-60 focus:outline-none focus:ring-2 transition-all duration-200',
   },
-  
+
   // ناوبری
   navigation: {
     header: 'sticky top-0 z-50 glass-strong border-b border-white/20 shadow-lg',
     dropdown: 'absolute top-full left-0 mt-2 w-80 glass-strong rounded-2xl shadow-2xl border border-white/20 py-4 overflow-hidden',
     mobileMenu: 'lg:hidden border-t border-white/20 glass-strong',
   },
-  
+
   // فرم‌ها
   form: {
     fieldset: 'space-y-6',
@@ -185,7 +185,7 @@ export const COMPONENT_STANDARDS = {
     helper: 'text-xs text-gray-500 bg-gray-50 px-3 py-2 rounded-lg',
     error: 'text-sm text-red-600 bg-red-50 px-6 py-3 rounded-xl border border-red-200',
   },
-  
+
   // نتایج
   result: {
     card: 'bg-gradient-to-br from-blue-50 to-blue-100 p-8 rounded-2xl border border-blue-200 shadow-lg',
@@ -203,41 +203,41 @@ export const ANIMATION_STANDARDS = {
     animate: { opacity: 1, y: 0 },
     transition: { duration: 0.5, ease: [0.25, 0.1, 0.25, 1.0] },
   },
-  
+
   slideIn: {
     initial: { opacity: 0, x: -20 },
     animate: { opacity: 1, x: 0 },
     transition: { duration: 0.3 },
   },
-  
+
   scaleIn: {
     initial: { opacity: 0, scale: 0.95 },
     animate: { opacity: 1, scale: 1 },
     transition: { duration: 0.2 },
   },
-  
+
   // انیمیشن‌های hover
   hover: {
     scale: 1.05,
     transition: { duration: 0.2 },
   },
-  
+
   lift: {
     y: -5,
     transition: { duration: 0.3 },
   },
-  
+
   // انیمیشن‌های loading
   shimmer: {
     background: 'linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%)',
     backgroundSize: '200px 100%',
     animation: 'shimmer 1.5s infinite',
   },
-  
+
   pulse: {
     animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
   },
-  
+
   // انیمیشن‌های floating
   float: {
     animation: 'float 3s ease-in-out infinite',
@@ -252,28 +252,28 @@ export const A11Y_STANDARDS = {
     'aria-describedby': 'for additional context',
     'aria-expanded': 'for toggle buttons',
   },
-  
+
   // Keyboard navigation
   keyboard: {
     'tabIndex': '0 for focusable elements',
     'onKeyDown': 'handle keyboard events',
     'role': 'appropriate semantic roles',
   },
-  
+
   // Screen readers
   screenReader: {
     'aria-live': 'polite for dynamic content',
     'aria-atomic': 'true for important updates',
     'aria-busy': 'true for loading states',
   },
-  
+
   // Color contrast
   contrast: {
     'text': 'minimum 4.5:1 ratio',
     'large-text': 'minimum 3:1 ratio',
     'ui-components': 'minimum 3:1 ratio',
   },
-  
+
   // Focus management
   focus: {
     'outline': '2px solid currentColor',
@@ -290,7 +290,7 @@ export const PERFORMANCE_STANDARDS = {
     'rootMargin': '50px',
     'triggerOnce': 'true',
   },
-  
+
   // Image optimization
   images: {
     'loading': 'lazy',
@@ -298,14 +298,14 @@ export const PERFORMANCE_STANDARDS = {
     'sizes': 'responsive',
     'srcSet': 'multiple resolutions',
   },
-  
+
   // Bundle optimization
   bundle: {
     'codeSplitting': 'route-based',
     'treeShaking': 'remove unused code',
     'minification': 'production builds',
   },
-  
+
   // Runtime performance
   runtime: {
     'memo': 'for expensive components',

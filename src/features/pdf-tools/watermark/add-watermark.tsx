@@ -16,6 +16,8 @@ type WatermarkImage = {
   bytes: Uint8Array;
 };
 
+type WatermarkPosition = 'center' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
+
 export default function AddWatermarkPage() {
   const [selectedFile, setSelectedFile] = useState<SelectedFile | null>(null);
   const [watermarkImage, setWatermarkImage] = useState<WatermarkImage | null>(null);
@@ -24,19 +26,27 @@ export default function AddWatermarkPage() {
   const [progress, setProgress] = useState(0);
   const [watermarkType, setWatermarkType] = useState<'text' | 'image'>('text');
   const [watermarkText, setWatermarkText] = useState('محافظت شده');
-  const [position, setPosition] = useState<'center' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'>('center');
+  const [position, setPosition] = useState<WatermarkPosition>('center');
   const [opacity, setOpacity] = useState(0.5);
   const [rotation, setRotation] = useState(45);
   const [size, setSize] = useState(50);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const watermarkInputRef = useRef<HTMLInputElement>(null);
+  const watermarkTextId = 'watermark-text-input';
+  const watermarkImageId = 'watermark-image-input';
+  const positionSelectId = 'watermark-position-select';
+  const opacityRangeId = 'watermark-opacity-range';
+  const rotationRangeId = 'watermark-rotation-range';
+  const sizeRangeId = 'watermark-size-range';
 
-  const canAddWatermark = selectedFile !== null && !busy && 
+  const canAddWatermark = selectedFile !== null && !busy &&
     (watermarkType === 'text' ? watermarkText.trim() : watermarkImage);
 
   const handleFileSelect = async (files: FileList | null) => {
     setError(null);
-    if (!files || files.length === 0) return;
+    if (!files || files.length === 0) {
+      return;
+    }
 
     const file = files[0];
     if (!file || file.type !== 'application/pdf') {
@@ -50,10 +60,12 @@ export default function AddWatermarkPage() {
 
   const handleWatermarkImageSelect = async (files: FileList | null) => {
     setError(null);
-    if (!files || files.length === 0) return;
+    if (!files || files.length === 0) {
+      return;
+    }
 
     const file = files[0];
-    if (!file || !file.type.startsWith('image/')) {
+    if (!file?.type.startsWith('image/')) {
       setError('فقط فایل‌های تصویری قابل انتخاب هستند.');
       return;
     }
@@ -69,7 +81,9 @@ export default function AddWatermarkPage() {
   };
 
   const onAddWatermark = async () => {
-    if (!selectedFile) return;
+    if (!selectedFile) {
+      return;
+    }
 
     setError(null);
     setBusy(true);
@@ -92,7 +106,7 @@ export default function AddWatermarkPage() {
         position,
         opacity,
         rotation,
-        size
+        size,
       };
 
       const validation = validateWatermarkOptions(options);
@@ -103,7 +117,7 @@ export default function AddWatermarkPage() {
       setProgress(30);
       const watermarkedBytes = await addWatermark(pdfBytes, options);
       setProgress(90);
-      
+
       const blob = new Blob([watermarkedBytes], { type: 'application/pdf' });
       const url = URL.createObjectURL(blob);
 
@@ -126,11 +140,13 @@ export default function AddWatermarkPage() {
   };
 
   const formatFileSize = (bytes: number): string => {
-    if (bytes === 0) return '0 Bytes';
+    if (bytes === 0) {
+      return '0 Bytes';
+    }
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2)) } ${ sizes[i]}`;
   };
 
   return (
@@ -153,7 +169,7 @@ export default function AddWatermarkPage() {
                 onChange={(e) => handleFileSelect(e.target.files)}
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
               />
-              
+
               <div className="space-y-6">
                 <div className="mx-auto h-20 w-20 rounded-full bg-red-100 flex items-center justify-center">
                   <svg className="h-10 w-10 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -203,11 +219,11 @@ export default function AddWatermarkPage() {
             {/* Watermark Settings */}
             <Card className="p-6">
               <h2 className="text-lg font-semibold text-slate-900 mb-4">تنظیمات واترمارک</h2>
-              
+
               <div className="space-y-6">
                 {/* Watermark Type */}
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-3">نوع واترمارک:</label>
+                <fieldset>
+                  <legend className="block text-sm font-medium text-slate-700 mb-3">نوع واترمارک:</legend>
                   <div className="flex space-x-4 space-x-reverse">
                     <label className="flex items-center">
                       <input
@@ -230,15 +246,19 @@ export default function AddWatermarkPage() {
                       <span className="text-sm text-slate-700">تصویر</span>
                     </label>
                   </div>
-                </div>
+                </fieldset>
 
                 {/* Content */}
                 {watermarkType === 'text' ? (
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                    <label
+                      htmlFor={watermarkTextId}
+                      className="block text-sm font-medium text-slate-700 mb-2"
+                    >
                       متن واترمارک
                     </label>
                     <input
+                      id={watermarkTextId}
                       type="text"
                       value={watermarkText}
                       onChange={(e) => setWatermarkText(e.target.value)}
@@ -248,15 +268,18 @@ export default function AddWatermarkPage() {
                   </div>
                 ) : (
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                    <label
+                      htmlFor={watermarkImageId}
+                      className="block text-sm font-medium text-slate-700 mb-2"
+                    >
                       تصویر واترمارک
                     </label>
                     {watermarkImage ? (
                       <div className="flex items-center justify-between p-4 border border-slate-200 rounded-lg">
                         <div className="flex items-center space-x-3 space-x-reverse">
-                          <img 
-                            src={watermarkImage.url} 
-                            alt="Watermark" 
+                          <img
+                            src={watermarkImage.url}
+                            alt="Watermark"
                             className="h-12 w-12 object-cover rounded"
                           />
                           <div>
@@ -276,6 +299,7 @@ export default function AddWatermarkPage() {
                     ) : (
                       <div className="border-2 border-dashed border-slate-300 rounded-lg p-6 text-center hover:border-red-300 hover:bg-slate-50 transition-all duration-200">
                         <input
+                          id={watermarkImageId}
                           ref={watermarkInputRef}
                           type="file"
                           accept="image/*"
@@ -295,10 +319,16 @@ export default function AddWatermarkPage() {
 
                 {/* Position */}
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">موقعیت:</label>
+                  <label
+                    htmlFor={positionSelectId}
+                    className="block text-sm font-medium text-slate-700 mb-2"
+                  >
+                    موقعیت:
+                  </label>
                   <select
+                    id={positionSelectId}
                     value={position}
-                    onChange={(e) => setPosition(e.target.value as any)}
+                    onChange={(e) => setPosition(e.target.value as WatermarkPosition)}
                     className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
                   >
                     <option value="center">مرکز</option>
@@ -311,10 +341,14 @@ export default function AddWatermarkPage() {
 
                 {/* Opacity */}
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                  <label
+                    htmlFor={opacityRangeId}
+                    className="block text-sm font-medium text-slate-700 mb-2"
+                  >
                     شفافیت: {Math.round(opacity * 100)}%
                   </label>
                   <input
+                    id={opacityRangeId}
                     type="range"
                     min="0"
                     max="1"
@@ -327,10 +361,14 @@ export default function AddWatermarkPage() {
 
                 {/* Rotation */}
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                  <label
+                    htmlFor={rotationRangeId}
+                    className="block text-sm font-medium text-slate-700 mb-2"
+                  >
                     چرخش: {rotation}°
                   </label>
                   <input
+                    id={rotationRangeId}
                     type="range"
                     min="-180"
                     max="180"
@@ -343,10 +381,14 @@ export default function AddWatermarkPage() {
 
                 {/* Size */}
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                  <label
+                    htmlFor={sizeRangeId}
+                    className="block text-sm font-medium text-slate-700 mb-2"
+                  >
                     اندازه: {size}px
                   </label>
                   <input
+                    id={sizeRangeId}
                     type="range"
                     min="20"
                     max="200"
@@ -400,20 +442,20 @@ export default function AddWatermarkPage() {
             <Card className="p-8 text-center max-w-sm w-full mx-4">
               <div className="animate-spin h-12 w-12 border-4 border-red-600 border-t-transparent rounded-full mx-auto mb-4"></div>
               <p className="text-lg font-semibold text-slate-900 mb-4">در حال افزودن واترمارک...</p>
-              
+
               {progress > 0 && (
                 <div className="w-full bg-slate-200 rounded-full h-2 mb-2">
-                  <div 
+                  <div
                     className="bg-red-600 h-2 rounded-full transition-all duration-300"
                     style={{ width: `${progress}%` }}
                   ></div>
                 </div>
               )}
-              
+
               <p className="text-sm text-slate-600">
                 {progress < 50 ? `در حال پردازش فایل (${Math.round(progress)}%)` :
-                 progress < 90 ? `در حال افزودن واترمارک (${Math.round(progress)}%)` :
-                 `در حال آماده‌سازی دانلود (${Math.round(progress)}%)`}
+                  progress < 90 ? `در حال افزودن واترمارک (${Math.round(progress)}%)` :
+                    `در حال آماده‌سازی دانلود (${Math.round(progress)}%)`}
               </p>
             </Card>
           </div>

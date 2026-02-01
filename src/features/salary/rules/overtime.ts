@@ -2,12 +2,12 @@
  * قوانین مربوط به محاسبه اضافه‌کاری
  */
 
-import { 
-  OVERTIME_MULTIPLIER_NORMAL, 
-  OVERTIME_MULTIPLIER_NIGHT, 
+import {
+  OVERTIME_MULTIPLIER_NORMAL,
+  OVERTIME_MULTIPLIER_NIGHT,
   OVERTIME_MULTIPLIER_HOLIDAY,
   STANDARD_WORKING_HOURS_PER_DAY,
-  STANDARD_WORKING_DAYS_PER_MONTH 
+  STANDARD_WORKING_DAYS_PER_MONTH,
 } from '../constants';
 
 export type OvertimeType = 'normal' | 'night' | 'holiday';
@@ -22,13 +22,15 @@ export type OvertimeType = 'normal' | 'night' | 'holiday';
 export function calculateOvertime(
   baseSalary: number,
   overtimeHours: number,
-  type: OvertimeType = 'normal'
+  type: OvertimeType = 'normal',
 ): number {
-  if (overtimeHours <= 0) return 0;
-  
+  if (overtimeHours <= 0) {
+    return 0;
+  }
+
   const hourlyRate = calculateHourlyRate(baseSalary);
   const multiplier = getOvertimeMultiplier(type);
-  
+
   return hourlyRate * overtimeHours * multiplier;
 }
 
@@ -68,14 +70,14 @@ export function getOvertimeMultiplier(type: OvertimeType): number {
  */
 export function calculateTotalOvertime(
   baseSalary: number,
-  normalHours: number = 0,
-  nightHours: number = 0,
-  holidayHours: number = 0
+  normalHours = 0,
+  nightHours = 0,
+  holidayHours = 0,
 ): number {
   const normalAmount = calculateOvertime(baseSalary, normalHours, 'normal');
   const nightAmount = calculateOvertime(baseSalary, nightHours, 'night');
   const holidayAmount = calculateOvertime(baseSalary, holidayHours, 'holiday');
-  
+
   return normalAmount + nightAmount + holidayAmount;
 }
 
@@ -85,5 +87,9 @@ export function calculateTotalOvertime(
  * @returns آیا ساعات معتبر است؟
  */
 export function isValidOvertimeHours(overtimeHours: number): boolean {
-  return Number.isFinite(overtimeHours) && overtimeHours >= 0 && overtimeHours <= 120; // حداکثر ۱۲۰ ساعت در ماه
+  // حداکثر ۱۲۰ ساعت در ماه
+  const maxMonthlyOvertime = 120;
+  return Number.isFinite(overtimeHours)
+    && overtimeHours >= 0
+    && overtimeHours <= maxMonthlyOvertime;
 }

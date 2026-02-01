@@ -25,7 +25,9 @@ export default function PdfToImagePage() {
 
   const handleFileSelect = async (files: FileList | null) => {
     setError(null);
-    if (!files || files.length === 0) return;
+    if (!files || files.length === 0) {
+      return;
+    }
 
     const file = files[0];
     if (!file || file.type !== 'application/pdf') {
@@ -39,7 +41,9 @@ export default function PdfToImagePage() {
   };
 
   const onConvert = async () => {
-    if (!selectedFile) return;
+    if (!selectedFile) {
+      return;
+    }
 
     setError(null);
     setBusy(true);
@@ -52,13 +56,13 @@ export default function PdfToImagePage() {
       const options: PdfToImageOptions = {
         format,
         quality,
-        dpi
+        dpi,
       };
 
       setProgress(20);
       const convertedImages = await pdfToImages(pdfBytes, options);
       setProgress(80);
-      
+
       setImages(convertedImages);
       setProgress(100);
     } catch (e) {
@@ -70,19 +74,19 @@ export default function PdfToImagePage() {
     }
   };
 
-  const downloadImage = async (image: PdfToImageItem, _index: number) => {
+  const downloadImage = async (image: PdfToImageItem) => {
     try {
       // Create a blob from the image data
       const blob = new Blob([image.imageData], { type: 'image/png' });
       const url = URL.createObjectURL(blob);
-      
+
       const a = document.createElement('a');
       a.href = url;
       a.download = `page-${image.pageNumber}.${format}`;
       document.body.appendChild(a);
       a.click();
       a.remove();
-      
+
       URL.revokeObjectURL(url);
     } catch (e) {
       setError('خطا در دانلود تصویر');
@@ -93,7 +97,7 @@ export default function PdfToImagePage() {
     for (let i = 0; i < images.length; i++) {
       const image = images[i];
       if (image) {
-        await downloadImage(image, i);
+        await downloadImage(image);
         // Small delay between downloads
         await new Promise(resolve => setTimeout(resolve, 100));
       }
@@ -120,7 +124,7 @@ export default function PdfToImagePage() {
                 onChange={(e) => handleFileSelect(e.target.files)}
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
               />
-              
+
               <div className="space-y-6">
                 <div className="mx-auto h-20 w-20 rounded-full bg-red-100 flex items-center justify-center">
                   <svg className="h-10 w-10 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -266,7 +270,7 @@ export default function PdfToImagePage() {
                     دانلود همه
                   </Button>
                 </div>
-                
+
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                   {images.map((image, index) => (
                     <div key={index} className="border border-slate-200 rounded-lg p-4">
@@ -286,7 +290,7 @@ export default function PdfToImagePage() {
                         <Button
                           type="button"
                           size="sm"
-                          onClick={() => downloadImage(image, index)}
+                          onClick={() => downloadImage(image)}
                         >
                           دانلود
                         </Button>
@@ -338,20 +342,20 @@ export default function PdfToImagePage() {
             <Card className="p-8 text-center max-w-sm w-full mx-4">
               <div className="animate-spin h-12 w-12 border-4 border-red-600 border-t-transparent rounded-full mx-auto mb-4"></div>
               <p className="text-lg font-semibold text-slate-900 mb-4">در حال تبدیل PDF به تصویر...</p>
-              
+
               {progress > 0 && (
                 <div className="w-full bg-slate-200 rounded-full h-2 mb-2">
-                  <div 
+                  <div
                     className="bg-red-600 h-2 rounded-full transition-all duration-300"
                     style={{ width: `${progress}%` }}
                   ></div>
                 </div>
               )}
-              
+
               <p className="text-sm text-slate-600">
                 {progress < 50 ? `در حال پردازش PDF (${Math.round(progress)}%)` :
-                 progress < 80 ? `در حال تبدیل صفحات (${Math.round(progress)}%)` :
-                 `در حال آماده‌سازی دانلود (${Math.round(progress)}%)`}
+                  progress < 80 ? `در حال تبدیل صفحات (${Math.round(progress)}%)` :
+                    `در حال آماده‌سازی دانلود (${Math.round(progress)}%)`}
               </p>
             </Card>
           </div>

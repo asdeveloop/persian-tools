@@ -21,5 +21,5 @@ export type {
   ResizeOptions,
   RotateOptions,
   CropOptions,
-  ImageProcessingError
+  ImageProcessingError,
 } from './types';

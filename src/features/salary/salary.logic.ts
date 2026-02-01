@@ -34,7 +34,11 @@ function calculateGrossToNet(input: SalaryInput): SalaryOutput {
   if (!Number.isFinite(baseSalary) || baseSalary < 0) {
     throw new Error('حقوق پایه نامعتبر است.');
   }
-  if (!Number.isFinite(customInsuranceRate) || customInsuranceRate < 0 || customInsuranceRate > 100) {
+  if (
+    !Number.isFinite(customInsuranceRate)
+    || customInsuranceRate < 0
+    || customInsuranceRate > 100
+  ) {
     throw new Error('درصد بیمه باید بین ۰ تا ۱۰۰ باشد.');
   }
   if (!Number.isFinite(otherDeductions) || otherDeductions < 0) {
@@ -59,7 +63,7 @@ function calculateGrossToNet(input: SalaryInput): SalaryOutput {
   }
 
   // اعمال تخفیف مناطق کمتر توسعه‌یافته
-  let taxAmount = monthlyTaxBeforeExemption - taxExemption;
+  const taxAmount = monthlyTaxBeforeExemption - taxExemption;
 
   // محاسبه حقوق خالص
   const totalDeductions = insuranceAmount + taxAmount + otherDeductions;
@@ -137,7 +141,8 @@ export function calculateMinimumWage(input: SalaryInput): MinimumWageOutput {
   // محاسبه حقوق پایه بر اساس سابقه کار
   let baseSalary = MINIMUM_WAGE_1404;
   if (workExperienceYears > 0) {
-    const experienceBonus = Math.floor(workExperienceYears / 5) * 500_000; // ۵۰۰ هزار تومان به ازای هر ۵ سال سابقه
+    const experienceBonus = Math.floor(workExperienceYears / 5) * 500_000;
+    // ۵۰۰ هزار تومان به ازای هر ۵ سال سابقه
     baseSalary += experienceBonus;
   }
 
@@ -155,7 +160,9 @@ export function calculateMinimumWage(input: SalaryInput): MinimumWageOutput {
   }
 
   const totalGross = baseSalary + housingAllowance + foodAllowance + familyAllowance;
-  const experienceBonus = workExperienceYears > 0 ? Math.floor(workExperienceYears / 5) * 500_000 : 0;
+  const experienceBonus = workExperienceYears > 0
+    ? Math.floor(workExperienceYears / 5) * 500_000
+    : 0;
 
   // Calculate insurance and tax
   const insuranceAmount = (totalGross * customInsuranceRate) / 100;
@@ -181,11 +188,13 @@ function calculateProgressiveTax(annualIncome: number): number {
   let tax = 0;
 
   for (const bracket of TAX_BRACKETS_1404) {
-    if (annualIncome <= bracket.from) break;
+    if (annualIncome <= bracket.from) {
+      break;
+    }
 
     const taxableInBracket = Math.min(
       annualIncome - bracket.from,
-      bracket.to - bracket.from
+      bracket.to - bracket.from,
     );
 
     if (taxableInBracket > 0) {
@@ -198,7 +207,7 @@ function calculateProgressiveTax(annualIncome: number): number {
 
 function getAppliedBrackets(annualIncome: number): TaxBracket[] {
   return TAX_BRACKETS_1404.filter(bracket =>
-    annualIncome > bracket.from
+    annualIncome > bracket.from,
   );
 }
 

@@ -9,7 +9,9 @@ export function setSessionJson<T>(key: string, value: T): void {
 export function getSessionJson<T>(key: string): T | null {
   try {
     const raw = sessionStorage.getItem(key);
-    if (!raw) return null;
+    if (!raw) {
+      return null;
+    }
     return JSON.parse(raw) as T;
   } catch {
     return null;

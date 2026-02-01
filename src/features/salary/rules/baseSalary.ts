@@ -2,10 +2,10 @@
  * قوانین مربوط به محاسبه حقوق پایه
  */
 
-import { 
-  MINIMUM_WAGE_1404, 
+import {
+  MINIMUM_WAGE_1404,
   EXPERIENCE_BONUS_PER_5_YEARS,
-  STANDARD_WORKING_DAYS_PER_MONTH 
+  STANDARD_WORKING_DAYS_PER_MONTH,
 } from '../constants';
 
 /**
@@ -15,13 +15,13 @@ import {
  * @returns حقوق پایه محاسبه شده (تومان)
  */
 export function calculateBaseSalary(
-  baseSalary: number, 
-  workingDays: number = STANDARD_WORKING_DAYS_PER_MONTH
+  baseSalary: number,
+  workingDays: number = STANDARD_WORKING_DAYS_PER_MONTH,
 ): number {
   if (baseSalary < MINIMUM_WAGE_1404) {
     throw new Error(`حقوق پایه نمی‌تواند کمتر از حداقل دستمزد (${MINIMUM_WAGE_1404.toLocaleString('fa-IR')} تومان) باشد.`);
   }
-  
+
   const dailySalary = baseSalary / STANDARD_WORKING_DAYS_PER_MONTH;
   return dailySalary * workingDays;
 }
@@ -32,8 +32,10 @@ export function calculateBaseSalary(
  * @returns مبلغ پاداش سابقه کار (تومان)
  */
 export function calculateExperienceBonus(workExperienceYears: number): number {
-  if (workExperienceYears <= 0) return 0;
-  
+  if (workExperienceYears <= 0) {
+    return 0;
+  }
+
   const fiveYearPeriods = Math.floor(workExperienceYears / 5);
   return fiveYearPeriods * EXPERIENCE_BONUS_PER_5_YEARS;
 }
@@ -47,12 +49,12 @@ export function calculateExperienceBonus(workExperienceYears: number): number {
  */
 export function calculateTotalBaseSalary(
   baseSalary: number,
-  workExperienceYears: number = 0,
-  workingDays: number = STANDARD_WORKING_DAYS_PER_MONTH
+  workExperienceYears = 0,
+  workingDays: number = STANDARD_WORKING_DAYS_PER_MONTH,
 ): number {
   const calculatedBaseSalary = calculateBaseSalary(baseSalary, workingDays);
   const experienceBonus = calculateExperienceBonus(workExperienceYears);
-  
+
   return calculatedBaseSalary + experienceBonus;
 }
 

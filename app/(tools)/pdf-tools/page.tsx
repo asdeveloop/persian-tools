@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     'تقسیم PDF',
     'واترمارک PDF',
     'رمزگذاری PDF',
-    'PDF فارسی'
+    'PDF فارسی',
   ],
   openGraph: {
     title: 'ابزارهای PDF - جعبه ابزار فارسی',

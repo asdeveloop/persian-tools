@@ -1,11 +1,11 @@
-import { PDFDocument, PDFPage, StandardFonts, rgb } from 'pdf-lib';
+import { PDFDocument, PDFPage, StandardFonts, rgb, degrees } from 'pdf-lib';
 import type { WatermarkOptions } from '../types';
 
 export type { WatermarkOptions } from '../types';
 
 export async function addWatermark(
   pdfBytes: Uint8Array,
-  options: WatermarkOptions
+  options: WatermarkOptions,
 ): Promise<Uint8Array> {
   const {
     type,
@@ -13,7 +13,7 @@ export async function addWatermark(
     position = 'center',
     opacity = 0.5,
     rotation = 45,
-    size = 50
+    size = 50,
   } = options;
 
   if (!content) {
@@ -35,7 +35,7 @@ export async function addWatermark(
           rotation,
           size,
           pageWidth: width,
-          pageHeight: height
+          pageHeight: height,
         });
       } else if (type === 'image') {
         await addImageWatermark(page, content as Uint8Array, {
@@ -44,14 +44,14 @@ export async function addWatermark(
           rotation,
           size,
           pageWidth: width,
-          pageHeight: height
+          pageHeight: height,
         });
       }
     }
 
     return await pdf.save();
   } catch (error) {
-    throw new Error('خطا در افزودن واترمارک: ' + (error instanceof Error ? error.message : 'خطای نامشخص'));
+    throw new Error(`خطا در افزودن واترمارک: ${ error instanceof Error ? error.message : 'خطای نامشخص'}`);
   }
 }
 
@@ -65,10 +65,10 @@ async function addTextWatermark(
     size: number;
     pageWidth: number;
     pageHeight: number;
-  }
+  },
 ) {
   const { position, opacity, rotation, size, pageWidth, pageHeight } = options;
-  
+
   const font = await page.doc.embedFont(StandardFonts.Helvetica);
   const textWidth = font.widthOfTextAtSize(text, size);
   const textHeight = size;
@@ -78,7 +78,7 @@ async function addTextWatermark(
     textWidth,
     textHeight,
     pageWidth,
-    pageHeight
+    pageHeight,
   );
 
   page.drawText(text, {
@@ -88,7 +88,7 @@ async function addTextWatermark(
     font,
     color: rgb(0.5, 0.5, 0.5),
     opacity,
-    rotate: { type: 'degrees' as const, angle: rotation }
+    rotate: degrees(rotation),
   });
 }
 
@@ -102,10 +102,10 @@ async function addImageWatermark(
     size: number;
     pageWidth: number;
     pageHeight: number;
-  }
+  },
 ) {
   const { position, opacity, rotation, size, pageWidth, pageHeight } = options;
-  
+
   try {
     // Try to embed as PNG first
     let image;
@@ -126,7 +126,7 @@ async function addImageWatermark(
       scaledWidth,
       scaledHeight,
       pageWidth,
-      pageHeight
+      pageHeight,
     );
 
     page.drawImage(image, {
@@ -135,7 +135,7 @@ async function addImageWatermark(
       width: scaledWidth,
       height: scaledHeight,
       opacity,
-      rotate: { type: 'degrees' as const, angle: rotation }
+      rotate: degrees(rotation),
     });
   } catch (error) {
     throw new Error('خطا در پردازش تصویر واترمارک');
@@ -147,7 +147,7 @@ function calculatePosition(
   contentWidth: number,
   contentHeight: number,
   pageWidth: number,
-  pageHeight: number
+  pageHeight: number,
 ): { x: number; y: number } {
   const margin = 50;
 
@@ -164,7 +164,7 @@ function calculatePosition(
     default:
       return {
         x: (pageWidth - contentWidth) / 2,
-        y: (pageHeight - contentHeight) / 2
+        y: (pageHeight - contentHeight) / 2,
       };
   }
 }
@@ -204,7 +204,7 @@ export function validateWatermarkOptions(options: WatermarkOptions): { isValid: 
 export async function addWatermarkWithProgress(
   pdfBytes: Uint8Array,
   options: WatermarkOptions,
-  onProgress?: (progress: number) => void
+  onProgress?: (progress: number) => void,
 ): Promise<Uint8Array> {
   const validation = validateWatermarkOptions(options);
   if (!validation.isValid) {
@@ -221,21 +221,21 @@ export async function addWatermarkWithProgress(
 
       if (options.type === 'text') {
         await addTextWatermark(page, options.content as string, {
-          position: options.position || 'center',
-          opacity: options.opacity || 0.5,
-          rotation: options.rotation || 45,
-          size: options.size || 50,
+          position: options.position ?? 'center',
+          opacity: options.opacity ?? 0.5,
+          rotation: options.rotation ?? 45,
+          size: options.size ?? 50,
           pageWidth: width,
-          pageHeight: height
+          pageHeight: height,
         });
       } else if (options.type === 'image') {
         await addImageWatermark(page, options.content as Uint8Array, {
-          position: options.position || 'center',
-          opacity: options.opacity || 0.5,
-          rotation: options.rotation || 45,
-          size: options.size || 50,
+          position: options.position ?? 'center',
+          opacity: options.opacity ?? 0.5,
+          rotation: options.rotation ?? 45,
+          size: options.size ?? 50,
           pageWidth: width,
-          pageHeight: height
+          pageHeight: height,
         });
       }
 
@@ -246,6 +246,6 @@ export async function addWatermarkWithProgress(
 
     return await pdf.save();
   } catch (error) {
-    throw new Error('خطا در افزودن واترمارک: ' + (error instanceof Error ? error.message : 'خطای نامشخص'));
+    throw new Error(`خطا در افزودن واترمارک: ${ error instanceof Error ? error.message : 'خطای نامشخص'}`);
   }
 }

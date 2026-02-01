@@ -1,5 +1,14 @@
 import { describe, expect, it } from 'vitest';
+import { PDFDocument } from 'pdf-lib';
 import { mergePdfs, getPdfInfo, reorderItems } from './merge-pdf.logic';
+
+async function createPdfBytes(pageCount = 1): Promise<Uint8Array> {
+  const doc = await PDFDocument.create();
+  for (let i = 0; i < pageCount; i += 1) {
+    doc.addPage();
+  }
+  return new Uint8Array(await doc.save());
+}
 
 describe('mergePdfs', () => {
   it('should throw when empty array', async () => {
@@ -8,8 +17,8 @@ describe('mergePdfs', () => {
 
   it('should merge PDFs with default options', async () => {
     const items = [
-      { name: 'test1.pdf', bytes: new Uint8Array([1, 2, 3]), order: 0 },
-      { name: 'test2.pdf', bytes: new Uint8Array([4, 5, 6]), order: 1 },
+      { name: 'test1.pdf', bytes: await createPdfBytes(1), order: 0 },
+      { name: 'test2.pdf', bytes: await createPdfBytes(2), order: 1 },
     ];
 
     const merged = await mergePdfs(items);
@@ -18,8 +27,8 @@ describe('mergePdfs', () => {
 
   it('should merge PDFs with custom options', async () => {
     const items = [
-      { name: 'test1.pdf', bytes: new Uint8Array([1, 2, 3]), order: 0 },
-      { name: 'test2.pdf', bytes: new Uint8Array([4, 5, 6]), order: 1 },
+      { name: 'test1.pdf', bytes: await createPdfBytes(1), order: 0 },
+      { name: 'test2.pdf', bytes: await createPdfBytes(2), order: 1 },
     ];
 
     const merged = await mergePdfs(items, {
@@ -33,7 +42,7 @@ describe('mergePdfs', () => {
 
 describe('getPdfInfo', () => {
   it('should get PDF info', async () => {
-    const pdfBytes = new Uint8Array([1, 2, 3, 4, 5]);
+    const pdfBytes = await createPdfBytes(3);
 
     const info = await getPdfInfo(pdfBytes);
 
@@ -51,9 +60,9 @@ describe('reorderItems', () => {
 
     const reordered = reorderItems(items, 0, 2);
 
-    expect(reordered[0].name).toBe('test2.pdf');
-    expect(reordered[1].name).toBe('test3.pdf');
-    expect(reordered[2].name).toBe('test1.pdf');
+    expect(reordered[0]?.name).toBe('test2.pdf');
+    expect(reordered[1]?.name).toBe('test3.pdf');
+    expect(reordered[2]?.name).toBe('test1.pdf');
   });
 
   it('should handle same index', () => {

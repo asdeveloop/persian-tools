@@ -12,20 +12,22 @@ import type { TaxBracket } from '../constants';
  */
 export function calculateProgressiveTax(annualIncome: number): number {
   let tax = 0;
-  
+
   for (const bracket of TAX_BRACKETS_1404) {
-    if (annualIncome <= bracket.from) break;
-    
+    if (annualIncome <= bracket.from) {
+      break;
+    }
+
     const taxableInBracket = Math.min(
       annualIncome - bracket.from,
-      bracket.to - bracket.from
+      bracket.to - bracket.from,
     );
-    
+
     if (taxableInBracket > 0) {
       tax += (taxableInBracket * bracket.rate) / 100;
     }
   }
-  
+
   return tax;
 }
 
@@ -36,27 +38,27 @@ export function calculateProgressiveTax(annualIncome: number): number {
  * @returns مبلغ مالیات ماهانه (تومان)
  */
 export function calculateMonthlyTax(
-  monthlyTaxableIncome: number, 
-  isDevelopmentZone: boolean = false
+  monthlyTaxableIncome: number,
+  isDevelopmentZone = false,
 ): number {
   const annualTaxableIncome = monthlyTaxableIncome * 12;
-  
+
   // محاسبه مالیات قبل از معافیت
   const taxBeforeExemption = calculateProgressiveTax(annualTaxableIncome);
   const monthlyTaxBeforeExemption = taxBeforeExemption / 12;
-  
+
   // محاسبه معافیت مالیاتی
   let taxExemption = 0;
   if (annualTaxableIncome <= ANNUAL_TAX_EXEMPTION_1404) {
     taxExemption = monthlyTaxBeforeExemption;
   }
-  
+
   // اعمال تخفیف مناطق کمتر توسعه‌یافته
   let taxAmount = monthlyTaxBeforeExemption - taxExemption;
   if (isDevelopmentZone) {
     taxAmount *= DEVELOPMENT_ZONE_TAX_DISCOUNT;
   }
-  
+
   return Math.max(0, taxAmount);
 }
 
@@ -66,8 +68,8 @@ export function calculateMonthlyTax(
  * @returns آرایه‌ای از پله‌های مالیاتی اعمال شده
  */
 export function getAppliedTaxBrackets(annualIncome: number): TaxBracket[] {
-  return TAX_BRACKETS_1404.filter(bracket => 
-    annualIncome > bracket.from
+  return TAX_BRACKETS_1404.filter(bracket =>
+    annualIncome > bracket.from,
   );
 }
 
@@ -78,10 +80,12 @@ export function getAppliedTaxBrackets(annualIncome: number): TaxBracket[] {
  * @returns نرخ مؤثر مالیات (درصد)
  */
 export function calculateEffectiveTaxRate(
-  monthlyTax: number, 
-  grossMonthlySalary: number
+  monthlyTax: number,
+  grossMonthlySalary: number,
 ): number {
-  if (grossMonthlySalary <= 0) return 0;
+  if (grossMonthlySalary <= 0) {
+    return 0;
+  }
   return (monthlyTax / grossMonthlySalary) * 100;
 }
 

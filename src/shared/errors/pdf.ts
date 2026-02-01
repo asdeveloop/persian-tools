@@ -37,7 +37,7 @@ export class PdfProcessingError extends BaseError {
   readonly category = 'processing' as const;
 
   constructor(operation: string, code: keyof typeof PDF_ERROR_CODES, cause?: Error) {
-    super(`خطا در ${operation}: ${cause?.message || 'خطای نامشخص'}`, cause);
+    super(`خطا در ${operation}: ${cause?.message ?? 'خطای نامشخص'}`, cause);
     this.code = code;
   }
 }
@@ -46,7 +46,7 @@ export class PdfProcessingError extends BaseError {
 export const createPdfError = (operation: string, cause?: Error): PdfProcessingError => {
   // Determine error code based on operation and cause
   let code: keyof typeof PDF_ERROR_CODES = 'CONVERSION_FAILED';
-  
+
   if (cause?.message.includes('password')) {
     code = 'INVALID_PASSWORD';
   } else if (cause?.message.includes('corrupt')) {
@@ -64,7 +64,7 @@ export const createPdfError = (operation: string, cause?: Error): PdfProcessingE
   } else if (operation.includes('watermark')) {
     code = 'WATERMARK_FAILED';
   }
-  
+
   return new PdfProcessingError(operation, code, cause);
 };
 

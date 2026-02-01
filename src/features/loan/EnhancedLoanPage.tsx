@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { formatMoneyFa, parseLooseNumber } from '../../shared/utils/number';
 import { getSessionJson, setSessionJson } from '../../shared/storage/sessionStorage';
 import { calculateEnhancedLoan } from './loan.logic';
-import type { LoanOutput, RepaymentType, PaymentFrequency } from './loan.types';
+import type { LoanInput, LoanOutput, RepaymentType, PaymentFrequency } from './loan.types';
 import { AnimatedCard, StaggerContainer, StaggerItem, FadeIn } from '../../shared/ui/AnimatedComponents';
 import { toolCategories } from '../../shared/ui/theme';
 
@@ -26,7 +26,6 @@ const sessionKey = 'loan.enhanced.form.v1';
 
 export default function EnhancedLoanPage() {
   const initial = useMemo<EnhancedLoanFormState>(() => {
-    // @ts-expect-error: exactOptionalPropertyTypes issue with startDateText
     return (
       getSessionJson<EnhancedLoanFormState>(sessionKey) ?? {
         amountText: '',
@@ -36,11 +35,10 @@ export default function EnhancedLoanPage() {
         paymentFrequency: 'monthly',
         gracePeriodMonthsText: '',
         steppedRateText: '',
-        startDateText: undefined,
         lateMonthsText: '',
         latePenaltyRateText: '',
         feeFlatText: '',
-        feePercentText: ''
+        feePercentText: '',
       }
     );
   }, []);
@@ -69,20 +67,22 @@ export default function EnhancedLoanPage() {
     const feePercent = parseLooseNumber(form.feePercentText);
 
     try {
-      const r = calculateEnhancedLoan({
-        amount: amount || 0,
-        durationMonths: Math.trunc(durationMonths || 0),
-        annualInterestRate: annualInterestRate || 0,
+      const input: LoanInput = {
+        amount: amount ?? 0,
+        durationMonths: Math.trunc(durationMonths ?? 0),
+        annualInterestRate: annualInterestRate ?? 0,
         repaymentType: form.repaymentType,
         paymentFrequency: form.paymentFrequency,
-        gracePeriodMonths: gracePeriodMonths ? Math.trunc(gracePeriodMonths) : 0,
-        steppedRate: steppedRate ?? undefined, // @ts-expect-error: exactOptionalPropertyTypes issue
+        gracePeriodMonths: Math.trunc(gracePeriodMonths ?? 0),
         startDate,
-        lateMonths: lateMonths ? Math.trunc(lateMonths) : 0,
-        latePenaltyRate: latePenaltyRate || 0,
-        feeFlat: feeFlat || undefined,
-        feePercent: feePercent || undefined
-      });
+        ...(steppedRate !== null ? { steppedRate } : {}),
+        ...(lateMonths !== null ? { lateMonths: Math.trunc(lateMonths) } : {}),
+        ...(latePenaltyRate !== null ? { latePenaltyRate } : {}),
+        ...(feeFlat !== null ? { feeFlat } : {}),
+        ...(feePercent !== null ? { feePercent } : {}),
+      };
+
+      const r = calculateEnhancedLoan(input);
       setResult(r);
     } catch (e) {
       const message = e instanceof Error ? e.message : 'خطای نامشخص رخ داد.';
@@ -146,14 +146,14 @@ export default function EnhancedLoanPage() {
   };
 
   const getInputFields = (): FormField[] => {
-    const fields = [
+    const fields: FormField[] = [
       {
         id: 'amount',
         label: 'مبلغ وام (تومان)',
         value: form.amountText,
         onChange: (value: string) => setForm(s => ({ ...s, amountText: value })),
         placeholder: getPlaceholder('amount'),
-        required: true
+        required: true,
       },
       {
         id: 'durationMonths',
@@ -161,7 +161,7 @@ export default function EnhancedLoanPage() {
         value: form.durationMonthsText,
         onChange: (value: string) => setForm(s => ({ ...s, durationMonthsText: value })),
         placeholder: getPlaceholder('durationMonths'),
-        required: true
+        required: true,
       },
       {
         id: 'annualInterestRate',
@@ -169,7 +169,7 @@ export default function EnhancedLoanPage() {
         value: form.annualInterestRateText,
         onChange: (value: string) => setForm(s => ({ ...s, annualInterestRateText: value })),
         placeholder: getPlaceholder('annualInterestRate'),
-        required: true
+        required: true,
       },
       {
         id: 'startDate',
@@ -177,8 +177,8 @@ export default function EnhancedLoanPage() {
         value: form.startDateText,
         onChange: (value: string) => setForm(s => ({ ...s, startDateText: value })),
         type: 'date',
-        required: false
-      }
+        required: false,
+      },
     ];
 
     // Add conditional fields based on repayment type
@@ -190,7 +190,7 @@ export default function EnhancedLoanPage() {
         onChange: (value: string) => setForm(s => ({ ...s, gracePeriodMonthsText: value })),
         placeholder: getPlaceholder('gracePeriodMonths'),
         required: false,
-        note: 'تعداد ماه‌هایی که فقط سود پرداخت می‌شود'
+        note: 'تعداد ماه‌هایی که فقط سود پرداخت می‌شود',
       });
     }
 
@@ -202,7 +202,7 @@ export default function EnhancedLoanPage() {
         onChange: (value: string) => setForm(s => ({ ...s, steppedRateText: value })),
         placeholder: getPlaceholder('steppedRate'),
         required: false,
-        note: 'افزایش نرخ سود در هر مرحله'
+        note: 'افزایش نرخ سود در هر مرحله',
       });
     }
 
@@ -215,7 +215,7 @@ export default function EnhancedLoanPage() {
         onChange: (value: string) => setForm(s => ({ ...s, lateMonthsText: value })),
         placeholder: getPlaceholder('lateMonths'),
         required: false,
-        note: 'تعداد ماه‌های تأخیر در پرداخت'
+        note: 'تعداد ماه‌های تأخیر در پرداخت',
       },
       {
         id: 'latePenaltyRate',
@@ -224,7 +224,7 @@ export default function EnhancedLoanPage() {
         onChange: (value: string) => setForm(s => ({ ...s, latePenaltyRateText: value })),
         placeholder: getPlaceholder('latePenaltyRate'),
         required: false,
-        note: 'درصد جریمه از قسط معوق'
+        note: 'درصد جریمه از قسط معوق',
       },
       {
         id: 'feeFlat',
@@ -233,7 +233,7 @@ export default function EnhancedLoanPage() {
         onChange: (value: string) => setForm(s => ({ ...s, feeFlatText: value })),
         placeholder: getPlaceholder('feeFlat'),
         required: false,
-        note: 'مبلغ ثابت کارمزد'
+        note: 'مبلغ ثابت کارمزد',
       },
       {
         id: 'feePercent',
@@ -242,8 +242,8 @@ export default function EnhancedLoanPage() {
         onChange: (value: string) => setForm(s => ({ ...s, feePercentText: value })),
         placeholder: getPlaceholder('feePercent'),
         required: false,
-        note: 'درصد کارمزد از مبلغ وام'
-      }
+        note: 'درصد کارمزد از مبلغ وام',
+      },
     );
 
     return fields;
@@ -255,16 +255,16 @@ export default function EnhancedLoanPage() {
         {/* Header */}
         <FadeIn delay={0}>
           <div className="text-center max-w-4xl mx-auto">
-            <motion.div 
+            <motion.div
               className="inline-flex items-center justify-center w-16 h-16 rounded-full text-white shadow-xl mb-6"
               style={{ backgroundColor: toolCategories.financial.primary }}
               animate={{
-                rotate: [0, 5, -5, 0]
+                rotate: [0, 5, -5, 0],
               }}
               transition={{
                 duration: 4,
                 repeat: Infinity,
-                ease: "easeInOut"
+                ease: 'easeInOut',
               }}
             >
               <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -298,21 +298,26 @@ export default function EnhancedLoanPage() {
                   {(['annuity', 'simple', 'stepped', 'grace'] as RepaymentType[]).map((type) => (
                     <StaggerItem key={type}>
                       <motion.button
-                        onClick={() => setForm(s => ({ ...s, repaymentType: type }))}
-                        className={`p-6 rounded-2xl border-2 transition-all duration-300 text-right ${
+                        onClick={() => setForm((s) => ({ ...s, repaymentType: type }))}
+                        className={[
+                          'p-6 rounded-2xl border-2 transition-all duration-300 text-right',
                           form.repaymentType === type
                             ? 'border-opacity-100 shadow-lg text-white'
-                            : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300 hover:bg-gray-50'
-                        }`}
+                            : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300 hover:bg-gray-50',
+                        ].join(' ')}
                         style={form.repaymentType === type ? {
                           backgroundColor: toolCategories.financial.primary,
-                          borderColor: toolCategories.financial.primary
+                          borderColor: toolCategories.financial.primary,
                         } : {}}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                       >
                         <div className="text-lg font-bold mb-2">{getRepaymentTypeLabel(type)}</div>
-                        <div className={`text-sm ${form.repaymentType === type ? 'text-gray-200' : 'text-gray-500'}`}>
+                        <div
+                          className={`text-sm ${
+                            form.repaymentType === type ? 'text-gray-200' : 'text-gray-500'
+                          }`}
+                        >
                           {getRepaymentTypeDescription(type)}
                         </div>
                       </motion.button>
@@ -341,17 +346,22 @@ export default function EnhancedLoanPage() {
                   {(['monthly', 'quarterly', 'yearly'] as PaymentFrequency[]).map((frequency) => (
                     <StaggerItem key={frequency}>
                       <motion.button
-                        onClick={() => setForm(s => ({ ...s, paymentFrequency: frequency }))}
-                        className={`p-6 rounded-2xl border-2 transition-all duration-300 text-right ${
+                        onClick={() => setForm((s) => ({ ...s, paymentFrequency: frequency }))}
+                        className={[
+                          'p-6 rounded-2xl border-2 transition-all duration-300 text-right',
                           form.paymentFrequency === frequency
                             ? 'border-black bg-black text-white shadow-lg'
-                            : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300 hover:bg-gray-50'
-                        }`}
+                            : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300 hover:bg-gray-50',
+                        ].join(' ')}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                       >
                         <div className="font-bold text-lg mb-3">{getPaymentFrequencyLabel(frequency)}</div>
-                        <div className={`text-sm leading-relaxed ${form.paymentFrequency === frequency ? 'text-gray-200' : 'text-gray-500'}`}>
+                        <div
+                          className={`text-sm leading-relaxed ${
+                            form.paymentFrequency === frequency ? 'text-gray-200' : 'text-gray-500'
+                          }`}
+                        >
                           {frequency === 'monthly' && 'پرداخت هر ماه'}
                           {frequency === 'quarterly' && 'پرداخت هر ۳ ماه'}
                           {frequency === 'yearly' && 'پرداخت هر سال'}
@@ -382,7 +392,7 @@ export default function EnhancedLoanPage() {
                   {getInputFields().map((field) => (
                     <StaggerItem key={field.id}>
                       <div className="space-y-3">
-                        <label 
+                        <label
                           htmlFor={field.id}
                           className="block text-sm font-bold text-gray-700"
                         >
@@ -391,7 +401,7 @@ export default function EnhancedLoanPage() {
                         </label>
                         <motion.input
                           id={field.id}
-                          type={field.type || 'text'}
+                          type={field.type ?? 'text'}
                           inputMode={field.type === 'date' ? undefined : 'numeric'}
                           className="input-field"
                           value={field.value}
@@ -410,8 +420,8 @@ export default function EnhancedLoanPage() {
               </StaggerContainer>
 
               <div className="mt-8 flex items-center justify-between">
-                <motion.button 
-                  type="button" 
+                <motion.button
+                  type="button"
                   onClick={onCalculate}
                   className="btn-primary text-lg px-10 py-4"
                   whileHover={{ scale: 1.05 }}
@@ -427,7 +437,7 @@ export default function EnhancedLoanPage() {
 
                 <AnimatePresence>
                   {error && (
-                    <motion.div 
+                    <motion.div
                       className="text-sm text-red-600 bg-red-50 px-6 py-3 rounded-xl border border-red-200"
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
@@ -461,11 +471,11 @@ export default function EnhancedLoanPage() {
                     </div>
                     نتیجه محاسبه - {getRepaymentTypeLabel(form.repaymentType)}
                   </h2>
-                  
+
                   <StaggerContainer staggerDelay={0.1}>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                       <StaggerItem>
-                        <motion.div 
+                        <motion.div
                           className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-2xl border border-blue-200 shadow-lg"
                           whileHover={{ scale: 1.05, y: -5 }}
                           transition={{ duration: 0.3 }}
@@ -481,9 +491,9 @@ export default function EnhancedLoanPage() {
                           </div>
                         </motion.div>
                       </StaggerItem>
-                      
+
                       <StaggerItem>
-                        <motion.div 
+                        <motion.div
                           className="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-2xl border border-green-200 shadow-lg"
                           whileHover={{ scale: 1.05, y: -5 }}
                           transition={{ duration: 0.3 }}
@@ -499,9 +509,9 @@ export default function EnhancedLoanPage() {
                           </div>
                         </motion.div>
                       </StaggerItem>
-                      
+
                       <StaggerItem>
-                        <motion.div 
+                        <motion.div
                           className="bg-gradient-to-br from-amber-50 to-amber-100 p-6 rounded-2xl border border-amber-200 shadow-lg"
                           whileHover={{ scale: 1.05, y: -5 }}
                           transition={{ duration: 0.3 }}
@@ -519,7 +529,7 @@ export default function EnhancedLoanPage() {
                       </StaggerItem>
 
                       <StaggerItem>
-                        <motion.div 
+                        <motion.div
                           className="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-2xl border border-purple-200 shadow-lg"
                           whileHover={{ scale: 1.05, y: -5 }}
                           transition={{ duration: 0.3 }}
@@ -540,7 +550,7 @@ export default function EnhancedLoanPage() {
 
                   {/* Additional Costs */}
                   <AnimatePresence>
-                    {(result.totalLatePenalty || result.totalFees) && (
+                    {((result.totalLatePenalty ?? 0) + (result.totalFees ?? 0) > 0) && (
                       <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -565,7 +575,7 @@ export default function EnhancedLoanPage() {
                             </div>
                           </motion.div>
                         )}
-                        
+
                         {result.totalFees && (
                           <motion.div
                             className="bg-gradient-to-br from-indigo-50 to-indigo-100 p-6 rounded-2xl border border-indigo-200 shadow-lg"
@@ -614,7 +624,7 @@ export default function EnhancedLoanPage() {
                         </thead>
                         <tbody>
                           {result.schedule.slice(0, 12).map((payment, index) => (
-                            <motion.tr 
+                            <motion.tr
                               key={payment.period}
                               className="border-b border-gray-100 hover:bg-gray-100 transition-colors"
                               initial={{ opacity: 0, x: -20 }}

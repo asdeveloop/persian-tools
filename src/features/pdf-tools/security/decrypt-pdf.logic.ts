@@ -4,7 +4,7 @@ export { decryptPdf, checkPdfProtection };
 
 export async function verifyPassword(
   pdfBytes: Uint8Array,
-  password: string
+  password: string,
 ): Promise<boolean> {
   try {
     await decryptPdf(pdfBytes, password);

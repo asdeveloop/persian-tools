@@ -1,12 +1,12 @@
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import Container from './Container';
-import { 
-  IconPdf, 
-  IconImage, 
+import {
+  IconPdf,
+  IconImage,
   IconCalculator,
   IconShield,
   IconZap,
-  IconHeart
+  IconHeart,
 } from './icons';
 
 export default function Footer() {
@@ -25,10 +25,10 @@ export default function Footer() {
                 <span className="text-xl font-extrabold">جعبه ابزار فارسی</span>
               </div>
               <p className="text-slate-400 mb-6 max-w-md">
-                مجموعه‌ای کامل از ابزارهای آنلاین برای کار با فایل‌ها، محاسبات مالی و تبدیل فرمت‌ها. 
+                مجموعه‌ای کامل از ابزارهای آنلاین برای کار با فایل‌ها، محاسبات مالی و تبدیل فرمت‌ها.
                 تمام ابزارها کاملاً رایگان و امن هستند.
               </p>
-              
+
               {/* Features */}
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
@@ -69,8 +69,8 @@ export default function Footer() {
               </h3>
               <ul className="space-y-2">
                 <li>
-                  <Link 
-                    to="/pdf-tools" 
+                  <Link
+                    href="/pdf-tools"
                     className="text-slate-400 hover:text-white transition-colors text-sm"
                   >
                     همه ابزارهای PDF
@@ -99,8 +99,8 @@ export default function Footer() {
               </h3>
               <ul className="space-y-2">
                 <li>
-                  <Link 
-                    to="/image-compress" 
+                  <Link
+                    href="/image-compress"
                     className="text-slate-400 hover:text-white transition-colors text-sm"
                   >
                     فشرده‌سازی عکس
@@ -129,16 +129,16 @@ export default function Footer() {
               </h3>
               <ul className="space-y-2">
                 <li>
-                  <Link 
-                    to="/loan" 
+                  <Link
+                    href="/loan"
                     className="text-slate-400 hover:text-white transition-colors text-sm"
                   >
                     محاسبه‌گر وام
                   </Link>
                 </li>
                 <li>
-                  <Link 
-                    to="/salary" 
+                  <Link
+                    href="/salary"
                     className="text-slate-400 hover:text-white transition-colors text-sm"
                   >
                     محاسبه‌گر حقوق
@@ -166,14 +166,14 @@ export default function Footer() {
             <div className="text-sm text-slate-400">
               © {new Date().getFullYear()} جعبه ابزار فارسی. تمام حقوق محفوظ است.
             </div>
-            
+
             <div className="flex flex-wrap items-center gap-6 text-sm">
               <span className="text-slate-500">
                 ساخته شده با ❤️ برای کاربران فارسی‌زبان
               </span>
             </div>
           </div>
-          
+
           {/* Security Notice */}
           <div className="mt-4 pt-4 border-t border-slate-800 text-center">
             <p className="text-xs text-slate-500">

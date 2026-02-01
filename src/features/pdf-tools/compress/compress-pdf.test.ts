@@ -1,5 +1,14 @@
 import { describe, expect, it } from 'vitest';
+import { PDFDocument } from 'pdf-lib';
 import { compressPdf, getCompressionInfo } from './compress-pdf.logic';
+
+async function createPdfBytes(pageCount = 1): Promise<Uint8Array> {
+  const doc = await PDFDocument.create();
+  for (let i = 0; i < pageCount; i += 1) {
+    doc.addPage();
+  }
+  return new Uint8Array(await doc.save());
+}
 
 describe('compressPdf', () => {
   it('should throw when empty', async () => {
@@ -7,15 +16,14 @@ describe('compressPdf', () => {
   });
 
   it('should compress PDF with default options', async () => {
-    // Create a simple PDF bytes (placeholder)
-    const pdfBytes = new Uint8Array([1, 2, 3, 4, 5]);
+    const pdfBytes = await createPdfBytes(1);
 
     const compressed = await compressPdf(pdfBytes);
     expect(compressed.length).toBeGreaterThan(0);
   });
 
   it('should compress PDF with custom options', async () => {
-    const pdfBytes = new Uint8Array([1, 2, 3, 4, 5]);
+    const pdfBytes = await createPdfBytes(2);
 
     const compressed = await compressPdf(pdfBytes, {
       quality: 0.6,

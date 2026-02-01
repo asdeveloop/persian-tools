@@ -11,6 +11,7 @@ modified: 2026-02-01
 - Always start with a brief plan (3–7 bullets) before changing code. Then implement step-by-step.
 - Prefer minimal, surgical diffs. Do not refactor unrelated code.
 - Never introduce external runtime dependencies (remote fonts/CDNs/3rd-party scripts) unless explicitly requested.
+- In this repo, follow `PROJECT_STANDARDS.md` for UI/UX, RTL, localization, and engineering requirements.
 - When editing code:
   - Keep types strict; avoid `any`. Prefer `unknown` + narrowing.
   - Prefer pure functions, early returns, and clear naming.

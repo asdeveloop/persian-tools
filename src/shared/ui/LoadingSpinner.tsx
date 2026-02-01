@@ -9,19 +9,19 @@ type Props = HTMLAttributes<HTMLDivElement> & {
  * Loading spinner component following PROJECT_STANDARDS.md motion guidelines
  * Supports reduced motion preference
  */
-export default function LoadingSpinner({ 
-  size = 'md', 
-  className = '', 
-  ...props 
+export default function LoadingSpinner({
+  size = 'md',
+  className = '',
+  ...props
 }: Props) {
   const sizeClasses = {
     sm: 'h-4 w-4',
-    md: 'h-6 w-6', 
+    md: 'h-6 w-6',
     lg: 'h-8 w-8',
   };
 
   return (
-    <div 
+    <div
       className={`animate-spin ${sizeClasses[size]} ${className}`}
       role="status"
       aria-label="Loading"

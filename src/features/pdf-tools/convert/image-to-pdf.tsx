@@ -1,9 +1,10 @@
 'use client';
 
 import { useEffect, useMemo, useState, useRef } from 'react';
+import type { DragEvent } from 'react';
 import Button from '../../../shared/ui/Button';
 import Card from '../../../shared/ui/Card';
-import { imagesToPdfBytes, type ImageToPdfItem, type ImageToPdfOptions, type Orientation, type Margin, type PageSize } from './imageToPdf.logic';
+import { imagesToPdfBytes, type ImageToPdfOptions, type Orientation, type Margin, type PageSize } from './imageToPdf.logic';
 
 type SelectedImage = {
   id: string;
@@ -42,7 +43,9 @@ export default function ImageToPdfPage() {
 
   function onPickFiles(files: FileList | null) {
     setError(null);
-    if (!files || files.length === 0) return;
+    if (!files || files.length === 0) {
+      return;
+    }
 
     const next: SelectedImage[] = [];
     for (const f of Array.from(files)) {
@@ -59,7 +62,9 @@ export default function ImageToPdfPage() {
   function remove(id: string) {
     setImages((prev) => {
       const item = prev.find((x) => x.id === id);
-      if (item) URL.revokeObjectURL(item.url);
+      if (item) {
+        URL.revokeObjectURL(item.url);
+      }
       return prev.filter((x) => x.id !== id);
     });
   }
@@ -70,11 +75,13 @@ export default function ImageToPdfPage() {
     setProgress(0);
 
     try {
-      const items: ImageToPdfItem[] = [];
-      
+      const items: Array<{ name: string; mimeType: string; bytes: Uint8Array }> = [];
+
       for (let i = 0; i < images.length; i++) {
         const img = images[i];
-        if (!img) continue;
+        if (!img) {
+          continue;
+        }
         const buf = await img.file.arrayBuffer();
         items.push({ name: img.file.name, mimeType: img.file.type, bytes: new Uint8Array(buf) });
         setProgress(((i + 1) / images.length) * 50);
@@ -84,13 +91,13 @@ export default function ImageToPdfPage() {
         orientation,
         margin,
         pageSize,
-        quality
+        quality,
       };
-      
+
       setProgress(50);
       const pdfBytes = await imagesToPdfBytes(items, options);
       setProgress(90);
-      
+
       const blob = new Blob([pdfBytes], { type: 'application/pdf' });
       const url = URL.createObjectURL(blob);
 
@@ -112,35 +119,37 @@ export default function ImageToPdfPage() {
     }
   }
 
-  const handleDragOver = (e: React.DragEvent) => {
+  const handleDragOver = (e: DragEvent) => {
     e.preventDefault();
     setIsDragging(true);
   };
 
-  const handleDragLeave = (e: React.DragEvent) => {
+  const handleDragLeave = (e: DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
   };
 
-  const handleDrop = (e: React.DragEvent) => {
+  const handleDrop = (e: DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
     onPickFiles(e.dataTransfer.files);
   };
 
-  const handleDragStart = (e: React.DragEvent, itemId: string) => {
+  const handleDragStart = (e: DragEvent, itemId: string) => {
     setDraggedItem(itemId);
     e.dataTransfer.effectAllowed = 'move';
   };
 
-  const handleImageDragOver = (e: React.DragEvent) => {
+  const handleImageDragOver = (e: DragEvent) => {
     e.preventDefault();
     e.dataTransfer.dropEffect = 'move';
   };
 
-  const handleImageDrop = (e: React.DragEvent, targetId: string) => {
+  const handleImageDrop = (e: DragEvent, targetId: string) => {
     e.preventDefault();
-    if (!draggedItem || draggedItem === targetId) return;
+    if (!draggedItem || draggedItem === targetId) {
+      return;
+    }
 
     const draggedIndex = images.findIndex(img => img.id === draggedItem);
     const targetIndex = images.findIndex(img => img.id === targetId);
@@ -176,10 +185,10 @@ export default function ImageToPdfPage() {
             <div
               className={`
                 relative border-2 border-dashed rounded-xl p-16 text-center transition-all duration-200
-                ${isDragging 
-                  ? 'border-red-400 bg-red-50' 
-                  : 'border-slate-300 hover:border-red-300 hover:bg-slate-50'
-                }
+                ${isDragging
+            ? 'border-red-400 bg-red-50'
+            : 'border-slate-300 hover:border-red-300 hover:bg-slate-50'
+          }
               `}
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
@@ -193,7 +202,7 @@ export default function ImageToPdfPage() {
                 onChange={(e) => onPickFiles(e.target.files)}
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
               />
-              
+
               <div className="space-y-6">
                 <div className="mx-auto h-20 w-20 rounded-full bg-red-100 flex items-center justify-center">
                   <svg className="h-10 w-10 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -367,7 +376,7 @@ export default function ImageToPdfPage() {
               <h2 className="text-lg font-semibold text-slate-900 mb-4">
                 فایل‌های انتخاب شده ({images.length})
               </h2>
-              
+
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {images.map((img, index) => (
                   <div
@@ -381,10 +390,10 @@ export default function ImageToPdfPage() {
                     onDrop={(e) => handleImageDrop(e, img.id)}
                   >
                     <div className="aspect-square bg-slate-100 relative">
-                      <img 
-                        className="w-full h-full object-cover" 
-                        src={img.url} 
-                        alt={img.file.name} 
+                      <img
+                        className="w-full h-full object-cover"
+                        src={img.url}
+                        alt={img.file.name}
                       />
                       <div className="absolute top-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
                         {index + 1}
@@ -473,20 +482,20 @@ export default function ImageToPdfPage() {
             <Card className="p-8 text-center max-w-sm w-full mx-4">
               <div className="animate-spin h-12 w-12 border-4 border-red-600 border-t-transparent rounded-full mx-auto mb-4"></div>
               <p className="text-lg font-semibold text-slate-900 mb-4">در حال تبدیل عکس‌ها به PDF...</p>
-              
+
               {progress > 0 && (
                 <div className="w-full bg-slate-200 rounded-full h-2 mb-2">
-                  <div 
+                  <div
                     className="bg-red-600 h-2 rounded-full transition-all duration-300"
                     style={{ width: `${progress}%` }}
                   ></div>
                 </div>
               )}
-              
+
               <p className="text-sm text-slate-600">
                 {progress < 50 ? `در حال پردازش تصاویر (${Math.round(progress)}%)` :
-                 progress < 90 ? `در حال ساخت PDF (${Math.round(progress)}%)` :
-                 `در حال آماده‌سازی دانلود (${Math.round(progress)}%)`}
+                  progress < 90 ? `در حال ساخت PDF (${Math.round(progress)}%)` :
+                    `در حال آماده‌سازی دانلود (${Math.round(progress)}%)`}
               </p>
             </Card>
           </div>

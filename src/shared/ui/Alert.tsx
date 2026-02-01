@@ -14,14 +14,14 @@ type Props = HTMLAttributes<HTMLDivElement> & {
  * Alert component following PROJECT_STANDARDS.md design system
  * Supports all status variants and accessibility
  */
-export default function Alert({ 
-  children, 
-  variant = 'info', 
+export default function Alert({
+  children,
+  variant = 'info',
   title,
   dismissible = false,
   onDismiss,
   className = '',
-  ...props 
+  ...props
 }: Props) {
   const variantClasses = {
     info: 'bg-[var(--color-info)]/10 border-[var(--color-info)] text-[var(--color-info)]',
@@ -54,7 +54,7 @@ export default function Alert({
   };
 
   return (
-    <div 
+    <div
       className={`
         rounded-[var(--radius-md)] border p-4 
         ${variantClasses[variant]} 

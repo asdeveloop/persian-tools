@@ -1,9 +1,10 @@
 'use client';
 
 import { useState, useRef } from 'react';
+import type { DragEvent } from 'react';
 import Button from '../../../shared/ui/Button';
 import Card from '../../../shared/ui/Card';
-import { mergePdfs, getPdfInfo, reorderItems, type MergePdfItem, type MergePdfOptions } from './merge-pdf.logic';
+import { mergePdfs, getPdfInfo, type MergePdfItem, type MergePdfOptions } from './merge-pdf.logic';
 
 type SelectedFile = {
   id: string;
@@ -31,7 +32,9 @@ export default function MergePdfPage() {
 
   const handleFileSelect = async (selectedFiles: FileList | null) => {
     setError(null);
-    if (!selectedFiles || selectedFiles.length === 0) return;
+    if (!selectedFiles || selectedFiles.length === 0) {
+      return;
+    }
 
     const newFiles: SelectedFile[] = [];
 
@@ -51,7 +54,7 @@ export default function MergePdfPage() {
           file,
           url: URL.createObjectURL(file),
           order: files.length + newFiles.length,
-          pageCount: info.pageCount
+          pageCount: info.pageCount,
         });
       } catch (e) {
         setError(`خطا در خواندن فایل ${file.name}`);
@@ -64,24 +67,28 @@ export default function MergePdfPage() {
   const removeFile = (id: string) => {
     setFiles(prev => {
       const item = prev.find(f => f.id === id);
-      if (item) URL.revokeObjectURL(item.url);
+      if (item) {
+        URL.revokeObjectURL(item.url);
+      }
       return prev.filter(f => f.id !== id).map((f, index) => ({ ...f, order: index }));
     });
   };
 
-  const handleDragStart = (e: React.DragEvent, itemId: string) => {
+  const handleDragStart = (e: DragEvent, itemId: string) => {
     setDraggedItem(itemId);
     e.dataTransfer.effectAllowed = 'move';
   };
 
-  const handleDragOver = (e: React.DragEvent) => {
+  const handleDragOver = (e: DragEvent) => {
     e.preventDefault();
     e.dataTransfer.dropEffect = 'move';
   };
 
-  const handleDrop = (e: React.DragEvent, targetId: string) => {
+  const handleDrop = (e: DragEvent, targetId: string) => {
     e.preventDefault();
-    if (!draggedItem || draggedItem === targetId) return;
+    if (!draggedItem || draggedItem === targetId) {
+      return;
+    }
 
     const draggedIndex = files.findIndex(f => f.id === draggedItem);
     const targetIndex = files.findIndex(f => f.id === targetId);
@@ -90,6 +97,9 @@ export default function MergePdfPage() {
       setFiles(prev => {
         const result = [...prev];
         const [draggedFile] = result.splice(draggedIndex, 1);
+        if (!draggedFile) {
+          return prev;
+        }
         result.splice(targetIndex, 0, draggedFile);
         return result.map((f, index) => ({ ...f, order: index }));
       });
@@ -105,27 +115,30 @@ export default function MergePdfPage() {
 
     try {
       const pdfItems: MergePdfItem[] = [];
-      
+
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
+        if (!file) {
+          continue;
+        }
         const buffer = await file.file.arrayBuffer();
         pdfItems.push({
           name: file.file.name,
           bytes: new Uint8Array(buffer),
-          order: file.order
+          order: file.order,
         });
         setProgress(((i + 1) / files.length) * 30);
       }
 
       const options: MergePdfOptions = {
         preserveBookmarks,
-        preserveForms
+        preserveForms,
       };
 
       setProgress(40);
       const mergedBytes = await mergePdfs(pdfItems, options);
       setProgress(90);
-      
+
       const blob = new Blob([mergedBytes], { type: 'application/pdf' });
       const url = URL.createObjectURL(blob);
 
@@ -148,11 +161,13 @@ export default function MergePdfPage() {
   };
 
   const formatFileSize = (bytes: number): string => {
-    if (bytes === 0) return '0 Bytes';
+    if (bytes === 0) {
+      return '0 Bytes';
+    }
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2)) } ${ sizes[i]}`;
   };
 
   return (
@@ -176,7 +191,7 @@ export default function MergePdfPage() {
                 onChange={(e) => handleFileSelect(e.target.files)}
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
               />
-              
+
               <div className="space-y-6">
                 <div className="mx-auto h-20 w-20 rounded-full bg-red-100 flex items-center justify-center">
                   <svg className="h-10 w-10 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -215,7 +230,7 @@ export default function MergePdfPage() {
                       />
                       <span className="text-sm text-slate-700">حفظ نشانک‌ها</span>
                     </label>
-                    
+
                     <label className="flex items-center space-x-2 space-x-reverse">
                       <input
                         type="checkbox"
@@ -255,7 +270,7 @@ export default function MergePdfPage() {
               <h2 className="text-lg font-semibold text-slate-900 mb-4">
                 فایل‌های انتخاب شده ({files.length})
               </h2>
-              
+
               <div className="space-y-3">
                 {files.map((file, index) => (
                   <div
@@ -280,11 +295,11 @@ export default function MergePdfPage() {
                       <div>
                         <p className="font-medium text-slate-900">{file.file.name}</p>
                         <p className="text-sm text-slate-600">
-                          {formatFileSize(file.file.size)} • {file.pageCount || 0} صفحه
+                          {formatFileSize(file.file.size)} • {file.pageCount ?? 0} صفحه
                         </p>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-center space-x-2 space-x-reverse">
                       <svg className="h-5 w-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8h16M4 16h16" />
@@ -320,7 +335,7 @@ export default function MergePdfPage() {
             <Card className="p-4">
               <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div className="text-sm text-slate-600">
-                  {files.length} فایل انتخاب شده • مجموع صفحات: {files.reduce((sum, f) => sum + (f.pageCount || 0), 0)}
+                  {files.length} فایل انتخاب شده • مجموع صفحات: {files.reduce((sum, f) => sum + (f.pageCount ?? 0), 0)}
                 </div>
                 <div className="flex gap-3">
                   <Button
@@ -360,20 +375,20 @@ export default function MergePdfPage() {
             <Card className="p-8 text-center max-w-sm w-full mx-4">
               <div className="animate-spin h-12 w-12 border-4 border-red-600 border-t-transparent rounded-full mx-auto mb-4"></div>
               <p className="text-lg font-semibold text-slate-900 mb-4">در حال ادغام فایل‌های PDF...</p>
-              
+
               {progress > 0 && (
                 <div className="w-full bg-slate-200 rounded-full h-2 mb-2">
-                  <div 
+                  <div
                     className="bg-red-600 h-2 rounded-full transition-all duration-300"
                     style={{ width: `${progress}%` }}
                   ></div>
                 </div>
               )}
-              
+
               <p className="text-sm text-slate-600">
                 {progress < 40 ? `در حال خواندن فایل‌ها (${Math.round(progress)}%)` :
-                 progress < 90 ? `در حال ادغام (${Math.round(progress)}%)` :
-                 `در حال آماده‌سازی دانلود (${Math.round(progress)}%)`}
+                  progress < 90 ? `در حال ادغام (${Math.round(progress)}%)` :
+                    `در حال آماده‌سازی دانلود (${Math.round(progress)}%)`}
               </p>
             </Card>
           </div>

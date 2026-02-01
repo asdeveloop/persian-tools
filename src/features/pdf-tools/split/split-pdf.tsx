@@ -3,12 +3,12 @@
 import { useState, useRef } from 'react';
 import Button from '../../../shared/ui/Button';
 import Card from '../../../shared/ui/Card';
-import { 
-  splitPdf, 
-  validatePageRanges, 
-  suggestSplitOptions, 
-  type SplitPdfOptions, 
-  type SplitPdfResult 
+import {
+  splitPdf,
+  validatePageRanges,
+  suggestSplitOptions,
+  type SplitPdfOptions,
+  type SplitPdfResult,
 } from './split-pdf.logic';
 
 type SelectedFile = {
@@ -27,12 +27,15 @@ export default function SplitPdfPage() {
   const [pageRanges, setPageRanges] = useState<string[]>(['1-5', '6-10']);
   const [newRange, setNewRange] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const rangeInputId = 'split-pdf-range-input';
 
   const canSplit = selectedFile !== null && !busy;
 
   const handleFileSelect = async (files: FileList | null) => {
     setError(null);
-    if (!files || files.length === 0) return;
+    if (!files || files.length === 0) {
+      return;
+    }
 
     const file = files[0];
     if (!file || file.type !== 'application/pdf') {
@@ -43,10 +46,10 @@ export default function SplitPdfPage() {
     try {
       const url = URL.createObjectURL(file);
       const pageCount = 10; // Placeholder
-      
+
       setSelectedFile({ file, url, pageCount });
       setResults([]);
-      
+
       // Suggest split options
       const suggestions = suggestSplitOptions(pageCount);
       if (suggestions.ranges.length > 0) {
@@ -69,7 +72,9 @@ export default function SplitPdfPage() {
   };
 
   const onSplit = async () => {
-    if (!selectedFile) return;
+    if (!selectedFile) {
+      return;
+    }
 
     setError(null);
     setBusy(true);
@@ -79,12 +84,12 @@ export default function SplitPdfPage() {
       const buffer = await selectedFile.file.arrayBuffer();
       const pdfBytes = new Uint8Array(buffer);
 
-      let options: SplitPdfOptions = {
-        splitBy: 'pages'
+      const options: SplitPdfOptions = {
+        splitBy: 'pages',
       };
 
       if (splitMode === 'ranges') {
-        const validation = validatePageRanges(pageRanges, selectedFile.pageCount || 0);
+        const validation = validatePageRanges(pageRanges, selectedFile.pageCount ?? 0);
         if (!validation.isValid) {
           throw new Error(validation.error);
         }
@@ -94,7 +99,7 @@ export default function SplitPdfPage() {
       setProgress(20);
       const splitResults = await splitPdf(pdfBytes, options);
       setProgress(90);
-      
+
       setResults(splitResults);
       setProgress(100);
     } catch (e) {
@@ -109,14 +114,14 @@ export default function SplitPdfPage() {
   const downloadResult = (result: SplitPdfResult) => {
     const blob = new Blob([result.bytes], { type: 'application/pdf' });
     const url = URL.createObjectURL(blob);
-    
+
     const a = document.createElement('a');
     a.href = url;
     a.download = result.filename;
     document.body.appendChild(a);
     a.click();
     a.remove();
-    
+
     URL.revokeObjectURL(url);
   };
 
@@ -128,11 +133,13 @@ export default function SplitPdfPage() {
   };
 
   const formatFileSize = (bytes: number): string => {
-    if (bytes === 0) return '0 Bytes';
+    if (bytes === 0) {
+      return '0 Bytes';
+    }
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2)) } ${ sizes[i]}`;
   };
 
   return (
@@ -155,7 +162,7 @@ export default function SplitPdfPage() {
                 onChange={(e) => handleFileSelect(e.target.files)}
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
               />
-              
+
               <div className="space-y-6">
                 <div className="mx-auto h-20 w-20 rounded-full bg-red-100 flex items-center justify-center">
                   <svg className="h-10 w-10 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -185,7 +192,7 @@ export default function SplitPdfPage() {
                 <div>
                   <h3 className="text-lg font-semibold text-slate-900">{selectedFile.file.name}</h3>
                   <p className="text-sm text-slate-600">
-                    حجم: {formatFileSize(selectedFile.file.size)} • {selectedFile.pageCount || 0} صفحه
+                    حجم: {formatFileSize(selectedFile.file.size)} • {selectedFile.pageCount ?? 0} صفحه
                   </p>
                 </div>
                 <Button
@@ -204,11 +211,11 @@ export default function SplitPdfPage() {
             {/* Split Options */}
             <Card className="p-6">
               <h2 className="text-lg font-semibold text-slate-900 mb-4">گزینه‌های تقسیم</h2>
-              
+
               <div className="space-y-6">
                 {/* Split Mode */}
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-3">نوع تقسیم:</label>
+                <fieldset>
+                  <legend className="block text-sm font-medium text-slate-700 mb-3">نوع تقسیم:</legend>
                   <div className="flex space-x-4 space-x-reverse">
                     <label className="flex items-center">
                       <input
@@ -231,12 +238,17 @@ export default function SplitPdfPage() {
                       <span className="text-sm text-slate-700">تقسیم بر اساس محدوده صفحات</span>
                     </label>
                   </div>
-                </div>
+                </fieldset>
 
                 {/* Page Ranges */}
                 {splitMode === 'ranges' && (
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-3">محدوده صفحات:</label>
+                    <label
+                      htmlFor={rangeInputId}
+                      className="block text-sm font-medium text-slate-700 mb-3"
+                    >
+                      محدوده صفحات:
+                    </label>
                     <div className="space-y-3">
                       {pageRanges.map((range, index) => (
                         <div key={index} className="flex items-center space-x-2 space-x-reverse">
@@ -253,9 +265,10 @@ export default function SplitPdfPage() {
                           </Button>
                         </div>
                       ))}
-                      
+
                       <div className="flex items-center space-x-2 space-x-reverse">
                         <input
+                          id={rangeInputId}
                           type="text"
                           value={newRange}
                           onChange={(e) => setNewRange(e.target.value)}
@@ -270,7 +283,7 @@ export default function SplitPdfPage() {
                           افزودن
                         </Button>
                       </div>
-                      
+
                       <p className="text-xs text-slate-500">
                         می‌توانید از فرمت‌های زیر استفاده کنید: 1-5 (صفحات 1 تا 5)، 3,7,10 (صفحات 3، 7 و 10)
                       </p>
@@ -295,7 +308,7 @@ export default function SplitPdfPage() {
                     دانلود همه
                   </Button>
                 </div>
-                
+
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                   {results.map((result, index) => (
                     <div key={index} className="border border-slate-200 rounded-lg p-4">
@@ -367,20 +380,20 @@ export default function SplitPdfPage() {
             <Card className="p-8 text-center max-w-sm w-full mx-4">
               <div className="animate-spin h-12 w-12 border-4 border-red-600 border-t-transparent rounded-full mx-auto mb-4"></div>
               <p className="text-lg font-semibold text-slate-900 mb-4">در حال تقسیم PDF...</p>
-              
+
               {progress > 0 && (
                 <div className="w-full bg-slate-200 rounded-full h-2 mb-2">
-                  <div 
+                  <div
                     className="bg-red-600 h-2 rounded-full transition-all duration-300"
                     style={{ width: `${progress}%` }}
                   ></div>
                 </div>
               )}
-              
+
               <p className="text-sm text-slate-600">
                 {progress < 50 ? `در حال پردازش فایل (${Math.round(progress)}%)` :
-                 progress < 90 ? `در حال تقسیم صفحات (${Math.round(progress)}%)` :
-                 `در حال آماده‌سازی دانلود (${Math.round(progress)}%)`}
+                  progress < 90 ? `در حال تقسیم صفحات (${Math.round(progress)}%)` :
+                    `در حال آماده‌سازی دانلود (${Math.round(progress)}%)`}
               </p>
             </Card>
           </div>

@@ -10,16 +10,16 @@ export const tokens = {
       sans: '"IRANSansX", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Arial',
     },
     size: {
-      xs: '12px',   // توضیحات ریز/متا
-      sm: '14px',   // متن ثانویه
-      md: '16px',   // متن اصلی
-      lg: '18px',   // تیتر کوچک
-      xl: '20px',   // تیتر صفحه
+      xs: '12px', // توضیحات ریز/متا
+      sm: '14px', // متن ثانویه
+      md: '16px', // متن اصلی
+      lg: '18px', // تیتر کوچک
+      xl: '20px', // تیتر صفحه
     },
     lineHeight: {
-      tight: '1.2',    // تیترها
-      normal: '1.4',   // تیترها
-      relaxed: '1.8',  // متن‌های طولانی
+      tight: '1.2', // تیترها
+      normal: '1.4', // تیترها
+      relaxed: '1.8', // متن‌های طولانی
     },
   },
 
@@ -85,9 +85,9 @@ export const tokens = {
   // Motion
   motion: {
     duration: {
-      fast: '150ms',      // Micro interactions
-      medium: '240ms',    // Transition صفحه/بخش
-      modal: '210ms',     // Modal enter/exit (avg of 180-240ms)
+      fast: '150ms', // Micro interactions
+      medium: '240ms', // Transition صفحه/بخش
+      modal: '210ms', // Modal enter/exit (avg of 180-240ms)
     },
     easing: {
       ease: 'cubic-bezier(0.2, 0.8, 0.2, 1)',

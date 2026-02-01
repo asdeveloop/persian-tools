@@ -33,7 +33,7 @@ export default function LoanPage() {
         monthsText: '',
         monthlyPaymentText: '',
         stepMonthsText: '',
-        stepRateIncreaseText: ''
+        stepRateIncreaseText: '',
       }
     );
   }, []);
@@ -58,13 +58,13 @@ export default function LoanPage() {
 
     try {
       const r = calculateLoan({
-        principal: principal || 0,
-        annualInterestRatePercent: annualRate || 0,
-        months: Math.trunc(months || 0),
+        principal: principal ?? 0,
+        annualInterestRatePercent: annualRate ?? 0,
+        months: Math.trunc(months ?? 0),
         loanType: form.loanType,
         calculationType: form.calculationType,
-        stepMonths: form.loanType === 'stepped' && stepMonths ? Math.trunc(stepMonths) : 0,
-        stepRateIncrease: form.loanType === 'stepped' && stepRateIncrease ? stepRateIncrease : 0
+        stepMonths: form.loanType === 'stepped' ? Math.trunc(stepMonths ?? 0) : 0,
+        stepRateIncrease: form.loanType === 'stepped' ? (stepRateIncrease ?? 0) : 0,
       });
       setResult(r);
     } catch (e) {
@@ -125,7 +125,7 @@ export default function LoanPage() {
             value: form.principalText,
             onChange: (value: string) => setForm(s => ({ ...s, principalText: value })),
             placeholder: getPlaceholder('principal'),
-            required: true
+            required: true,
           },
           {
             id: 'annualRate',
@@ -135,7 +135,7 @@ export default function LoanPage() {
             placeholder: getPlaceholder('annualRate'),
             required: true,
             max: form.loanType === 'qarzolhasaneh' ? '4' : undefined,
-            note: form.loanType === 'qarzolhasaneh' ? 'حداکثر 4%' : undefined
+            note: form.loanType === 'qarzolhasaneh' ? 'حداکثر 4%' : undefined,
           },
           {
             id: 'months',
@@ -143,11 +143,11 @@ export default function LoanPage() {
             value: form.monthsText,
             onChange: (value: string) => setForm(s => ({ ...s, monthsText: value })),
             placeholder: getPlaceholder('months'),
-            required: true
-          }
+            required: true,
+          },
         );
         break;
-      
+
       case 'rate':
         fields.push(
           {
@@ -156,7 +156,7 @@ export default function LoanPage() {
             value: form.principalText,
             onChange: (value: string) => setForm(s => ({ ...s, principalText: value })),
             placeholder: getPlaceholder('principal'),
-            required: true
+            required: true,
           },
           {
             id: 'monthlyPayment',
@@ -164,7 +164,7 @@ export default function LoanPage() {
             value: form.monthlyPaymentText,
             onChange: (value: string) => setForm(s => ({ ...s, monthlyPaymentText: value })),
             placeholder: getPlaceholder('monthlyPayment'),
-            required: true
+            required: true,
           },
           {
             id: 'months',
@@ -172,11 +172,11 @@ export default function LoanPage() {
             value: form.monthsText,
             onChange: (value: string) => setForm(s => ({ ...s, monthsText: value })),
             placeholder: getPlaceholder('months'),
-            required: true
-          }
+            required: true,
+          },
         );
         break;
-      
+
       case 'principal':
         fields.push(
           {
@@ -185,7 +185,7 @@ export default function LoanPage() {
             value: form.monthlyPaymentText,
             onChange: (value: string) => setForm(s => ({ ...s, monthlyPaymentText: value })),
             placeholder: getPlaceholder('monthlyPayment'),
-            required: true
+            required: true,
           },
           {
             id: 'annualRate',
@@ -195,7 +195,7 @@ export default function LoanPage() {
             placeholder: getPlaceholder('annualRate'),
             required: true,
             max: form.loanType === 'qarzolhasaneh' ? '4' : undefined,
-            note: form.loanType === 'qarzolhasaneh' ? 'حداکثر 4%' : undefined
+            note: form.loanType === 'qarzolhasaneh' ? 'حداکثر 4%' : undefined,
           },
           {
             id: 'months',
@@ -203,11 +203,11 @@ export default function LoanPage() {
             value: form.monthsText,
             onChange: (value: string) => setForm(s => ({ ...s, monthsText: value })),
             placeholder: getPlaceholder('months'),
-            required: true
-          }
+            required: true,
+          },
         );
         break;
-      
+
       case 'months':
         fields.push(
           {
@@ -216,7 +216,7 @@ export default function LoanPage() {
             value: form.principalText,
             onChange: (value: string) => setForm(s => ({ ...s, principalText: value })),
             placeholder: getPlaceholder('principal'),
-            required: true
+            required: true,
           },
           {
             id: 'annualRate',
@@ -226,7 +226,7 @@ export default function LoanPage() {
             placeholder: getPlaceholder('annualRate'),
             required: true,
             max: form.loanType === 'qarzolhasaneh' ? '4' : undefined,
-            note: form.loanType === 'qarzolhasaneh' ? 'حداکثر 4%' : undefined
+            note: form.loanType === 'qarzolhasaneh' ? 'حداکثر 4%' : undefined,
           },
           {
             id: 'monthlyPayment',
@@ -234,8 +234,8 @@ export default function LoanPage() {
             value: form.monthlyPaymentText,
             onChange: (value: string) => setForm(s => ({ ...s, monthlyPaymentText: value })),
             placeholder: getPlaceholder('monthlyPayment'),
-            required: true
-          }
+            required: true,
+          },
         );
         break;
     }
@@ -250,7 +250,7 @@ export default function LoanPage() {
           onChange: (value: string) => setForm(s => ({ ...s, stepMonthsText: value })),
           placeholder: getPlaceholder('stepMonths'),
           required: true,
-          note: 'تعداد ماه‌های هر مرحله از اقساط پلکانی'
+          note: 'تعداد ماه‌های هر مرحله از اقساط پلکانی',
         },
         {
           id: 'stepRateIncrease',
@@ -259,8 +259,8 @@ export default function LoanPage() {
           onChange: (value: string) => setForm(s => ({ ...s, stepRateIncreaseText: value })),
           placeholder: getPlaceholder('stepRateIncrease'),
           required: true,
-          note: 'افزایش نرخ سود در هر مرحله'
-        }
+          note: 'افزایش نرخ سود در هر مرحله',
+        },
       );
     }
 
@@ -273,16 +273,16 @@ export default function LoanPage() {
         {/* Header */}
         <FadeIn delay={0}>
           <div className="text-center max-w-4xl mx-auto">
-            <motion.div 
+            <motion.div
               className="inline-flex items-center justify-center w-16 h-16 rounded-full text-white shadow-xl mb-6"
               style={{ backgroundColor: toolCategories.financial.primary }}
               animate={{
-                rotate: [0, 5, -5, 0]
+                rotate: [0, 5, -5, 0],
               }}
               transition={{
                 duration: 4,
                 repeat: Infinity,
-                ease: "easeInOut"
+                ease: 'easeInOut',
               }}
             >
               <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -293,8 +293,11 @@ export default function LoanPage() {
               محاسبه‌گر اقساط و سود وام بانکی
             </h1>
             <p className="text-lg text-gray-600 leading-relaxed">
-              این محاسبه‌گر بر اساس فرمول‌های جدید بانک مرکزی عمل می‌کند و برای انواع وام‌های بانکی مناسب است.
-              دامنه محاسبات شامل وام‌های عادی، قرض‌الحسنه و وام با اقساط پلکانی می‌باشد.
+              {'این محاسبه‌گر بر اساس فرمول‌های جدید بانک مرکزی عمل می‌کند '}
+              {'و برای انواع وام‌های بانکی مناسب است.'}
+              {' '}
+              {'دامنه محاسبات شامل وام‌های عادی، قرض‌الحسنه '}
+              {'و وام با اقساط پلکانی می‌باشد.'}
             </p>
           </div>
         </FadeIn>
@@ -316,21 +319,26 @@ export default function LoanPage() {
                   {(['installment', 'rate', 'principal', 'months'] as CalculationType[]).map((type) => (
                     <StaggerItem key={type}>
                       <motion.button
-                        onClick={() => setForm(s => ({ ...s, calculationType: type }))}
-                        className={`p-6 rounded-2xl border-2 transition-all duration-300 text-right ${
+                        onClick={() => setForm((s) => ({ ...s, calculationType: type }))}
+                        className={[
+                          'p-6 rounded-2xl border-2 transition-all duration-300 text-right',
                           form.calculationType === type
                             ? 'border-opacity-100 shadow-lg text-white'
-                            : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300 hover:bg-gray-50'
-                        }`}
+                            : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300 hover:bg-gray-50',
+                        ].join(' ')}
                         style={form.calculationType === type ? {
                           backgroundColor: toolCategories.financial.primary,
-                          borderColor: toolCategories.financial.primary
+                          borderColor: toolCategories.financial.primary,
                         } : {}}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                       >
                         <div className="text-lg font-bold mb-2">{getCalculationTypeLabel(type)}</div>
-                        <div className={`text-sm ${form.calculationType === type ? 'text-gray-200' : 'text-gray-500'}`}>
+                        <div
+                          className={`text-sm ${
+                            form.calculationType === type ? 'text-gray-200' : 'text-gray-500'
+                          }`}
+                        >
                           {type === 'installment' && 'محاسبه بر اساس مبلغ وام'}
                           {type === 'rate' && 'محاسبه بر اساس قسط ماهانه'}
                           {type === 'principal' && 'محاسبه بر اساس قسط و نرخ'}
@@ -362,17 +370,22 @@ export default function LoanPage() {
                   {(['regular', 'qarzolhasaneh', 'stepped'] as LoanType[]).map((type) => (
                     <StaggerItem key={type}>
                       <motion.button
-                        onClick={() => setForm(s => ({ ...s, loanType: type }))}
-                        className={`p-6 rounded-2xl border-2 transition-all duration-300 text-right ${
+                        onClick={() => setForm((s) => ({ ...s, loanType: type }))}
+                        className={[
+                          'p-6 rounded-2xl border-2 transition-all duration-300 text-right',
                           form.loanType === type
                             ? 'border-black bg-black text-white shadow-lg'
-                            : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300 hover:bg-gray-50'
-                        }`}
+                            : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300 hover:bg-gray-50',
+                        ].join(' ')}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                       >
                         <div className="font-bold text-lg mb-3">{getLoanTypeLabel(type)}</div>
-                        <div className={`text-sm leading-relaxed ${form.loanType === type ? 'text-gray-200' : 'text-gray-500'}`}>
+                        <div
+                          className={`text-sm leading-relaxed ${
+                            form.loanType === type ? 'text-gray-200' : 'text-gray-500'
+                          }`}
+                        >
                           {getLoanTypeDescription(type)}
                         </div>
                       </motion.button>
@@ -401,7 +414,7 @@ export default function LoanPage() {
                   {getInputFields().map((field) => (
                     <StaggerItem key={field.id}>
                       <div className="space-y-3">
-                        <label 
+                        <label
                           htmlFor={field.id}
                           className="block text-sm font-bold text-gray-700"
                         >
@@ -430,8 +443,8 @@ export default function LoanPage() {
               </StaggerContainer>
 
               <div className="mt-8 flex items-center justify-between">
-                <motion.button 
-                  type="button" 
+                <motion.button
+                  type="button"
                   onClick={onCalculate}
                   className="btn-primary text-lg px-10 py-4"
                   whileHover={{ scale: 1.05 }}
@@ -447,7 +460,7 @@ export default function LoanPage() {
 
                 <AnimatePresence>
                   {error && (
-                    <motion.div 
+                    <motion.div
                       className="text-sm text-red-600 bg-red-50 px-6 py-3 rounded-xl border border-red-200"
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
@@ -481,11 +494,11 @@ export default function LoanPage() {
                     </div>
                     نتیجه محاسبه - وام {getLoanTypeLabel(form.loanType)}
                   </h2>
-                  
+
                   <StaggerContainer staggerDelay={0.1}>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                       <StaggerItem>
-                        <motion.div 
+                        <motion.div
                           className="bg-gradient-to-br from-blue-50 to-blue-100 p-8 rounded-2xl border border-blue-200 shadow-lg"
                           whileHover={{ scale: 1.05, y: -5 }}
                           transition={{ duration: 0.3 }}
@@ -501,9 +514,9 @@ export default function LoanPage() {
                           </div>
                         </motion.div>
                       </StaggerItem>
-                      
+
                       <StaggerItem>
-                        <motion.div 
+                        <motion.div
                           className="bg-gradient-to-br from-green-50 to-green-100 p-8 rounded-2xl border border-green-200 shadow-lg"
                           whileHover={{ scale: 1.05, y: -5 }}
                           transition={{ duration: 0.3 }}
@@ -519,9 +532,9 @@ export default function LoanPage() {
                           </div>
                         </motion.div>
                       </StaggerItem>
-                      
+
                       <StaggerItem>
-                        <motion.div 
+                        <motion.div
                           className="bg-gradient-to-br from-amber-50 to-amber-100 p-8 rounded-2xl border border-amber-200 shadow-lg"
                           whileHover={{ scale: 1.05, y: -5 }}
                           transition={{ duration: 0.3 }}
@@ -588,8 +601,8 @@ export default function LoanPage() {
                               </tr>
                             </thead>
                             <tbody>
-                              {result.stepDetails.map((step: any, index: number) => (
-                                <motion.tr 
+                              {result.stepDetails.map((step, index) => (
+                                <motion.tr
                                   key={step.step}
                                   className="border-b border-gray-100 hover:bg-gray-100 transition-colors"
                                   initial={{ opacity: 0, x: -20 }}

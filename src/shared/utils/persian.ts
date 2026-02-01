@@ -11,10 +11,10 @@
 export function toPersianNumbers(input: string | number): string {
   const persianDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
   const englishDigits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-  
+
   const str = input.toString();
   let result = str;
-  
+
   for (let i = 0; i < englishDigits.length; i++) {
     const englishDigit = englishDigits[i];
     const persianDigit = persianDigits[i];
@@ -23,7 +23,7 @@ export function toPersianNumbers(input: string | number): string {
       result = result.replace(regex, persianDigit);
     }
   }
-  
+
   return result;
 }
 
@@ -43,7 +43,7 @@ export function formatPersianNumber(num: number): string {
  * @param currency - Currency symbol (default: 'تومان')
  * @returns Formatted currency string
  */
-export function formatPersianCurrency(amount: number, currency: string = 'تومان'): string {
+export function formatPersianCurrency(amount: number, currency = 'تومان'): string {
   return `${formatPersianNumber(amount)} ${currency}`;
 }
 
@@ -77,14 +77,14 @@ export function formatPersianDate(date: Date | number): string {
   const d = new Date(date);
   const persianMonths = [
     'فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور',
-    'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'
+    'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند',
   ];
-  
+
   // Simple approximation - in real app, use proper Jalali calendar library
   const day = d.getDate();
   const month = persianMonths[d.getMonth()];
   const year = d.getFullYear();
-  
+
   return `${toPersianNumbers(day)} ${month} ${toPersianNumbers(year)}`;
 }
 
@@ -97,11 +97,11 @@ export function fixPersianSpacing(text: string): string {
   // Replace common suffixes with half-space
   const suffixes = ['ها', 'های', 'تر', 'ترین', 'ی', 'ام', 'ای', 'است'];
   let result = text;
-  
+
   suffixes.forEach(suffix => {
     const regex = new RegExp(`(\\w+)${suffix}`, 'g');
     result = result.replace(regex, `$1\u200C${suffix}`);
   });
-  
+
   return result;
 }

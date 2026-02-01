@@ -20,15 +20,19 @@ export default function EncryptPdfPage() {
   const [permissions, setPermissions] = useState({
     printing: true,
     copying: true,
-    modifying: true
+    modifying: true,
   });
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const passwordInputId = 'encrypt-pdf-password';
+  const confirmPasswordInputId = 'encrypt-pdf-confirm-password';
 
   const canEncrypt = selectedFile !== null && !busy && password && password === confirmPassword;
 
   const handleFileSelect = async (files: FileList | null) => {
     setError(null);
-    if (!files || files.length === 0) return;
+    if (!files || files.length === 0) {
+      return;
+    }
 
     const file = files[0];
     if (!file || file.type !== 'application/pdf') {
@@ -41,7 +45,9 @@ export default function EncryptPdfPage() {
   };
 
   const onEncrypt = async () => {
-    if (!selectedFile || !password) return;
+    if (!selectedFile || !password) {
+      return;
+    }
 
     setError(null);
     setBusy(true);
@@ -62,13 +68,13 @@ export default function EncryptPdfPage() {
 
       const options: EncryptPdfOptions = {
         password,
-        permissions
+        permissions,
       };
 
       setProgress(30);
       const encryptedBytes = await encryptPdf(pdfBytes, options);
       setProgress(80);
-      
+
       const blob = new Blob([encryptedBytes], { type: 'application/pdf' });
       const url = URL.createObjectURL(blob);
 
@@ -93,11 +99,13 @@ export default function EncryptPdfPage() {
   const passwordStrength = getPasswordStrength(password);
 
   const formatFileSize = (bytes: number): string => {
-    if (bytes === 0) return '0 Bytes';
+    if (bytes === 0) {
+      return '0 Bytes';
+    }
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2)) } ${ sizes[i]}`;
   };
 
   return (
@@ -120,7 +128,7 @@ export default function EncryptPdfPage() {
                 onChange={(e) => handleFileSelect(e.target.files)}
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
               />
-              
+
               <div className="space-y-6">
                 <div className="mx-auto h-20 w-20 rounded-full bg-red-100 flex items-center justify-center">
                   <svg className="h-10 w-10 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -170,14 +178,18 @@ export default function EncryptPdfPage() {
             {/* Password Settings */}
             <Card className="p-6">
               <h2 className="text-lg font-semibold text-slate-900 mb-4">تنظیمات رمز عبور</h2>
-              
+
               <div className="space-y-6">
                 {/* Password */}
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                  <label
+                    htmlFor={passwordInputId}
+                    className="block text-sm font-medium text-slate-700 mb-2"
+                  >
                     رمز عبور
                   </label>
                   <input
+                    id={passwordInputId}
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -193,7 +205,7 @@ export default function EncryptPdfPage() {
                         </span>
                       </div>
                       <div className="w-full bg-slate-200 rounded-full h-2">
-                        <div 
+                        <div
                           className={`bg-${passwordStrength.color}-500 h-2 rounded-full transition-all duration-300`}
                           style={{ width: `${(passwordStrength.score / 5) * 100}%` }}
                         ></div>
@@ -204,10 +216,14 @@ export default function EncryptPdfPage() {
 
                 {/* Confirm Password */}
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                  <label
+                    htmlFor={confirmPasswordInputId}
+                    className="block text-sm font-medium text-slate-700 mb-2"
+                  >
                     تکرار رمز عبور
                   </label>
                   <input
+                    id={confirmPasswordInputId}
                     type="password"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
@@ -221,9 +237,9 @@ export default function EncryptPdfPage() {
 
                 {/* Permissions */}
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-3">
+                  <p className="block text-sm font-medium text-slate-700 mb-3">
                     مجوزهای دسترسی
-                  </label>
+                  </p>
                   <div className="space-y-3">
                     <label className="flex items-center">
                       <input
@@ -298,20 +314,20 @@ export default function EncryptPdfPage() {
             <Card className="p-8 text-center max-w-sm w-full mx-4">
               <div className="animate-spin h-12 w-12 border-4 border-red-600 border-t-transparent rounded-full mx-auto mb-4"></div>
               <p className="text-lg font-semibold text-slate-900 mb-4">در حال رمزگذاری PDF...</p>
-              
+
               {progress > 0 && (
                 <div className="w-full bg-slate-200 rounded-full h-2 mb-2">
-                  <div 
+                  <div
                     className="bg-red-600 h-2 rounded-full transition-all duration-300"
                     style={{ width: `${progress}%` }}
                   ></div>
                 </div>
               )}
-              
+
               <p className="text-sm text-slate-600">
                 {progress < 50 ? `در حال پردازش فایل (${Math.round(progress)}%)` :
-                 progress < 80 ? `در حال اعمال رمز عبور (${Math.round(progress)}%)` :
-                 `در حال آماده‌سازی دانلود (${Math.round(progress)}%)`}
+                  progress < 80 ? `در حال اعمال رمز عبور (${Math.round(progress)}%)` :
+                    `در حال آماده‌سازی دانلود (${Math.round(progress)}%)`}
               </p>
             </Card>
           </div>

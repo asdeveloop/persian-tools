@@ -87,8 +87,10 @@ export function PulseElement({ children, className = '' }: PulseElementProps) {
 
 // Utility hook for reduced motion
 export function useReducedMotion() {
-  if (typeof window === 'undefined') return false;
-  
+  if (typeof window === 'undefined') {
+    return false;
+  }
+
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
@@ -100,18 +102,18 @@ interface RespectfulAnimationProps {
   delay?: number;
 }
 
-export function RespectfulAnimation({ 
-  children, 
-  className = '', 
-  animationClass, 
-  delay = 0 
+export function RespectfulAnimation({
+  children,
+  className = '',
+  animationClass,
+  delay = 0,
 }: RespectfulAnimationProps) {
   const prefersReducedMotion = useReducedMotion();
-  
+
   if (prefersReducedMotion) {
     return <div className={className}>{children}</div>;
   }
-  
+
   return (
     <div
       className={`

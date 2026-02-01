@@ -9,7 +9,7 @@ export async function convertToJpeg(image: Buffer): Promise<Buffer> {
   } catch (error) {
     const processingError: ImageProcessingError = {
       code: 'PROCESSING_FAILED',
-      message: error instanceof Error ? error.message : 'خطا در تبدیل به JPEG'
+      message: error instanceof Error ? error.message : 'خطا در تبدیل به JPEG',
     };
     throw new Error(processingError.message);
   }

@@ -19,11 +19,17 @@ export function parseLooseNumber(input: string): number | null {
     .replaceAll('\u200f', '')
     .replaceAll('\u200e', '');
 
-  if (normalized.length === 0) return null;
-  if (!/^-?\d*(?:\.\d+)?$/.test(normalized)) return null;
+  if (normalized.length === 0) {
+    return null;
+  }
+  if (!/^-?\d*(?:\.\d+)?$/.test(normalized)) {
+    return null;
+  }
 
   const n = Number(normalized);
-  if (!Number.isFinite(n)) return null;
+  if (!Number.isFinite(n)) {
+    return null;
+  }
   return n;
 }
 

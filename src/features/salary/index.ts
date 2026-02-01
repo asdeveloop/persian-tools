@@ -5,46 +5,46 @@
  */
 
 // وارد کردن قوانین و ابزارهای مورد نیاز
-import { 
+import {
   calculateTotalBaseSalary,
-  calculateExperienceBonus 
+  calculateExperienceBonus,
 } from './rules/baseSalary';
 
-import { 
-  calculateTotalOvertime 
+import {
+  calculateTotalOvertime,
 } from './rules/overtime';
 
-import { 
-  getAllowanceDetails 
+import {
+  getAllowanceDetails,
 } from './rules/allowances';
 
-import { 
-  getInsuranceDetails 
+import {
+  getInsuranceDetails,
 } from './rules/insurance';
 
-import { 
+import {
   calculateMonthlyTax,
   getAppliedTaxBrackets,
-  calculateEffectiveTaxRate 
+  calculateEffectiveTaxRate,
 } from './utils/tax';
 
-import { 
+import {
   MINIMUM_WAGE_1404,
   HOUSING_ALLOWANCE_1404,
   FOOD_ALLOWANCE_1404,
   CHILD_ALLOWANCE_PER_CHILD,
   SPOUSE_ALLOWANCE,
-  EXPERIENCE_BONUS_PER_5_YEARS
+  EXPERIENCE_BONUS_PER_5_YEARS,
 } from './constants';
 
-import type { 
-  SalaryInput, 
-  SalaryOutput, 
-  SalaryDetails, 
+import type {
+  SalaryInput,
+  SalaryOutput,
+  SalaryDetails,
   SalarySummary,
   MinimumWageInput,
   MinimumWageOutput,
-  ValidationResult
+  ValidationResult,
 } from './salary.types';
 
 // =================================
@@ -67,17 +67,17 @@ export function calculateSalary(input: SalaryInput): SalaryOutput {
   const baseCalculated = calculateTotalBaseSalary(
     input.baseSalary,
     input.workExperienceYears,
-    input.workingDays
+    input.workingDays,
   );
-  
-  const experienceBonus = calculateExperienceBonus(input.workExperienceYears || 0);
+
+  const experienceBonus = calculateExperienceBonus(input.workExperienceYears ?? 0);
 
   // 2. محاسبه اضافه‌کاری
   const overtimeTotal = calculateTotalOvertime(
     baseCalculated,
-    input.overtimeHours || 0,
-    input.nightOvertimeHours || 0,
-    input.holidayOvertimeHours || 0
+    input.overtimeHours ?? 0,
+    input.nightOvertimeHours ?? 0,
+    input.holidayOvertimeHours ?? 0,
   );
 
   // 3. محاسبه مزایا
@@ -86,11 +86,11 @@ export function calculateSalary(input: SalaryInput): SalaryOutput {
     numberOfChildren: input.numberOfChildren ?? 0,
     missionDays: input.missionDays ?? 0,
     hasTransportation: input.hasTransportation ?? false,
-    hasWorkerCoupon: input.hasWorkerCoupon ?? false
+    hasWorkerCoupon: input.hasWorkerCoupon ?? false,
   });
 
   // 4. محاسبه حقوق ناخالص
-  const grossSalary = baseCalculated + overtimeTotal + allowancesDetails.total + (input.otherBenefits || 0);
+  const grossSalary = baseCalculated + overtimeTotal + allowancesDetails.total + (input.otherBenefits ?? 0);
 
   // 5. محاسبه بیمه
   const insuranceDetails = getInsuranceDetails(grossSalary, 0);
@@ -102,7 +102,7 @@ export function calculateSalary(input: SalaryInput): SalaryOutput {
   const effectiveTaxRate = calculateEffectiveTaxRate(taxAmount, grossSalary);
 
   // 7. محاسبه کسورات
-  const otherDeductions = input.otherDeductions || 0;
+  const otherDeductions = input.otherDeductions ?? 0;
   const totalDeductions = insuranceDetails.workerShare + taxAmount + otherDeductions;
 
   // 8. محاسبه حقوق خالص
@@ -112,32 +112,32 @@ export function calculateSalary(input: SalaryInput): SalaryOutput {
   const details: SalaryDetails = {
     base: {
       calculated: baseCalculated,
-      experienceBonus
+      experienceBonus,
     },
     overtime: {
-      normal: calculateTotalOvertime(baseCalculated, input.overtimeHours || 0),
-      night: calculateTotalOvertime(baseCalculated, 0, input.nightOvertimeHours || 0),
-      holiday: calculateTotalOvertime(baseCalculated, 0, 0, input.holidayOvertimeHours || 0),
-      total: overtimeTotal
+      normal: calculateTotalOvertime(baseCalculated, input.overtimeHours ?? 0),
+      night: calculateTotalOvertime(baseCalculated, 0, input.nightOvertimeHours ?? 0),
+      holiday: calculateTotalOvertime(baseCalculated, 0, 0, input.holidayOvertimeHours ?? 0),
+      total: overtimeTotal,
     },
     allowances: allowancesDetails,
     insurance: {
       workerShare: insuranceDetails.workerShare,
       employerShare: insuranceDetails.employerShare,
       total: insuranceDetails.total,
-      rate: insuranceDetails.workerRate
+      rate: insuranceDetails.workerRate,
     },
     tax: {
       beforeExemption: taxAmount + (taxAmount * 0.1), // تخمین قبل از معافیت
       exemption: taxAmount * 0.1, // تخمین معافیت
       final: taxAmount,
       rate: effectiveTaxRate,
-      brackets: taxBrackets
+      brackets: taxBrackets,
     },
     deductions: {
       other: otherDeductions,
-      total: totalDeductions
-    }
+      total: totalDeductions,
+    },
   };
 
   const summary: SalarySummary = {
@@ -147,7 +147,7 @@ export function calculateSalary(input: SalaryInput): SalaryOutput {
     effectiveTaxRate,
     effectiveInsuranceRate: (insuranceDetails.workerShare / grossSalary) * 100,
     monthlyTaxableIncome,
-    annualTaxableIncome: monthlyTaxableIncome * 12
+    annualTaxableIncome: monthlyTaxableIncome * 12,
   };
 
   return {
@@ -155,7 +155,7 @@ export function calculateSalary(input: SalaryInput): SalaryOutput {
     netSalary,
     baseSalary: baseCalculated,
     details,
-    summary
+    summary,
   };
 }
 
@@ -174,7 +174,7 @@ export function calculateMinimumWage(input: MinimumWageInput = {}): MinimumWageO
     isMarried = false,
     numberOfChildren = 0,
     isDevelopmentZone = false,
-    otherDeductions = 0
+    otherDeductions = 0,
   } = input;
 
   // محاسبه حقوق پایه بر اساس سابقه کار
@@ -185,7 +185,7 @@ export function calculateMinimumWage(input: MinimumWageInput = {}): MinimumWageO
   // محاسبه مزایا
   const housingAllowance = HOUSING_ALLOWANCE_1404;
   const foodAllowance = FOOD_ALLOWANCE_1404;
-  
+
   let familyAllowance = 0;
   if (isMarried) {
     familyAllowance += SPOUSE_ALLOWANCE;
@@ -211,7 +211,7 @@ export function calculateMinimumWage(input: MinimumWageInput = {}): MinimumWageO
     totalGross,
     netSalary,
     insuranceAmount,
-    taxAmount
+    taxAmount,
   };
 }
 
@@ -226,8 +226,8 @@ export function calculateMinimumWage(input: MinimumWageInput = {}): MinimumWageO
  * @returns خروجی کامل محاسبه حقوق
  */
 export function calculateGrossFromNet(
-  netSalary: number, 
-  input: Omit<SalaryInput, 'baseSalary'>
+  netSalary: number,
+  input: Omit<SalaryInput, 'baseSalary'>,
 ): SalaryOutput {
   if (netSalary <= 0) {
     throw new Error('حقوق خالص باید بزرگتر از صفر باشد.');
@@ -236,7 +236,7 @@ export function calculateGrossFromNet(
   // محاسبه حقوق ناخالص با روش جستجوی دودویی
   let low = netSalary;
   let high = netSalary * 2; // حداکثر ۲ برابر حقوق خالص
-  let tolerance = 100; // تومان
+  const tolerance = 100; // تومان
   let iterations = 0;
   const maxIterations = 50;
 
@@ -244,15 +244,15 @@ export function calculateGrossFromNet(
     const mid = (low + high) / 2;
     const result = calculateSalary({
       ...input,
-      baseSalary: mid
+      baseSalary: mid,
     });
-    
+
     if (result.netSalary < netSalary) {
       low = mid;
     } else {
       high = mid;
     }
-    
+
     iterations++;
   }
 
@@ -260,7 +260,7 @@ export function calculateGrossFromNet(
   const finalGross = (low + high) / 2;
   return calculateSalary({
     ...input,
-    baseSalary: finalGross
+    baseSalary: finalGross,
   });
 }
 
@@ -317,7 +317,7 @@ export function validateInput(input: SalaryInput): ValidationResult {
   return {
     isValid: errors.length === 0,
     errors,
-    warnings
+    warnings,
   };
 }
 
@@ -339,7 +339,7 @@ export function getSalaryLaws() {
     experienceBonusPer5Years: EXPERIENCE_BONUS_PER_5_YEARS,
     insuranceRate: 7,
     taxExemption: 24_000_000, // ماهانه
-    year: 1404
+    year: 1404,
   };
 }
 
@@ -362,5 +362,5 @@ export default {
   calculateGrossFromNet,
   validateInput,
   getSalaryLaws,
-  isTaxable
+  isTaxable,
 };

@@ -9,7 +9,7 @@ export async function convertToPng(image: Buffer): Promise<Buffer> {
   } catch (error) {
     const processingError: ImageProcessingError = {
       code: 'PROCESSING_FAILED',
-      message: error instanceof Error ? error.message : 'خطا در تبدیل به PNG'
+      message: error instanceof Error ? error.message : 'خطا در تبدیل به PNG',
     };
     throw new Error(processingError.message);
   }

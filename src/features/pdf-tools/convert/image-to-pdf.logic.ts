@@ -44,17 +44,17 @@ function fitImageToPage(
   imageHeight: number,
   pageWidth: number,
   pageHeight: number,
-  margin: number
+  margin: number,
 ): { width: number; height: number; x: number; y: number } {
   const availableWidth = pageWidth - 2 * margin;
   const availableHeight = pageHeight - 2 * margin;
-  
+
   const imageAspectRatio = imageWidth / imageHeight;
   const pageAspectRatio = availableWidth / availableHeight;
-  
+
   let fitWidth: number;
   let fitHeight: number;
-  
+
   if (imageAspectRatio > pageAspectRatio) {
     fitWidth = availableWidth;
     fitHeight = availableWidth / imageAspectRatio;
@@ -62,16 +62,16 @@ function fitImageToPage(
     fitHeight = availableHeight;
     fitWidth = availableHeight * imageAspectRatio;
   }
-  
+
   const x = (pageWidth - fitWidth) / 2;
   const y = (pageHeight - fitHeight) / 2;
-  
+
   return { width: fitWidth, height: fitHeight, x, y };
 }
 
 export async function imagesToPdfBytes(
   items: ImageToPdfItem[],
-  options: ImageToPdfOptions = {}
+  options: ImageToPdfOptions = {},
 ): Promise<Uint8Array> {
   if (items.length === 0) {
     throw new Error('هیچ عکسی انتخاب نشده است.');
@@ -81,9 +81,10 @@ export async function imagesToPdfBytes(
     orientation = 'portrait',
     margin = 'small',
     pageSize = 'original',
-    quality: _quality = 0.8
+    quality = 0.8,
   } = options;
 
+  void quality;
   const pdf = await PDFDocument.create();
   const marginValue = getMarginValue(margin);
 
@@ -109,7 +110,7 @@ export async function imagesToPdfBytes(
 
     let pageWidth = imageWidth;
     let pageHeight = imageHeight;
-    
+
     if (pageSize !== 'original') {
       const size = getPageSize(pageSize, imageWidth, imageHeight);
       pageWidth = size.width;
@@ -121,13 +122,13 @@ export async function imagesToPdfBytes(
     }
 
     const page = pdf.addPage([pageWidth, pageHeight]);
-    
+
     const { width: fitWidth, height: fitHeight, x, y } = fitImageToPage(
       imageWidth,
       imageHeight,
       pageWidth,
       pageHeight,
-      marginValue
+      marginValue,
     );
 
     page.drawImage(img, { x, y, width: fitWidth, height: fitHeight });

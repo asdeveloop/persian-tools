@@ -1,9 +1,30 @@
 import { describe, expect, it } from 'vitest';
+import { PDFDocument } from 'pdf-lib';
 import { addWatermark, validateWatermarkOptions } from './add-watermark.logic';
+
+const oneByOnePngBase64 =
+  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAOq9Z5kAAAAASUVORK5CYII=';
+
+function b64ToBytes(b64: string): Uint8Array {
+  const bin = atob(b64);
+  const out = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i += 1) {
+    out[i] = bin.charCodeAt(i);
+  }
+  return out;
+}
+
+async function createPdfBytes(pageCount = 1): Promise<Uint8Array> {
+  const doc = await PDFDocument.create();
+  for (let i = 0; i < pageCount; i += 1) {
+    doc.addPage();
+  }
+  return new Uint8Array(await doc.save());
+}
 
 describe('addWatermark', () => {
   it('should throw when no content provided', async () => {
-    const pdfBytes = new Uint8Array([1, 2, 3, 4, 5]);
+    const pdfBytes = await createPdfBytes(1);
 
     await expect(addWatermark(pdfBytes, {
       type: 'text',
@@ -12,7 +33,7 @@ describe('addWatermark', () => {
   });
 
   it('should add text watermark', async () => {
-    const pdfBytes = new Uint8Array([1, 2, 3, 4, 5]);
+    const pdfBytes = await createPdfBytes(1);
 
     const watermarked = await addWatermark(pdfBytes, {
       type: 'text',
@@ -27,8 +48,8 @@ describe('addWatermark', () => {
   });
 
   it('should add image watermark', async () => {
-    const pdfBytes = new Uint8Array([1, 2, 3, 4, 5]);
-    const imageBytes = new Uint8Array([10, 20, 30, 40, 50]);
+    const pdfBytes = await createPdfBytes(1);
+    const imageBytes = b64ToBytes(oneByOnePngBase64);
 
     const watermarked = await addWatermark(pdfBytes, {
       type: 'image',

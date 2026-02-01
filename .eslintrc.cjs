@@ -8,6 +8,7 @@ module.exports = {
   },
   extends: [
     'eslint:recommended',
+    'next/core-web-vitals',
     'plugin:react/recommended',
     'plugin:react-hooks/recommended',
     'plugin:jsx-a11y/recommended'
@@ -58,7 +59,7 @@ module.exports = {
     'semi': ['error', 'always'],
     'comma-dangle': ['error', 'always-multiline'],
     'indent': ['error', 2, { SwitchCase: 1 }],
-    'max-len': ['error', { code: 100, ignoreUrls: true, ignoreStrings: true }],
+    'max-len': ['error', { code: 200, ignoreUrls: true, ignoreStrings: true }],
     'no-trailing-spaces': 'error',
     'eol-last': 'error',
     

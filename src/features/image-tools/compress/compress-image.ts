@@ -3,14 +3,14 @@ import type { CompressionOptions, CompressionResult, ImageProcessingError } from
 
 export async function compressImage(
   image: Buffer,
-  options: CompressionOptions = {}
+  options: CompressionOptions = {},
 ): Promise<CompressionResult> {
   const {
     quality = 80,
     maxWidth,
     maxHeight,
     format = 'jpeg',
-    stripMetadata = true
+    stripMetadata = true,
   } = options;
 
   try {
@@ -19,10 +19,11 @@ export async function compressImage(
     const originalSize = image.length;
 
     // Resize if dimensions are specified
-    if (maxWidth || maxHeight) {
+    const hasResize = (maxWidth ?? maxHeight) !== undefined;
+    if (hasResize) {
       pipeline = pipeline.resize(maxWidth, maxHeight, {
         fit: 'inside',
-        withoutEnlargement: true
+        withoutEnlargement: true,
       });
     }
 
@@ -32,9 +33,9 @@ export async function compressImage(
         pipeline = pipeline.jpeg({ quality, progressive: true });
         break;
       case 'png':
-        pipeline = pipeline.png({ 
+        pipeline = pipeline.png({
           quality: Math.round(quality / 10), // PNG quality is 0-9
-          progressive: true 
+          progressive: true,
         });
         break;
       case 'webp':
@@ -43,12 +44,13 @@ export async function compressImage(
       case 'avif':
         pipeline = pipeline.avif({ quality });
         break;
-      default:
+      default: {
         const error: ImageProcessingError = {
           code: 'UNSUPPORTED_FORMAT',
-          message: `فرمت ${format} پشتیبانی نمی‌شود`
+          message: `فرمت ${format} پشتیبانی نمی‌شود`,
         };
         throw new Error(error.message);
+      }
     }
 
     // Strip metadata if requested
@@ -66,13 +68,13 @@ export async function compressImage(
       originalSize,
       compressedSize,
       compressionRatio,
-      format
+      format,
     };
 
   } catch (error) {
     const processingError: ImageProcessingError = {
       code: 'PROCESSING_FAILED',
-      message: error instanceof Error ? error.message : 'خطا در پردازش تصویر'
+      message: error instanceof Error ? error.message : 'خطا در پردازش تصویر',
     };
     throw new Error(processingError.message);
   }

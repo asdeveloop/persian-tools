@@ -1,7 +1,7 @@
 import Link from 'next/link';
-import Button from '@/components/ui/Button';
-import ToolCard from '@/components/ui/ToolCard';
-import { IconCalculator, IconImage, IconMoney, IconPdf } from '@/components/ui/icons';
+import Button from '@/shared/ui/Button';
+import ToolCard from '@/shared/ui/ToolCard';
+import { IconCalculator, IconImage, IconMoney, IconPdf } from '@/shared/ui/icons';
 
 export default function HomePage() {
   return (

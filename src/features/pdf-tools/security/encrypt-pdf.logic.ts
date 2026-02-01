@@ -1,6 +1,5 @@
 import { PDFDocument, StandardFonts, rgb, PDFFont } from 'pdf-lib';
 import type { EncryptPdfOptions } from '../types';
-import { createError, createPdfError } from '../../../shared/errors';
 
 export type { EncryptPdfOptions } from '../types';
 
@@ -30,7 +29,7 @@ const PASSWORD_STRENGTH_LEVELS: readonly PasswordStrengthLevel[] = [
   { score: 2, label: 'متوسط', color: 'yellow' },
   { score: 3, label: 'خوب', color: 'blue' },
   { score: 4, label: 'قوی', color: 'green' },
-  { score: 5, label: 'بسیار قوی', color: 'green' }
+  { score: 5, label: 'بسیار قوی', color: 'green' },
 ] as const;
 
 const DEFAULT_PERMISSIONS = ['printing', 'copying', 'modifying'] as const;
@@ -46,7 +45,7 @@ function createPdfError(operation: string, originalError: unknown): Error {
 
 export async function encryptPdf(
   pdfBytes: Uint8Array,
-  options: EncryptPdfOptions
+  options: EncryptPdfOptions,
 ): Promise<Uint8Array> {
   const { password } = options;
 
@@ -72,7 +71,7 @@ export async function encryptPdf(
 async function addPasswordProtectionPage(
   pdf: PDFDocument,
   font: PDFFont,
-  password: string
+  password: string,
 ): Promise<void> {
   const firstPage = pdf.getPage(0);
   const { width, height } = firstPage.getSize();
@@ -83,7 +82,7 @@ async function addPasswordProtectionPage(
     y: height / 2,
     size: 24,
     font,
-    color: rgb(1, 0, 0)
+    color: rgb(1, 0, 0),
   });
 
   firstPage.drawText(`رمز عبور: ${password}`, {
@@ -91,13 +90,13 @@ async function addPasswordProtectionPage(
     y: height / 2 - 30,
     size: 16,
     font,
-    color: rgb(0.5, 0.5, 0.5)
+    color: rgb(0.5, 0.5, 0.5),
   });
 }
 
 export async function decryptPdf(
   pdfBytes: Uint8Array,
-  password: string
+  password: string,
 ): Promise<Uint8Array> {
   if (!password) {
     throw createPasswordError('رمز عبور مورد نیاز است');
@@ -134,17 +133,32 @@ export function validatePassword(password: string): PasswordValidationResult {
 
 export function getPasswordStrength(password: string): PasswordStrengthLevel {
   const score = calculatePasswordScore(password);
-  return PASSWORD_STRENGTH_LEVELS[score] ?? PASSWORD_STRENGTH_LEVELS[0];
+  const fallback = PASSWORD_STRENGTH_LEVELS[0] ?? {
+    score: 0,
+    label: 'بسیار ضعیف',
+    color: 'red',
+  };
+  return PASSWORD_STRENGTH_LEVELS[score] ?? fallback;
 }
 
 function calculatePasswordScore(password: string): number {
   let score = 0;
 
-  if (password.length >= 8) score += 1;
-  if (password.length >= 12) score += 1;
-  if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score += 1;
-  if (/\d/.test(password)) score += 1;
-  if (/[^a-zA-Z\d]/.test(password)) score += 1;
+  if (password.length >= 8) {
+    score += 1;
+  }
+  if (password.length >= 12) {
+    score += 1;
+  }
+  if (/[a-z]/.test(password) && /[A-Z]/.test(password)) {
+    score += 1;
+  }
+  if (/\d/.test(password)) {
+    score += 1;
+  }
+  if (/[^a-zA-Z\d]/.test(password)) {
+    score += 1;
+  }
 
   return score;
 }
@@ -158,14 +172,14 @@ export async function checkPdfProtection(pdfBytes: Uint8Array): Promise<PdfProte
     return {
       isEncrypted: false,
       hasPassword: false,
-      permissions: DEFAULT_PERMISSIONS
+      permissions: DEFAULT_PERMISSIONS,
     };
   } catch (error) {
     // If we can't load the PDF, it might be encrypted
     return {
       isEncrypted: true,
       hasPassword: true,
-      permissions: []
+      permissions: [],
     };
   }
 }

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import Card from '../../shared/ui/Card';
 import type { PdfToolItem } from './types';
 
@@ -11,7 +11,7 @@ const pdfTools: PdfToolItem[] = [
     description: 'چندین تصویر را به یک فایل PDF تبدیل کنید',
     icon: '🖼️',
     path: '/pdf-tools/convert/image-to-pdf',
-    category: 'convert'
+    category: 'convert',
   },
   {
     id: 'pdf-to-image',
@@ -19,7 +19,7 @@ const pdfTools: PdfToolItem[] = [
     description: 'صفحات PDF را به تصاویر JPG یا PNG تبدیل کنید',
     icon: '📷',
     path: '/pdf-tools/convert/pdf-to-image',
-    category: 'convert'
+    category: 'convert',
   },
   {
     id: 'pdf-to-text',
@@ -27,7 +27,7 @@ const pdfTools: PdfToolItem[] = [
     description: 'متن را از فایل PDF استخراج کنید',
     icon: '📝',
     path: '/pdf-tools/convert/pdf-to-text',
-    category: 'convert'
+    category: 'convert',
   },
   {
     id: 'word-to-pdf',
@@ -35,7 +35,7 @@ const pdfTools: PdfToolItem[] = [
     description: 'فایل‌های Word را به PDF تبدیل کنید',
     icon: '📄',
     path: '/pdf-tools/convert/word-to-pdf',
-    category: 'convert'
+    category: 'convert',
   },
 
   // Compress tools
@@ -45,7 +45,7 @@ const pdfTools: PdfToolItem[] = [
     description: 'حجم فایل PDF را بدون افت کیفیت کاهش دهید',
     icon: '🗜️',
     path: '/pdf-tools/compress/compress-pdf',
-    category: 'compress'
+    category: 'compress',
   },
 
   // Merge tools
@@ -55,7 +55,7 @@ const pdfTools: PdfToolItem[] = [
     description: 'چندین فایل PDF را در یک فایل واحد ادغام کنید',
     icon: '➕',
     path: '/pdf-tools/merge/merge-pdf',
-    category: 'merge'
+    category: 'merge',
   },
 
   // Split tools
@@ -65,7 +65,7 @@ const pdfTools: PdfToolItem[] = [
     description: 'فایل PDF را به صفحات جداگانه تقسیم کنید',
     icon: '✂️',
     path: '/pdf-tools/split/split-pdf',
-    category: 'split'
+    category: 'split',
   },
 
   // Security tools
@@ -75,7 +75,7 @@ const pdfTools: PdfToolItem[] = [
     description: 'روی فایل PDF رمز عبور قرار دهید',
     icon: '🔐',
     path: '/pdf-tools/security/encrypt-pdf',
-    category: 'security'
+    category: 'security',
   },
   {
     id: 'decrypt-pdf',
@@ -83,7 +83,7 @@ const pdfTools: PdfToolItem[] = [
     description: 'رمز عبور فایل PDF را حذف کنید',
     icon: '🔓',
     path: '/pdf-tools/security/decrypt-pdf',
-    category: 'security'
+    category: 'security',
   },
 
   // Watermark tools
@@ -93,7 +93,7 @@ const pdfTools: PdfToolItem[] = [
     description: 'متن یا لوگو به صفحات PDF اضافه کنید',
     icon: '🖋️',
     path: '/pdf-tools/watermark/add-watermark',
-    category: 'watermark'
+    category: 'watermark',
   },
 
   // Paginate tools
@@ -103,7 +103,7 @@ const pdfTools: PdfToolItem[] = [
     description: 'به صفحات PDF شماره اضافه کنید',
     icon: '🔢',
     path: '/pdf-tools/paginate/add-page-numbers',
-    category: 'paginate'
+    category: 'paginate',
   },
 
   // Extract tools
@@ -113,7 +113,7 @@ const pdfTools: PdfToolItem[] = [
     description: 'صفحات خاصی را از PDF استخراج کنید',
     icon: '📑',
     path: '/pdf-tools/extract/extract-pages',
-    category: 'extract'
+    category: 'extract',
   },
   {
     id: 'extract-text',
@@ -121,8 +121,8 @@ const pdfTools: PdfToolItem[] = [
     description: 'متن کامل را از فایل PDF استخراج کنید',
     icon: '📋',
     path: '/pdf-tools/extract/extract-text',
-    category: 'extract'
-  }
+    category: 'extract',
+  },
 ];
 
 const categories = [
@@ -134,7 +134,7 @@ const categories = [
   { id: 'security', name: 'امنیت', icon: '🔒' },
   { id: 'watermark', name: 'واترمارک', icon: '🖋️' },
   { id: 'paginate', name: 'صفحه‌بندی', icon: '🔢' },
-  { id: 'extract', name: 'استخراج', icon: '📤' }
+  { id: 'extract', name: 'استخراج', icon: '📤' },
 ];
 
 export default function PdfToolsPage() {
@@ -143,7 +143,7 @@ export default function PdfToolsPage() {
 
   const filteredTools = pdfTools.filter(tool => {
     const matchesCategory = selectedCategory === 'all' || tool.category === selectedCategory;
-    const matchesSearch = tool.title.includes(searchTerm) || 
+    const matchesSearch = tool.title.includes(searchTerm) ||
                          tool.description.includes(searchTerm);
     return matchesCategory && matchesSearch;
   });
@@ -204,7 +204,7 @@ export default function PdfToolsPage() {
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {filteredTools.map(tool => (
             <Card key={tool.id} className="group hover:shadow-lg transition-all duration-200 cursor-pointer">
-              <Link to={tool.path} className="block p-6">
+              <Link href={tool.path} className="block p-6">
                 <div className="text-center">
                   <div className="text-4xl mb-4 group-hover:scale-110 transition-transform duration-200">
                     {tool.icon}

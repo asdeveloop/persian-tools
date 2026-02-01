@@ -11,7 +11,7 @@ export interface SplitPdfResult {
 
 export async function splitPdf(
   pdfBytes: Uint8Array,
-  options: SplitPdfOptions = {}
+  options: SplitPdfOptions = {},
 ): Promise<SplitPdfResult[]> {
   const { ranges = [], splitBy = 'pages' } = options;
 
@@ -28,30 +28,32 @@ export async function splitPdf(
           const newPdf = await PDFDocument.create();
           const [page] = await newPdf.copyPages(pdf, [i]);
           newPdf.addPage(page);
-          
+
           const newBytes = await newPdf.save();
           results.push({
             filename: `page-${i + 1}.pdf`,
             bytes: newBytes,
-            pages: [i + 1]
+            pages: [i + 1],
           });
         }
       } else {
         // Split by specified ranges
         for (const range of ranges) {
           const pageNumbers = parsePageRange(range, pageCount);
-          if (pageNumbers.length === 0) continue;
+          if (pageNumbers.length === 0) {
+            continue;
+          }
 
           const newPdf = await PDFDocument.create();
           const pagesToCopy = pageNumbers.map(p => p - 1); // Convert to 0-based index
           const copiedPages = await newPdf.copyPages(pdf, pagesToCopy);
           copiedPages.forEach(page => newPdf.addPage(page));
-          
+
           const newBytes = await newPdf.save();
           results.push({
             filename: `pages-${range}.pdf`,
             bytes: newBytes,
-            pages: pageNumbers
+            pages: pageNumbers,
           });
         }
       }
@@ -65,17 +67,17 @@ export async function splitPdf(
 
     return results;
   } catch (error) {
-    throw new Error('خطا در تقسیم فایل PDF: ' + (error instanceof Error ? error.message : 'خطای نامشخص'));
+    throw new Error(`خطا در تقسیم فایل PDF: ${ error instanceof Error ? error.message : 'خطای نامشخص'}`);
   }
 }
 
 function parsePageRange(range: string, totalPages: number): number[] {
   const pages: number[] = [];
   const parts = range.split(',');
-  
+
   for (const part of parts) {
     const trimmed = part.trim();
-    
+
     if (trimmed.includes('-')) {
       // Range like "1-5" or "3-7"
       const [start, end] = trimmed.split('-').map(p => parseInt(p.trim()));
@@ -94,14 +96,14 @@ function parsePageRange(range: string, totalPages: number): number[] {
       }
     }
   }
-  
+
   return [...new Set(pages)].sort((a, b) => a - b);
 }
 
 export async function splitPdfWithProgress(
   pdfBytes: Uint8Array,
   options: SplitPdfOptions = {},
-  onProgress?: (progress: number) => void
+  onProgress?: (progress: number) => void,
 ): Promise<SplitPdfResult[]> {
   const { ranges = [], splitBy = 'pages' } = options;
 
@@ -116,12 +118,12 @@ export async function splitPdfWithProgress(
           const newPdf = await PDFDocument.create();
           const [page] = await newPdf.copyPages(pdf, [i]);
           newPdf.addPage(page);
-          
+
           const newBytes = await newPdf.save();
           results.push({
             filename: `page-${i + 1}.pdf`,
             bytes: newBytes,
-            pages: [i + 1]
+            pages: [i + 1],
           });
 
           if (onProgress) {
@@ -131,21 +133,25 @@ export async function splitPdfWithProgress(
       } else {
         for (let i = 0; i < ranges.length; i++) {
           const range = ranges[i];
-          if (!range) continue;
-          
+          if (!range) {
+            continue;
+          }
+
           const pageNumbers = parsePageRange(range, pageCount);
-          if (pageNumbers.length === 0) continue;
+          if (pageNumbers.length === 0) {
+            continue;
+          }
 
           const newPdf = await PDFDocument.create();
           const pagesToCopy = pageNumbers.map(p => p - 1);
           const copiedPages = await newPdf.copyPages(pdf, pagesToCopy);
           copiedPages.forEach(page => newPdf.addPage(page));
-          
+
           const newBytes = await newPdf.save();
           results.push({
             filename: `pages-${range}.pdf`,
             bytes: newBytes,
-            pages: pageNumbers
+            pages: pageNumbers,
           });
 
           if (onProgress) {
@@ -157,7 +163,7 @@ export async function splitPdfWithProgress(
 
     return results;
   } catch (error) {
-    throw new Error('خطا در تقسیم فایل PDF: ' + (error instanceof Error ? error.message : 'خطای نامشخص'));
+    throw new Error(`خطا در تقسیم فایل PDF: ${ error instanceof Error ? error.message : 'خطای نامشخص'}`);
   }
 }
 
@@ -179,11 +185,11 @@ export function suggestSplitOptions(pageCount: number): {
   const suggestions = {
     individual: pageCount <= 20,
     ranges: [] as string[],
-    descriptions: [] as string[]
+    descriptions: [] as string[],
   };
 
   if (pageCount <= 10) {
-    suggestions.ranges = ['1-' + pageCount];
+    suggestions.ranges = [`1-${ pageCount}`];
     suggestions.descriptions = ['همه صفحات در یک فایل'];
   } else if (pageCount <= 20) {
     const half = Math.ceil(pageCount / 2);
@@ -195,7 +201,7 @@ export function suggestSplitOptions(pageCount: number): {
       `1-${quarter}`,
       `${quarter + 1}-${quarter * 2}`,
       `${quarter * 2 + 1}-${quarter * 3}`,
-      `${quarter * 3 + 1}-${pageCount}`
+      `${quarter * 3 + 1}-${pageCount}`,
     ];
     suggestions.descriptions = ['یک چهارم اول', 'یک چهارم دوم', 'یک چهارم سوم', 'یک چهارم چهارم'];
   }
