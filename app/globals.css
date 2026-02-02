@@ -288,7 +288,7 @@ body {
 
 /* Card styles */
 .card {
-  @apply rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)]/90 shadow-[var(--shadow-medium)] backdrop-blur;
+  @apply rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] shadow-[var(--shadow-medium)] backdrop-blur;
 }
 
 .card-hover {
@@ -352,7 +352,7 @@ body {
 }
 
 .section-surface {
-  @apply rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)]/85 shadow-[var(--shadow-medium)] backdrop-blur;
+  @apply rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] shadow-[var(--shadow-medium)] backdrop-blur;
 }
 
 .noise-bg {
