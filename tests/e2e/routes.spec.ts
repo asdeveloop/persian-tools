@@ -4,7 +4,7 @@ const routes = [
   { path: '/', heading: 'جعبه ابزار فارسی' },
   { path: '/loan', heading: 'محاسبه' },
   { path: '/salary', heading: 'حقوق' },
-  { path: '/image-compress', heading: 'فشرده سازی تصویر' },
+  { path: '/image-tools', heading: 'ابزارهای تصویر' },
   { path: '/pdf-tools', heading: 'ابزارهای PDF' },
 ];
 

@@ -113,7 +113,7 @@ app/                        # Next.js App Router
     ├── pdf-tools/         # ابزارهای PDF
     ├── loan/              # محاسبه وام
     ├── salary/            # محاسبه حقوق
-    └── image-compress/    # فشرده‌سازی تصویر
+    └── image-tools/       # ابزارهای تصویر
 features/
 ├── pdf-tools/             # ابزارهای PDF
 ├── loan/                  # محاسبه وام

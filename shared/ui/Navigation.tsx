@@ -245,7 +245,7 @@ export default function Navigation() {
                   onMouseLeave={() => setOpenDropdown(null)}
                 >
                   <Link
-                    href="/image-compress"
+                    href="/image-tools"
                     className="flex items-center gap-3 px-4 py-3 text-sm transition-all duration-200 group focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 rounded-lg"
                     style={{
                       color: tokens.color.text.DEFAULT,
@@ -263,21 +263,21 @@ export default function Navigation() {
                   >
                     <motion.div
                       className="flex items-center justify-center w-8 h-8 rounded-full transition-colors"
-                      style={{ backgroundColor: '#9333ea20' }}
+                      style={{ backgroundColor: '#3b82f620' }}
                       whileHover={{ scale: 1.1, rotate: 5 }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = '#9333ea30';
+                        e.currentTarget.style.backgroundColor = '#3b82f630';
                       }}
                       onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = '#9333ea20';
+                        e.currentTarget.style.backgroundColor = '#3b82f620';
                       }}
                     >
                       <IconImage className="h-4 w-4" />
                     </motion.div>
                     <div className="flex-1">
-                      <div className="font-bold">فشرده‌سازی عکس</div>
+                      <div className="font-bold">ابزارهای تصویر</div>
                       <div className="text-xs" style={{ color: tokens.color.text.muted }}>
-                        کاهش حجم عکس‌ها
+                        فشرده‌سازی و بهینه‌سازی تصویر
                       </div>
                     </div>
                   </Link>
@@ -526,19 +526,19 @@ export default function Navigation() {
                       className="mr-4 mt-2 space-y-1 overflow-hidden"
                     >
                       <Link
-                        href="/image-compress"
+                        href="/image-tools"
                         className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-black/5 hover:text-black rounded-full transition-all duration-200"
                         onClick={closeMobileMenu}
                       >
                         <motion.div
-                          className="flex items-center justify-center w-8 h-8 rounded-full bg-purple-100"
+                          className="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100"
                           whileHover={{ scale: 1.1 }}
                         >
-                          <IconImage className="h-4 w-4 text-purple-600" />
+                          <IconImage className="h-4 w-4 text-blue-600" />
                         </motion.div>
                         <div className="flex-1">
-                          <div className="font-bold">فشرده‌سازی عکس</div>
-                          <div className="text-xs text-gray-500">کاهش حجم عکس‌ها</div>
+                          <div className="font-bold">ابزارهای تصویر</div>
+                          <div className="text-xs text-gray-500">فشرده‌سازی و بهینه‌سازی</div>
                         </div>
                       </Link>
                       <div className="flex items-center gap-3 px-4 py-3 text-sm text-gray-400 rounded-full">

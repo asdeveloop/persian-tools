@@ -11,7 +11,7 @@ const routes = [
   '/pdf-tools/merge/merge-pdf',
   '/pdf-tools/watermark/add-watermark',
   '/pdf-tools/split/split-pdf',
-  '/image-compress',
+  '/image-tools',
   '/loan',
   '/salary',
 ];

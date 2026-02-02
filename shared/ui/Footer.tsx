@@ -94,16 +94,16 @@ export default function Footer() {
             {/* Image Tools */}
             <div>
               <h3 className="font-bold text-white mb-4 flex items-center gap-2">
-                <IconImage className="h-5 w-5 text-purple-400" />
+                <IconImage className="h-5 w-5 text-blue-300" />
                 ابزارهای تصویر
               </h3>
               <ul className="space-y-2">
                 <li>
                   <Link
-                    href="/image-compress"
+                    href="/image-tools"
                     className="text-slate-400 hover:text-white transition-colors text-sm"
                   >
-                    فشرده‌سازی عکس
+                    فشرده‌سازی و بهینه‌سازی
                   </Link>
                 </li>
                 <li>

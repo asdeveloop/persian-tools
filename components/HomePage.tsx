@@ -73,11 +73,11 @@ export default function HomePage() {
             className="hover:border-[var(--color-success)] hover:bg-[var(--color-success)]/5 group"
           />
           <ToolCard
-            href="/image-compress"
-            title="فشرده‌سازی عکس"
-            description="کاهش حجم عکس‌ها با سه سطح کیفیت پیشنهادی"
-            icon={<IconImage className="h-8 w-8 text-purple-600" />}
-            className="hover:border-purple-300 hover:bg-purple-50 group"
+            href="/image-tools"
+            title="ابزارهای تصویر"
+            description="فشرده‌سازی و بهینه‌سازی تصاویر با کنترل کیفیت و ابعاد"
+            icon={<IconImage className="h-8 w-8 text-[var(--color-info)]" />}
+            className="hover:border-[var(--color-info)] hover:bg-[var(--color-info)]/5 group"
           />
         </div>
       </section>

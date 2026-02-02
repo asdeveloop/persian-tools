@@ -48,6 +48,11 @@ const nextConfig = {
         destination: '/pdf-tools',
         permanent: false,
       },
+      {
+        source: '/image-compress',
+        destination: '/image-tools',
+        permanent: true,
+      },
     ];
   },
 
