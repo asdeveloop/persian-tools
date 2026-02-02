@@ -1,3 +1,8 @@
+/* eslint-disable spaced-comment */
+/// <reference lib="webworker" />
+/* eslint-env worker */
+/* global DedicatedWorkerGlobalScope */
+
 export {};
 
 import { PDFDocument, StandardFonts, rgb, degrees } from 'pdf-lib';
@@ -38,7 +43,12 @@ type CountPagesRequest = {
   file: ArrayBuffer;
 };
 
-type WorkerRequest = MergeRequest | SplitRequest | CompressRequest | WatermarkRequest | CountPagesRequest;
+type WorkerRequest =
+  | MergeRequest
+  | SplitRequest
+  | CompressRequest
+  | WatermarkRequest
+  | CountPagesRequest;
 
 type WorkerResponse =
   | { id: string; type: 'progress'; progress: number }
@@ -53,7 +63,8 @@ const postProgress = (id: string, progress: number) => {
   ctx.postMessage(message);
 };
 
-const toArrayBuffer = (bytes: Uint8Array) => bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength);
+const toArrayBuffer = (bytes: Uint8Array) =>
+  bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength);
 
 const resolvePosition = (
   position: WatermarkRequest['position'],
@@ -85,7 +96,11 @@ ctx.onmessage = async (event: MessageEvent<WorkerRequest>) => {
     switch (payload.type) {
       case 'count-pages': {
         const doc = await PDFDocument.load(payload.file);
-        const response: WorkerResponse = { id: payload.id, type: 'pages', totalPages: doc.getPageCount() };
+        const response: WorkerResponse = {
+          id: payload.id,
+          type: 'pages',
+          totalPages: doc.getPageCount(),
+        };
         ctx.postMessage(response);
         return;
       }

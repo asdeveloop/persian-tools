@@ -136,13 +136,18 @@ export default function DecryptPdfPage() {
       <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
         <div className="text-center">
           <h1 className="text-3xl font-bold text-slate-900 mb-2">حذف رمز PDF</h1>
-          <p className="text-lg text-slate-600">بازسازی PDF بدون رمز (صفحات به صورت تصویر ذخیره می شوند)</p>
+          <p className="text-lg text-slate-600">
+            بازسازی PDF بدون رمز (صفحات به صورت تصویر ذخیره می شوند)
+          </p>
         </div>
 
         <Card className="p-6 space-y-4">
           <div className="flex flex-col gap-3">
-            <label className="text-sm font-semibold text-slate-700">انتخاب فایل PDF رمزدار</label>
+            <label htmlFor="decrypt-pdf-file" className="text-sm font-semibold text-slate-700">
+              انتخاب فایل PDF رمزدار
+            </label>
             <input
+              id="decrypt-pdf-file"
               type="file"
               accept="application/pdf"
               onChange={(e) => onSelectFile(e.target.files)}
@@ -157,8 +162,11 @@ export default function DecryptPdfPage() {
           )}
 
           <div className="flex flex-col gap-2">
-            <label className="text-sm font-semibold text-slate-700">رمز عبور</label>
+            <label htmlFor="decrypt-pdf-password" className="text-sm font-semibold text-slate-700">
+              رمز عبور
+            </label>
             <input
+              id="decrypt-pdf-password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -168,7 +176,12 @@ export default function DecryptPdfPage() {
           </div>
 
           <div className="flex flex-wrap items-center justify-between gap-4">
-            <Button type="button" variant="secondary" onClick={() => setFile(null)} disabled={busy || !file}>
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={() => setFile(null)}
+              disabled={busy || !file}
+            >
               تغییر فایل
             </Button>
             <Button type="button" onClick={onDecrypt} disabled={busy}>
@@ -184,9 +197,7 @@ export default function DecryptPdfPage() {
 
           {downloadUrl && resultSize !== null && (
             <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700 space-y-2">
-              <div>
-                حجم خروجی: {formatBytes(resultSize)}
-              </div>
+              <div>حجم خروجی: {formatBytes(resultSize)}</div>
               <div>
                 <a className="font-semibold underline" href={downloadUrl} download="decrypted.pdf">
                   دانلود فایل

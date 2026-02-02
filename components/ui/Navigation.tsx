@@ -79,13 +79,13 @@ export default function Navigation() {
   };
 
   return (
-    <header className="sticky top-0 z-50 glass-strong border-b border-white/20 shadow-lg" role="banner">
+    <header
+      className="sticky top-0 z-50 glass-strong border-b border-white/20 shadow-lg"
+      role="banner"
+    >
       <Container className="flex flex-wrap items-center justify-between gap-3 py-4">
         {/* Logo */}
-        <motion.div
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
+        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
           <Link
             href="/"
             className={[
@@ -117,7 +117,11 @@ export default function Navigation() {
         </motion.div>
 
         {/* Desktop Navigation */}
-        <nav className="hidden lg:flex items-center gap-2" role="navigation" aria-label="Main navigation">
+        <nav
+          className="hidden lg:flex items-center gap-2"
+          role="navigation"
+          aria-label="Main navigation"
+        >
           {/* PDF Tools Dropdown */}
           <div className="relative group">
             <motion.button
@@ -180,17 +184,25 @@ export default function Navigation() {
                       style={{ backgroundColor: withAlpha(tokens.color.statusRgb.danger, 0.2) }}
                       whileHover={{ scale: 1.1, rotate: 5 }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = withAlpha(tokens.color.statusRgb.danger, 0.3);
+                        e.currentTarget.style.backgroundColor = withAlpha(
+                          tokens.color.statusRgb.danger,
+                          0.3,
+                        );
                       }}
                       onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = withAlpha(tokens.color.statusRgb.danger, 0.2);
+                        e.currentTarget.style.backgroundColor = withAlpha(
+                          tokens.color.statusRgb.danger,
+                          0.2,
+                        );
                       }}
                     >
                       <IconPdf className="h-4 w-4" />
                     </motion.div>
                     <div className="flex-1">
                       <div className="font-bold">همه ابزارهای PDF</div>
-                      <div className="text-xs" style={{ color: tokens.color.text.muted }}>تبدیل، فشرده‌سازی، ادغام و...</div>
+                      <div className="text-xs" style={{ color: tokens.color.text.muted }}>
+                        تبدیل، فشرده‌سازی، ادغام و...
+                      </div>
                     </div>
                   </Link>
                 </motion.div>
@@ -264,11 +276,16 @@ export default function Navigation() {
                     </motion.div>
                     <div className="flex-1">
                       <div className="font-bold">فشرده‌سازی عکس</div>
-                      <div className="text-xs" style={{ color: tokens.color.text.muted }}>کاهش حجم عکس‌ها</div>
+                      <div className="text-xs" style={{ color: tokens.color.text.muted }}>
+                        کاهش حجم عکس‌ها
+                      </div>
                     </div>
                   </Link>
                   <div className="border-t border-gray-200/50 my-2"></div>
-                  <div className="px-4 py-2 text-xs font-bold uppercase tracking-wider" style={{ color: tokens.color.text.muted }}>
+                  <div
+                    className="px-4 py-2 text-xs font-bold uppercase tracking-wider"
+                    style={{ color: tokens.color.text.muted }}
+                  >
                     ابزارهای دیگر
                   </div>
                   <button
@@ -287,7 +304,9 @@ export default function Navigation() {
                     </motion.div>
                     <div className="flex-1">
                       <div className="font-bold">افزودن عکس به PDF</div>
-                      <div className="text-xs" style={{ color: tokens.color.text.muted }}>به زودی</div>
+                      <div className="text-xs" style={{ color: tokens.color.text.muted }}>
+                        به زودی
+                      </div>
                     </div>
                   </button>
                   <button
@@ -306,7 +325,9 @@ export default function Navigation() {
                     </motion.div>
                     <div className="flex-1">
                       <div className="font-bold">تبدیل PDF به عکس</div>
-                      <div className="text-xs" style={{ color: tokens.color.text.muted }}>به زودی</div>
+                      <div className="text-xs" style={{ color: tokens.color.text.muted }}>
+                        به زودی
+                      </div>
                     </div>
                   </button>
                 </motion.div>
@@ -384,6 +405,7 @@ export default function Navigation() {
 
         {/* Mobile Menu Button */}
         <motion.button
+          data-testid="mobile-menu"
           className="lg:hidden flex items-center gap-2 text-gray-700 hover:text-black p-2.5 rounded-full hover:bg-black/5 transition-all duration-200"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           whileHover={{ scale: 1.05 }}

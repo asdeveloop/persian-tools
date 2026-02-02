@@ -12,7 +12,7 @@ const POSITIONS = [
   { id: 'bottom-right', label: 'پایین راست' },
 ] as const;
 
-type Position = typeof POSITIONS[number]['id'];
+type Position = (typeof POSITIONS)[number]['id'];
 
 function formatBytes(bytes: number): string {
   if (!Number.isFinite(bytes) || bytes <= 0) {
@@ -122,8 +122,11 @@ export default function AddWatermarkPage() {
 
         <Card className="p-6 space-y-4">
           <div className="flex flex-col gap-3">
-            <label className="text-sm font-semibold text-slate-700">انتخاب فایل PDF</label>
+            <label htmlFor="watermark-file" className="text-sm font-semibold text-slate-700">
+              انتخاب فایل PDF
+            </label>
             <input
+              id="watermark-file"
               type="file"
               accept="application/pdf"
               onChange={(e) => onSelectFile(e.target.files)}
@@ -139,8 +142,11 @@ export default function AddWatermarkPage() {
 
           <div className="grid gap-4 md:grid-cols-2">
             <div className="flex flex-col gap-2">
-              <label className="text-sm font-semibold text-slate-700">متن واترمارک</label>
+              <label htmlFor="watermark-text" className="text-sm font-semibold text-slate-700">
+                متن واترمارک
+              </label>
               <input
+                id="watermark-text"
                 type="text"
                 value={text}
                 onChange={(e) => setText(e.target.value)}
@@ -153,8 +159,14 @@ export default function AddWatermarkPage() {
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="flex flex-col gap-2">
-                <label className="text-sm font-semibold text-slate-700">اندازه فونت</label>
+                <label
+                  htmlFor="watermark-font-size"
+                  className="text-sm font-semibold text-slate-700"
+                >
+                  اندازه فونت
+                </label>
                 <input
+                  id="watermark-font-size"
                   type="number"
                   min={12}
                   max={120}
@@ -164,8 +176,11 @@ export default function AddWatermarkPage() {
                 />
               </div>
               <div className="flex flex-col gap-2">
-                <label className="text-sm font-semibold text-slate-700">شفافیت</label>
+                <label htmlFor="watermark-opacity" className="text-sm font-semibold text-slate-700">
+                  شفافیت
+                </label>
                 <input
+                  id="watermark-opacity"
                   type="range"
                   min={0.05}
                   max={0.9}
@@ -180,8 +195,11 @@ export default function AddWatermarkPage() {
 
           <div className="grid gap-4 md:grid-cols-2">
             <div className="flex flex-col gap-2">
-              <label className="text-sm font-semibold text-slate-700">زاویه چرخش</label>
+              <label htmlFor="watermark-rotation" className="text-sm font-semibold text-slate-700">
+                زاویه چرخش
+              </label>
               <input
+                id="watermark-rotation"
                 type="number"
                 min={-90}
                 max={90}
@@ -191,21 +209,31 @@ export default function AddWatermarkPage() {
               />
             </div>
             <div className="flex flex-col gap-2">
-              <label className="text-sm font-semibold text-slate-700">موقعیت</label>
+              <label htmlFor="watermark-position" className="text-sm font-semibold text-slate-700">
+                موقعیت
+              </label>
               <select
+                id="watermark-position"
                 className="input-field"
                 value={position}
                 onChange={(e) => setPosition(e.target.value as Position)}
               >
                 {POSITIONS.map((item) => (
-                  <option key={item.id} value={item.id}>{item.label}</option>
+                  <option key={item.id} value={item.id}>
+                    {item.label}
+                  </option>
                 ))}
               </select>
             </div>
           </div>
 
           <div className="flex flex-wrap items-center justify-between gap-4">
-            <Button type="button" variant="secondary" onClick={() => setFile(null)} disabled={busy || !file}>
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={() => setFile(null)}
+              disabled={busy || !file}
+            >
               تغییر فایل
             </Button>
             <Button type="button" onClick={onApply} disabled={busy}>
@@ -216,7 +244,10 @@ export default function AddWatermarkPage() {
           {busy && (
             <div className="space-y-2">
               <div className="h-2 w-full rounded-full bg-slate-100 overflow-hidden">
-                <div className="h-full bg-blue-500 transition-all duration-200" style={{ width: `${progress}%` }} />
+                <div
+                  className="h-full bg-blue-500 transition-all duration-200"
+                  style={{ width: `${progress}%` }}
+                />
               </div>
               <div className="text-xs text-slate-500">{progress}%</div>
             </div>
@@ -232,7 +263,11 @@ export default function AddWatermarkPage() {
             <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700 space-y-2">
               <div>حجم خروجی: {formatBytes(resultSize)}</div>
               <div>
-                <a className="font-semibold underline" href={downloadUrl} download="watermarked.pdf">
+                <a
+                  className="font-semibold underline"
+                  href={downloadUrl}
+                  download="watermarked.pdf"
+                >
                   دانلود فایل
                 </a>
               </div>

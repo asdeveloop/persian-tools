@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import Image from 'next/image';
 import JSZip from 'jszip';
 import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist';
 import type { PDFPageProxy } from 'pdfjs-dist/types/src/display/api';
@@ -12,6 +13,8 @@ type OutputImage = {
   url: string;
   size: number;
   blob: Blob;
+  width: number;
+  height: number;
 };
 
 type OutputFormat = 'png' | 'jpeg';
@@ -125,7 +128,10 @@ export default function PdfToImagePage() {
     };
   }, [outputs, zipUrl]);
 
-  const totalOutputSize = useMemo(() => outputs.reduce((sum, item) => sum + item.size, 0), [outputs]);
+  const totalOutputSize = useMemo(
+    () => outputs.reduce((sum, item) => sum + item.size, 0),
+    [outputs],
+  );
 
   const onSelectFile = async (fileList: FileList | null) => {
     setError(null);
@@ -174,9 +180,9 @@ export default function PdfToImagePage() {
 
       for (const pageNumber of pages) {
         const page = await pdf.getPage(pageNumber);
-        const { blob } = await renderPageToImage(page, format, scale, quality);
+        const { blob, width, height } = await renderPageToImage(page, format, scale, quality);
         const url = URL.createObjectURL(blob);
-        results.push({ page: pageNumber, url, size: blob.size, blob });
+        results.push({ page: pageNumber, url, size: blob.size, blob, width, height });
       }
 
       outputs.forEach((item) => URL.revokeObjectURL(item.url));
@@ -225,8 +231,11 @@ export default function PdfToImagePage() {
 
         <Card className="p-6 space-y-4">
           <div className="flex flex-col gap-3">
-            <label className="text-sm font-semibold text-slate-700">انتخاب فایل PDF</label>
+            <label htmlFor="pdf-to-image-file" className="text-sm font-semibold text-slate-700">
+              انتخاب فایل PDF
+            </label>
             <input
+              id="pdf-to-image-file"
               type="file"
               accept="application/pdf"
               onChange={(e) => onSelectFile(e.target.files)}
@@ -242,22 +251,29 @@ export default function PdfToImagePage() {
 
           <div className="grid gap-4 md:grid-cols-2">
             <div className="flex flex-col gap-2">
-              <label className="text-sm font-semibold text-slate-700">صفحات مورد نظر</label>
+              <label htmlFor="pdf-to-image-pages" className="text-sm font-semibold text-slate-700">
+                صفحات مورد نظر
+              </label>
               <input
+                id="pdf-to-image-pages"
                 type="text"
                 value={pagesInput}
                 onChange={(e) => setPagesInput(e.target.value)}
                 placeholder="all یا 1-3,5"
                 className="input-field"
               />
-              <div className="text-xs text-slate-500">
-                برای همه صفحات مقدار all را وارد کنید.
-              </div>
+              <div className="text-xs text-slate-500">برای همه صفحات مقدار all را وارد کنید.</div>
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="flex flex-col gap-2">
-                <label className="text-sm font-semibold text-slate-700">فرمت خروجی</label>
+                <label
+                  htmlFor="pdf-to-image-format"
+                  className="text-sm font-semibold text-slate-700"
+                >
+                  فرمت خروجی
+                </label>
                 <select
+                  id="pdf-to-image-format"
                   className="input-field"
                   value={format}
                   onChange={(e) => setFormat(e.target.value as OutputFormat)}
@@ -267,8 +283,14 @@ export default function PdfToImagePage() {
                 </select>
               </div>
               <div className="flex flex-col gap-2">
-                <label className="text-sm font-semibold text-slate-700">کیفیت</label>
+                <label
+                  htmlFor="pdf-to-image-scale"
+                  className="text-sm font-semibold text-slate-700"
+                >
+                  کیفیت
+                </label>
                 <select
+                  id="pdf-to-image-scale"
                   className="input-field"
                   value={scale}
                   onChange={(e) => setScale(Number(e.target.value) as ScaleOption)}
@@ -283,8 +305,14 @@ export default function PdfToImagePage() {
 
           {format === 'jpeg' && (
             <div className="flex flex-col gap-2">
-              <label className="text-sm font-semibold text-slate-700">فشرده سازی JPG</label>
+              <label
+                htmlFor="pdf-to-image-quality"
+                className="text-sm font-semibold text-slate-700"
+              >
+                فشرده سازی JPG
+              </label>
               <input
+                id="pdf-to-image-quality"
                 type="range"
                 min={0.5}
                 max={1}
@@ -297,7 +325,12 @@ export default function PdfToImagePage() {
           )}
 
           <div className="flex flex-wrap items-center justify-between gap-4">
-            <Button type="button" variant="secondary" onClick={() => setFile(null)} disabled={busy || !file}>
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={() => setFile(null)}
+              disabled={busy || !file}
+            >
               تغییر فایل
             </Button>
             <Button type="button" onClick={onConvert} disabled={busy}>
@@ -323,19 +356,38 @@ export default function PdfToImagePage() {
                 {zipBusy ? 'در حال آماده سازی...' : 'دانلود همه (ZIP)'}
               </Button>
               {zipUrl && (
-                <a className="text-sm font-semibold underline text-emerald-700" href={zipUrl} download={`pdf-pages-${Date.now()}.zip`}>
+                <a
+                  className="text-sm font-semibold underline text-emerald-700"
+                  href={zipUrl}
+                  download={`pdf-pages-${Date.now()}.zip`}
+                >
                   دانلود فایل ZIP
                 </a>
               )}
             </div>
             <div className="grid gap-4 md:grid-cols-2">
               {outputs.map((item) => (
-                <div key={item.url} className="rounded-xl border border-slate-200 bg-white p-4 space-y-3">
+                <div
+                  key={item.url}
+                  className="rounded-xl border border-slate-200 bg-white p-4 space-y-3"
+                >
                   <div className="text-sm font-semibold text-slate-700">صفحه {item.page}</div>
-                  <img src={item.url} alt={`page-${item.page}`} className="w-full rounded-lg border" />
+                  <Image
+                    src={item.url}
+                    alt={`page-${item.page}`}
+                    width={Math.max(1, item.width)}
+                    height={Math.max(1, item.height)}
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    unoptimized
+                    className="w-full h-auto rounded-lg border"
+                  />
                   <div className="flex items-center justify-between text-xs text-slate-500">
                     <div>{formatBytes(item.size)}</div>
-                    <a className="font-semibold underline" href={item.url} download={`page-${item.page}.${format}`}>
+                    <a
+                      className="font-semibold underline"
+                      href={item.url}
+                      download={`page-${item.page}.${format}`}
+                    >
                       دانلود
                     </a>
                   </div>

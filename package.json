@@ -7,13 +7,23 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint . --ext .ts,.tsx",
     "typecheck": "tsc --noEmit",
-    "format": "prettier -w .",
-    "check": "pnpm lint && pnpm typecheck",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "test:e2e": "playwright test"
+    "format": "prettier --write .",
+    "check": "pnpm lint && pnpm typecheck && pnpm format:check",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "test:e2e": "playwright test",
+    "lint:fix": "eslint . --ext .ts,.tsx --fix",
+    "format:check": "prettier --check .",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:debug": "playwright test --debug",
+    "analyze": "ANALYZE=true next build",
+    "prepare": "husky install",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "framer-motion": "^12.29.2",
@@ -47,6 +57,43 @@
     "tailwindcss": "^3.4.1",
     "terser": "^5.46.0",
     "typescript": "5.5.4",
-    "vitest": "^1.6.0"
-  }
+    "vitest": "^1.6.0",
+    "@commitlint/cli": "^19.2.2",
+    "@commitlint/config-conventional": "^19.2.2",
+    "@next/bundle-analyzer": "^14.2.5",
+    "@storybook/addon-essentials": "^7.6.10",
+    "@storybook/addon-interactions": "^7.6.10",
+    "@storybook/addon-links": "^7.6.10",
+    "@storybook/nextjs": "^7.6.10",
+    "@storybook/react": "^7.6.10",
+    "@vitejs/plugin-react": "^4.2.1",
+    "@vitest/coverage-v8": "^1.6.0",
+    "@vitest/ui": "^1.6.0",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.2.2",
+    "prettier": "^3.2.5"
+  },
+  "description": "A comprehensive collection of free online tools for Persian speakers - PDF tools, financial calculators, image processing. Client-side processing for privacy and security.",
+  "keywords": [
+    "persian",
+    "farsi",
+    "tools",
+    "pdf",
+    "calculator",
+    "image",
+    "online",
+    "free",
+    "privacy",
+    "offline"
+  ],
+  "author": "Persian Tools Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/asdeveloop/persian-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/asdeveloop/persian-tools/issues"
+  },
+  "homepage": "https://persian-tools.ir"
 }

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import Image from 'next/image';
 import { PDFDocument } from 'pdf-lib';
 import { Button, Card } from '@/components/ui';
 
@@ -167,10 +168,7 @@ export default function ImageToPdfPage() {
         const { width, height } = image.scale(1);
         const pageSizeResolved = resolvePageSize(width, height);
         const page = pdf.addPage([pageSizeResolved.width, pageSizeResolved.height]);
-        const scale = Math.min(
-          pageSizeResolved.width / width,
-          pageSizeResolved.height / height,
-        );
+        const scale = Math.min(pageSizeResolved.width / width, pageSizeResolved.height / height);
         const drawWidth = width * scale;
         const drawHeight = height * scale;
         const x = (pageSizeResolved.width - drawWidth) / 2;
@@ -209,8 +207,11 @@ export default function ImageToPdfPage() {
 
         <Card className="p-6 space-y-4">
           <div className="flex flex-col gap-3">
-            <label className="text-sm font-semibold text-slate-700">انتخاب تصاویر</label>
+            <label htmlFor="image-to-pdf-files" className="text-sm font-semibold text-slate-700">
+              انتخاب تصاویر
+            </label>
             <input
+              id="image-to-pdf-files"
               type="file"
               accept="image/*"
               multiple
@@ -227,13 +228,18 @@ export default function ImageToPdfPage() {
                   className="flex flex-col gap-3 rounded-xl border border-slate-200 bg-white p-3 sm:flex-row sm:items-center sm:justify-between"
                 >
                   <div className="flex items-center gap-3">
-                    <img
+                    <Image
                       src={item.previewUrl}
                       alt={item.file.name}
+                      width={64}
+                      height={64}
+                      unoptimized
                       className="h-16 w-16 rounded-lg object-cover"
                     />
                     <div className="text-sm text-slate-700">
-                      <div className="font-semibold">{index + 1}. {item.file.name}</div>
+                      <div className="font-semibold">
+                        {index + 1}. {item.file.name}
+                      </div>
                       <div className="text-slate-500">{formatBytes(item.file.size)}</div>
                     </div>
                   </div>
@@ -270,8 +276,14 @@ export default function ImageToPdfPage() {
 
           <div className="grid gap-4 md:grid-cols-2">
             <div className="flex flex-col gap-2">
-              <label className="text-sm font-semibold text-slate-700">اندازه صفحه</label>
+              <label
+                htmlFor="image-to-pdf-page-size"
+                className="text-sm font-semibold text-slate-700"
+              >
+                اندازه صفحه
+              </label>
               <select
+                id="image-to-pdf-page-size"
                 className="input-field"
                 value={pageSize}
                 onChange={(e) => setPageSize(e.target.value as PageSize)}
@@ -282,8 +294,14 @@ export default function ImageToPdfPage() {
               </select>
             </div>
             <div className="flex flex-col gap-2">
-              <label className="text-sm font-semibold text-slate-700">جهت صفحه</label>
+              <label
+                htmlFor="image-to-pdf-orientation"
+                className="text-sm font-semibold text-slate-700"
+              >
+                جهت صفحه
+              </label>
               <select
+                id="image-to-pdf-orientation"
                 className="input-field"
                 value={orientation}
                 onChange={(e) => setOrientation(e.target.value as PageOrientation)}
@@ -301,7 +319,12 @@ export default function ImageToPdfPage() {
               تعداد تصاویر: {images.length} | حجم کل: {formatBytes(totalSize)}
             </div>
             <div className="flex gap-3">
-              <Button type="button" variant="secondary" onClick={() => setImages([])} disabled={busy || images.length === 0}>
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => setImages([])}
+                disabled={busy || images.length === 0}
+              >
                 پاک کردن لیست
               </Button>
               <Button type="button" onClick={onConvert} disabled={busy}>

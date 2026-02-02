@@ -1,3 +1,8 @@
+/* eslint-disable spaced-comment */
+/// <reference lib="webworker" />
+/* eslint-env worker */
+/* global DedicatedWorkerGlobalScope */
+
 export {};
 
 type CompressRequest = {
@@ -34,8 +39,6 @@ type ErrorMessage = {
   message: string;
 };
 
-type WorkerResponse = ProgressMessage | ResultMessage | ErrorMessage;
-
 const ctx: DedicatedWorkerGlobalScope = self as DedicatedWorkerGlobalScope;
 
 const postProgress = (id: string, progress: number) => {
@@ -67,7 +70,7 @@ ctx.onmessage = async (event: MessageEvent<WorkerRequest>) => {
     let targetWidth = bitmap.width;
     let targetHeight = bitmap.height;
 
-    if (maxWidth || maxHeight) {
+    if (maxWidth ?? maxHeight) {
       const widthRatio = maxWidth ? maxWidth / bitmap.width : 1;
       const heightRatio = maxHeight ? maxHeight / bitmap.height : 1;
       const ratio = Math.min(widthRatio, heightRatio, 1);
@@ -97,7 +100,7 @@ ctx.onmessage = async (event: MessageEvent<WorkerRequest>) => {
       id,
       type: 'result',
       buffer: resultBuffer,
-      mimeType: resultBlob.type || outputType,
+      mimeType: resultBlob.type ?? outputType,
       width: targetWidth,
       height: targetHeight,
     };

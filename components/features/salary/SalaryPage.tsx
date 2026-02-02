@@ -173,22 +173,24 @@ export default function SalaryPage() {
               }}
             >
               <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
               </svg>
             </motion.div>
-            <h1 className="text-4xl font-black text-black mb-4">
-              محاسبه‌گر حقوق و دستمزد پیشرفته
-            </h1>
+            <h1 className="text-4xl font-black text-black mb-4">محاسبه‌گر حقوق و دستمزد پیشرفته</h1>
             <p className="text-lg text-gray-600 leading-relaxed">
               {'محاسبه حقوق و مالیات بر اساس قوانین سال '}
               {laws.year}
-              {' با پشتیبانی از معافیت‌های قانونی و نرخ‌های تصاعدی.'}
-              {' '}
+              {' با پشتیبانی از معافیت‌های قانونی و نرخ‌های تصاعدی.'}{' '}
               {'شامل بیمه تامین اجتماعی، مزایا و کسورات مختلف.'}
             </p>
             <div className="mt-4 text-sm text-gray-500">
-              حداقل دستمزد: {formatMoneyFa(laws.minimumWage)} تومان |
-              معافیت مالیات: {formatMoneyFa(laws.taxExemption)} تومان ماهانه
+              حداقل دستمزد: {formatMoneyFa(laws.minimumWage)} تومان | معافیت مالیات:{' '}
+              {formatMoneyFa(laws.taxExemption)} تومان ماهانه
             </div>
           </div>
         </FadeIn>
@@ -206,40 +208,54 @@ export default function SalaryPage() {
           <div className="max-w-6xl mx-auto">
             <AnimatedCard className="p-8 space-y-6">
               <div className="grid gap-4 md:grid-cols-3">
-                {(['gross-to-net', 'net-to-gross', 'minimum-wage'] as CalculationMode[]).map((mode) => (
-                  <motion.button
-                    key={mode}
-                    onClick={() => setForm((s) => ({ ...s, mode }))}
-                    className={[
-                      'p-4 rounded-2xl border-2 text-right transition-all duration-300',
-                      form.mode === mode
-                        ? 'border-opacity-100 shadow-lg text-white'
-                        : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300 hover:bg-gray-50',
-                    ].join(' ')}
-                    style={form.mode === mode ? { backgroundColor: toolCategories.financial.primary, borderColor: toolCategories.financial.primary } : {}}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <div className="font-bold mb-1">
-                      {mode === 'gross-to-net' && 'حقوق ناخالص به خالص'}
-                      {mode === 'net-to-gross' && 'حقوق خالص به ناخالص'}
-                      {mode === 'minimum-wage' && 'حداقل دستمزد'}
-                    </div>
-                    <div className={`text-xs ${form.mode === mode ? 'text-gray-200' : 'text-gray-500'}`}>
-                      {mode === 'gross-to-net' && 'محاسبه حقوق خالص بر اساس حقوق پایه'}
-                      {mode === 'net-to-gross' && 'محاسبه حقوق پایه از خالص'}
-                      {mode === 'minimum-wage' && 'محاسبه حداقل دستمزد قانونی'}
-                    </div>
-                  </motion.button>
-                ))}
+                {(['gross-to-net', 'net-to-gross', 'minimum-wage'] as CalculationMode[]).map(
+                  (mode) => (
+                    <motion.button
+                      key={mode}
+                      onClick={() => setForm((s) => ({ ...s, mode }))}
+                      className={[
+                        'p-4 rounded-2xl border-2 text-right transition-all duration-300',
+                        form.mode === mode
+                          ? 'border-opacity-100 shadow-lg text-white'
+                          : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300 hover:bg-gray-50',
+                      ].join(' ')}
+                      style={
+                        form.mode === mode
+                          ? {
+                              backgroundColor: toolCategories.financial.primary,
+                              borderColor: toolCategories.financial.primary,
+                            }
+                          : {}
+                      }
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      <div className="font-bold mb-1">
+                        {mode === 'gross-to-net' && 'حقوق ناخالص به خالص'}
+                        {mode === 'net-to-gross' && 'حقوق خالص به ناخالص'}
+                        {mode === 'minimum-wage' && 'حداقل دستمزد'}
+                      </div>
+                      <div
+                        className={`text-xs ${form.mode === mode ? 'text-gray-200' : 'text-gray-500'}`}
+                      >
+                        {mode === 'gross-to-net' && 'محاسبه حقوق خالص بر اساس حقوق پایه'}
+                        {mode === 'net-to-gross' && 'محاسبه حقوق پایه از خالص'}
+                        {mode === 'minimum-wage' && 'محاسبه حداقل دستمزد قانونی'}
+                      </div>
+                    </motion.button>
+                  ),
+                )}
               </div>
 
               {form.mode !== 'minimum-wage' && (
                 <div className="grid gap-4 md:grid-cols-2">
                   {form.mode === 'gross-to-net' && (
                     <div className="flex flex-col gap-2">
-                      <label className="text-sm font-semibold text-slate-700">حقوق پایه (تومان)</label>
+                      <label htmlFor="salary-base" className="text-sm font-semibold text-slate-700">
+                        حقوق پایه (تومان)
+                      </label>
                       <input
+                        id="salary-base"
                         type="text"
                         value={form.baseSalaryText}
                         onChange={(e) => setForm((s) => ({ ...s, baseSalaryText: e.target.value }))}
@@ -249,8 +265,11 @@ export default function SalaryPage() {
                   )}
                   {form.mode === 'net-to-gross' && (
                     <div className="flex flex-col gap-2">
-                      <label className="text-sm font-semibold text-slate-700">حقوق خالص (تومان)</label>
+                      <label htmlFor="salary-net" className="text-sm font-semibold text-slate-700">
+                        حقوق خالص (تومان)
+                      </label>
                       <input
+                        id="salary-net"
                         type="text"
                         value={form.netSalaryText}
                         onChange={(e) => setForm((s) => ({ ...s, netSalaryText: e.target.value }))}
@@ -259,8 +278,14 @@ export default function SalaryPage() {
                     </div>
                   )}
                   <div className="flex flex-col gap-2">
-                    <label className="text-sm font-semibold text-slate-700">روزهای کاری</label>
+                    <label
+                      htmlFor="salary-working-days"
+                      className="text-sm font-semibold text-slate-700"
+                    >
+                      روزهای کاری
+                    </label>
                     <input
+                      id="salary-working-days"
                       type="text"
                       value={form.workingDaysText}
                       onChange={(e) => setForm((s) => ({ ...s, workingDaysText: e.target.value }))}
@@ -272,17 +297,28 @@ export default function SalaryPage() {
 
               <div className="grid gap-4 md:grid-cols-3">
                 <div className="flex flex-col gap-2">
-                  <label className="text-sm font-semibold text-slate-700">سابقه کار (سال)</label>
+                  <label
+                    htmlFor="salary-experience"
+                    className="text-sm font-semibold text-slate-700"
+                  >
+                    سابقه کار (سال)
+                  </label>
                   <input
+                    id="salary-experience"
                     type="text"
                     value={form.workExperienceYearsText}
-                    onChange={(e) => setForm((s) => ({ ...s, workExperienceYearsText: e.target.value }))}
+                    onChange={(e) =>
+                      setForm((s) => ({ ...s, workExperienceYearsText: e.target.value }))
+                    }
                     className="input-field"
                   />
                 </div>
                 <div className="flex flex-col gap-2">
-                  <label className="text-sm font-semibold text-slate-700">ساعات اضافه کاری</label>
+                  <label htmlFor="salary-overtime" className="text-sm font-semibold text-slate-700">
+                    ساعات اضافه کاری
+                  </label>
                   <input
+                    id="salary-overtime"
                     type="text"
                     value={form.overtimeHoursText}
                     onChange={(e) => setForm((s) => ({ ...s, overtimeHoursText: e.target.value }))}
@@ -290,26 +326,48 @@ export default function SalaryPage() {
                   />
                 </div>
                 <div className="flex flex-col gap-2">
-                  <label className="text-sm font-semibold text-slate-700">اضافه کاری شب</label>
+                  <label
+                    htmlFor="salary-night-overtime"
+                    className="text-sm font-semibold text-slate-700"
+                  >
+                    اضافه کاری شب
+                  </label>
                   <input
+                    id="salary-night-overtime"
                     type="text"
                     value={form.nightOvertimeHoursText}
-                    onChange={(e) => setForm((s) => ({ ...s, nightOvertimeHoursText: e.target.value }))}
+                    onChange={(e) =>
+                      setForm((s) => ({ ...s, nightOvertimeHoursText: e.target.value }))
+                    }
                     className="input-field"
                   />
                 </div>
                 <div className="flex flex-col gap-2">
-                  <label className="text-sm font-semibold text-slate-700">اضافه کاری تعطیل</label>
+                  <label
+                    htmlFor="salary-holiday-overtime"
+                    className="text-sm font-semibold text-slate-700"
+                  >
+                    اضافه کاری تعطیل
+                  </label>
                   <input
+                    id="salary-holiday-overtime"
                     type="text"
                     value={form.holidayOvertimeHoursText}
-                    onChange={(e) => setForm((s) => ({ ...s, holidayOvertimeHoursText: e.target.value }))}
+                    onChange={(e) =>
+                      setForm((s) => ({ ...s, holidayOvertimeHoursText: e.target.value }))
+                    }
                     className="input-field"
                   />
                 </div>
                 <div className="flex flex-col gap-2">
-                  <label className="text-sm font-semibold text-slate-700">روزهای ماموریت</label>
+                  <label
+                    htmlFor="salary-mission-days"
+                    className="text-sm font-semibold text-slate-700"
+                  >
+                    روزهای ماموریت
+                  </label>
                   <input
+                    id="salary-mission-days"
                     type="text"
                     value={form.missionDaysText}
                     onChange={(e) => setForm((s) => ({ ...s, missionDaysText: e.target.value }))}
@@ -317,11 +375,16 @@ export default function SalaryPage() {
                   />
                 </div>
                 <div className="flex flex-col gap-2">
-                  <label className="text-sm font-semibold text-slate-700">تعداد فرزند</label>
+                  <label htmlFor="salary-children" className="text-sm font-semibold text-slate-700">
+                    تعداد فرزند
+                  </label>
                   <input
+                    id="salary-children"
                     type="text"
                     value={form.numberOfChildrenText}
-                    onChange={(e) => setForm((s) => ({ ...s, numberOfChildrenText: e.target.value }))}
+                    onChange={(e) =>
+                      setForm((s) => ({ ...s, numberOfChildrenText: e.target.value }))
+                    }
                     className="input-field"
                   />
                 </div>
@@ -348,7 +411,9 @@ export default function SalaryPage() {
                   <input
                     type="checkbox"
                     checked={form.hasTransportation}
-                    onChange={(e) => setForm((s) => ({ ...s, hasTransportation: e.target.checked }))}
+                    onChange={(e) =>
+                      setForm((s) => ({ ...s, hasTransportation: e.target.checked }))
+                    }
                   />
                   کمک هزینه حمل و نقل
                 </label>
@@ -356,7 +421,9 @@ export default function SalaryPage() {
                   <input
                     type="checkbox"
                     checked={form.isDevelopmentZone}
-                    onChange={(e) => setForm((s) => ({ ...s, isDevelopmentZone: e.target.checked }))}
+                    onChange={(e) =>
+                      setForm((s) => ({ ...s, isDevelopmentZone: e.target.checked }))
+                    }
                   />
                   منطقه توسعه یافته
                 </label>
@@ -364,8 +431,14 @@ export default function SalaryPage() {
 
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="flex flex-col gap-2">
-                  <label className="text-sm font-semibold text-slate-700">سایر مزایا (تومان)</label>
+                  <label
+                    htmlFor="salary-other-benefits"
+                    className="text-sm font-semibold text-slate-700"
+                  >
+                    سایر مزایا (تومان)
+                  </label>
                   <input
+                    id="salary-other-benefits"
                     type="text"
                     value={form.otherBenefitsText}
                     onChange={(e) => setForm((s) => ({ ...s, otherBenefitsText: e.target.value }))}
@@ -373,11 +446,19 @@ export default function SalaryPage() {
                   />
                 </div>
                 <div className="flex flex-col gap-2">
-                  <label className="text-sm font-semibold text-slate-700">سایر کسورات (تومان)</label>
+                  <label
+                    htmlFor="salary-other-deductions"
+                    className="text-sm font-semibold text-slate-700"
+                  >
+                    سایر کسورات (تومان)
+                  </label>
                   <input
+                    id="salary-other-deductions"
                     type="text"
                     value={form.otherDeductionsText}
-                    onChange={(e) => setForm((s) => ({ ...s, otherDeductionsText: e.target.value }))}
+                    onChange={(e) =>
+                      setForm((s) => ({ ...s, otherDeductionsText: e.target.value }))
+                    }
                     className="input-field"
                   />
                 </div>
@@ -403,9 +484,23 @@ export default function SalaryPage() {
                 <AnimatedCard className="p-8">
                   <div className="flex items-center justify-between mb-6">
                     <h2 className="text-2xl font-black text-black flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgb(var(--color-financial-rgb) / 0.1)' }}>
-                        <svg className="w-5 h-5" style={{ color: toolCategories.financial.primary }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      <div
+                        className="w-8 h-8 rounded-full flex items-center justify-center"
+                        style={{ backgroundColor: 'rgb(var(--color-financial-rgb) / 0.1)' }}
+                      >
+                        <svg
+                          className="w-5 h-5"
+                          style={{ color: toolCategories.financial.primary }}
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                          />
                         </svg>
                       </div>
                       نتیجه محاسبه حقوق
@@ -436,7 +531,12 @@ export default function SalaryPage() {
                         borderColor: colors.primary[200],
                       }}
                     >
-                      <div className="text-sm font-bold mb-2" style={{ color: colors.primary[600] }}>حقوق ناخالص</div>
+                      <div
+                        className="text-sm font-bold mb-2"
+                        style={{ color: colors.primary[600] }}
+                      >
+                        حقوق ناخالص
+                      </div>
                       <div className="text-2xl font-black" style={{ color: colors.primary[800] }}>
                         {formatMoneyFa(result.grossSalary)} تومان
                       </div>
@@ -448,11 +548,17 @@ export default function SalaryPage() {
                       transition={{ delay: 0.2 }}
                       className="rounded-2xl p-6 border"
                       style={{
-                        background: 'linear-gradient(135deg, rgb(var(--color-danger-rgb) / 0.2), rgb(var(--color-danger-rgb) / 0.3))',
+                        background:
+                          'linear-gradient(135deg, rgb(var(--color-danger-rgb) / 0.2), rgb(var(--color-danger-rgb) / 0.3))',
                         borderColor: 'rgb(var(--color-danger-rgb) / 0.4)',
                       }}
                     >
-                      <div className="text-sm font-bold mb-2" style={{ color: colors.status.error }}>مجموع کسورات</div>
+                      <div
+                        className="text-sm font-bold mb-2"
+                        style={{ color: colors.status.error }}
+                      >
+                        مجموع کسورات
+                      </div>
                       <div className="text-2xl font-black" style={{ color: colors.status.error }}>
                         {formatMoneyFa(result.summary.totalDeductions)} تومان
                       </div>
@@ -464,11 +570,17 @@ export default function SalaryPage() {
                       transition={{ delay: 0.3 }}
                       className="rounded-2xl p-6 border"
                       style={{
-                        background: 'linear-gradient(135deg, rgb(var(--color-success-rgb) / 0.2), rgb(var(--color-success-rgb) / 0.3))',
+                        background:
+                          'linear-gradient(135deg, rgb(var(--color-success-rgb) / 0.2), rgb(var(--color-success-rgb) / 0.3))',
                         borderColor: 'rgb(var(--color-success-rgb) / 0.4)',
                       }}
                     >
-                      <div className="text-sm font-bold mb-2" style={{ color: colors.status.success }}>حقوق خالص</div>
+                      <div
+                        className="text-sm font-bold mb-2"
+                        style={{ color: colors.status.success }}
+                      >
+                        حقوق خالص
+                      </div>
                       <div className="text-2xl font-black" style={{ color: colors.status.success }}>
                         {formatMoneyFa(result.netSalary)} تومان
                       </div>
@@ -488,8 +600,18 @@ export default function SalaryPage() {
                 <AnimatedCard className="p-8">
                   <h2 className="text-2xl font-black text-black mb-6 flex items-center gap-3">
                     <div className="w-8 h-8 rounded-full bg-green-600/10 flex items-center justify-center">
-                      <svg className="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      <svg
+                        className="w-5 h-5 text-green-600"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
                       </svg>
                     </div>
                     نتیجه محاسبه حداقل دستمزد
@@ -499,8 +621,18 @@ export default function SalaryPage() {
                     <div>
                       <h3 className="text-lg font-bold text-black mb-4 flex items-center gap-2">
                         <div className="w-5 h-5 rounded-full bg-green-600/10 flex items-center justify-center">
-                          <svg className="w-3 h-3 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          <svg
+                            className="w-3 h-3 text-green-600"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                            />
                           </svg>
                         </div>
                         جزئیات حقوق
@@ -508,27 +640,39 @@ export default function SalaryPage() {
                       <div className="space-y-3 bg-gray-50 rounded-xl p-4">
                         <div className="flex justify-between items-center">
                           <span className="text-sm text-gray-600">حقوق پایه:</span>
-                          <span className="text-sm font-bold">{formatMoneyFa(minimumWageResult.baseSalary)}</span>
+                          <span className="text-sm font-bold">
+                            {formatMoneyFa(minimumWageResult.baseSalary)}
+                          </span>
                         </div>
                         <div className="flex justify-between items-center">
                           <span className="text-sm text-gray-600">کمک هزینه مسکن:</span>
-                          <span className="text-sm font-bold">{formatMoneyFa(minimumWageResult.housingAllowance)}</span>
+                          <span className="text-sm font-bold">
+                            {formatMoneyFa(minimumWageResult.housingAllowance)}
+                          </span>
                         </div>
                         <div className="flex justify-between items-center">
                           <span className="text-sm text-gray-600">کمک هزینه غذا:</span>
-                          <span className="text-sm font-bold">{formatMoneyFa(minimumWageResult.foodAllowance)}</span>
+                          <span className="text-sm font-bold">
+                            {formatMoneyFa(minimumWageResult.foodAllowance)}
+                          </span>
                         </div>
                         <div className="flex justify-between items-center">
                           <span className="text-sm text-gray-600">حق اولاد:</span>
-                          <span className="text-sm font-bold">{formatMoneyFa(minimumWageResult.familyAllowance)}</span>
+                          <span className="text-sm font-bold">
+                            {formatMoneyFa(minimumWageResult.familyAllowance)}
+                          </span>
                         </div>
                         <div className="flex justify-between items-center">
                           <span className="text-sm text-gray-600">پاداش سابقه:</span>
-                          <span className="text-sm font-bold">{formatMoneyFa(minimumWageResult.experienceBonus)}</span>
+                          <span className="text-sm font-bold">
+                            {formatMoneyFa(minimumWageResult.experienceBonus)}
+                          </span>
                         </div>
                         <div className="flex justify-between items-center pt-2 border-t">
                           <span className="text-sm font-bold">مجموع حقوق ناخالص:</span>
-                          <span className="text-sm font-bold text-green-600">{formatMoneyFa(minimumWageResult.totalGross)}</span>
+                          <span className="text-sm font-bold text-green-600">
+                            {formatMoneyFa(minimumWageResult.totalGross)}
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -536,8 +680,18 @@ export default function SalaryPage() {
                     <div>
                       <h3 className="text-lg font-bold text-black mb-4 flex items-center gap-2">
                         <div className="w-5 h-5 rounded-full bg-green-600/10 flex items-center justify-center">
-                          <svg className="w-3 h-3 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          <svg
+                            className="w-3 h-3 text-green-600"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                            />
                           </svg>
                         </div>
                         کسورات و خالص
@@ -545,15 +699,21 @@ export default function SalaryPage() {
                       <div className="space-y-3 bg-gray-50 rounded-xl p-4">
                         <div className="flex justify-between items-center">
                           <span className="text-sm text-gray-600">بیمه:</span>
-                          <span className="text-sm font-bold">{formatMoneyFa(minimumWageResult.insuranceAmount)}</span>
+                          <span className="text-sm font-bold">
+                            {formatMoneyFa(minimumWageResult.insuranceAmount)}
+                          </span>
                         </div>
                         <div className="flex justify-between items-center">
                           <span className="text-sm text-gray-600">مالیات:</span>
-                          <span className="text-sm font-bold">{formatMoneyFa(minimumWageResult.taxAmount)}</span>
+                          <span className="text-sm font-bold">
+                            {formatMoneyFa(minimumWageResult.taxAmount)}
+                          </span>
                         </div>
                         <div className="flex justify-between items-center pt-2 border-t">
                           <span className="text-sm font-bold text-green-600">حقوق خالص:</span>
-                          <span className="text-sm font-bold text-green-600">{formatMoneyFa(minimumWageResult.netSalary)}</span>
+                          <span className="text-sm font-bold text-green-600">
+                            {formatMoneyFa(minimumWageResult.netSalary)}
+                          </span>
                         </div>
                       </div>
                     </div>

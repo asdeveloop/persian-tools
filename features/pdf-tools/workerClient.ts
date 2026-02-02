@@ -23,7 +23,15 @@ export type PdfWorkerRequest =
   | { type: 'merge'; files: ArrayBuffer[] }
   | { type: 'split'; file: ArrayBuffer; pages: number[] }
   | { type: 'compress'; file: ArrayBuffer }
-  | { type: 'watermark'; file: ArrayBuffer; text: string; fontSize: number; opacity: number; rotation: number; position: 'center' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' }
+  | {
+      type: 'watermark';
+      file: ArrayBuffer;
+      text: string;
+      fontSize: number;
+      opacity: number;
+      rotation: number;
+      position: 'center' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
+    }
   | { type: 'count-pages'; file: ArrayBuffer };
 
 export type PdfWorkerClient = {
@@ -35,9 +43,14 @@ export type PdfWorkerClient = {
 const createRequestId = () => `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 
 export const createPdfWorkerClient = (): PdfWorkerClient => {
-  const worker = new Worker(new URL('./workers/pdf-worker.ts', import.meta.url), { type: 'module' });
+  const worker = new Worker(new URL('./workers/pdf-worker.ts', import.meta.url), {
+    type: 'module',
+  });
   const pending = new Map<string, PendingRequest>();
-  const pendingPages = new Map<string, { resolve: (value: number) => void; reject: (reason?: unknown) => void }>();
+  const pendingPages = new Map<
+    string,
+    { resolve: (value: number) => void; reject: (reason?: unknown) => void }
+  >();
 
   worker.onmessage = (event: MessageEvent<PdfWorkerMessage>) => {
     const message = event.data;
@@ -61,12 +74,12 @@ export const createPdfWorkerClient = (): PdfWorkerClient => {
       const entry = pending.get(message.id);
       if (entry) {
         pending.delete(message.id);
-        entry.reject(new Error(message.message || 'خطای نامشخص رخ داد.'));
+        entry.reject(new Error(message.message ?? 'خطای نامشخص رخ داد.'));
       }
       const pagesEntry = pendingPages.get(message.id);
       if (pagesEntry) {
         pendingPages.delete(message.id);
-        pagesEntry.reject(new Error(message.message || 'خطای نامشخص رخ داد.'));
+        pagesEntry.reject(new Error(message.message ?? 'خطای نامشخص رخ داد.'));
       }
       return;
     }

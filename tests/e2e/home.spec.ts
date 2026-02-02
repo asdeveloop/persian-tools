@@ -1,0 +1,44 @@
+import { test, expect } from '@playwright/test';
+
+test.describe('Home Page', () => {
+  test('should load and display hero section', async ({ page }) => {
+    await page.goto('/');
+
+    const hero = page.locator('h1');
+    await expect(hero).toContainText('ابزارهای فارسی برای کار و زندگی');
+
+    const toolCards = page.locator('[data-testid="tool-card"]');
+    await expect(toolCards).toHaveCount(4);
+  });
+
+  test('should navigate to PDF tools', async ({ page }) => {
+    await page.goto('/');
+
+    await page.click('text=ابزارهای PDF');
+
+    await expect(page).toHaveURL('/pdf-tools');
+    await expect(page.locator('h1')).toContainText('ابزارهای PDF');
+  });
+
+  test('should be mobile responsive', async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 667 });
+    await page.goto('/');
+
+    const mobileMenu = page.locator('[data-testid="mobile-menu"]');
+    await expect(mobileMenu).toBeVisible();
+  });
+
+  test('should have proper accessibility', async ({ page }) => {
+    await page.goto('/');
+
+    const h1 = page.locator('h1');
+    await expect(h1).toHaveCount(1);
+
+    const images = page.locator('img');
+    const imageCount = await images.count();
+    for (let i = 0; i < imageCount; i++) {
+      const altText = await images.nth(i).getAttribute('alt');
+      expect(altText).toBeTruthy();
+    }
+  });
+});

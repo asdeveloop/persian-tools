@@ -46,7 +46,10 @@ export default function MergePdfPage() {
       if (file.type !== 'application/pdf') {
         return;
       }
-      next.push({ file, id: `${file.name}-${file.lastModified}-${Math.random().toString(36).slice(2)}` });
+      next.push({
+        file,
+        id: `${file.name}-${file.lastModified}-${Math.random().toString(36).slice(2)}`,
+      });
     });
 
     if (next.length === 0) {
@@ -76,7 +79,9 @@ export default function MergePdfPage() {
       if (!worker) {
         throw new Error('پردازشگر PDF آماده نیست.');
       }
-      const result = await worker.request({ type: 'merge', files: buffers }, (value) => setProgress(Math.round(value * 100)));
+      const result = await worker.request({ type: 'merge', files: buffers }, (value) =>
+        setProgress(Math.round(value * 100)),
+      );
       const blob = new Blob([result.buffer], { type: 'application/pdf' });
 
       if (downloadUrl) {
@@ -101,8 +106,11 @@ export default function MergePdfPage() {
 
         <Card className="p-6 space-y-4">
           <div className="flex flex-col gap-3">
-            <label className="text-sm font-semibold text-slate-700">انتخاب فایل های PDF</label>
+            <label htmlFor="merge-pdf-files" className="text-sm font-semibold text-slate-700">
+              انتخاب فایل های PDF
+            </label>
             <input
+              id="merge-pdf-files"
               type="file"
               accept="application/pdf"
               multiple
@@ -138,7 +146,12 @@ export default function MergePdfPage() {
               تعداد فایل ها: {files.length} | حجم کل: {(totalSize / 1024 / 1024).toFixed(2)} MB
             </div>
             <div className="flex gap-3">
-              <Button type="button" variant="secondary" onClick={() => setFiles([])} disabled={busy || files.length === 0}>
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => setFiles([])}
+                disabled={busy || files.length === 0}
+              >
                 پاک کردن لیست
               </Button>
               <Button type="button" onClick={onMerge} disabled={busy}>
@@ -150,7 +163,10 @@ export default function MergePdfPage() {
           {busy && (
             <div className="space-y-2">
               <div className="h-2 w-full rounded-full bg-slate-100 overflow-hidden">
-                <div className="h-full bg-blue-500 transition-all duration-200" style={{ width: `${progress}%` }} />
+                <div
+                  className="h-full bg-blue-500 transition-all duration-200"
+                  style={{ width: `${progress}%` }}
+                />
               </div>
               <div className="text-xs text-slate-500">{progress}%</div>
             </div>

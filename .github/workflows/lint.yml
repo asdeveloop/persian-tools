@@ -1,0 +1,42 @@
+name: "🔍 Lint & Type Check"
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+
+    steps:
+      - name: "✅ Checkout code"
+        uses: actions/checkout@v4
+
+      - name: "📦 Setup pnpm"
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9.15.0
+
+      - name: "🔧 Setup Node.js"
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+
+      - name: "📥 Install dependencies"
+        run: pnpm install --frozen-lockfile
+
+      - name: "🎯 Run ESLint"
+        run: pnpm lint
+
+      - name: "✨ Check formatting with Prettier"
+        run: pnpm format:check
+
+      - name: "📋 TypeScript type check"
+        run: pnpm typecheck

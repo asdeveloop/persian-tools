@@ -127,7 +127,9 @@ export default function SplitPdfPage() {
       if (!worker) {
         throw new Error('پردازشگر PDF آماده نیست.');
       }
-      const result = await worker.request({ type: 'split', file: buffer, pages }, (value) => setProgress(Math.round(value * 100)));
+      const result = await worker.request({ type: 'split', file: buffer, pages }, (value) =>
+        setProgress(Math.round(value * 100)),
+      );
       const blob = new Blob([result.buffer], { type: 'application/pdf' });
 
       if (downloadUrl) {
@@ -152,8 +154,11 @@ export default function SplitPdfPage() {
 
         <Card className="p-6 space-y-4">
           <div className="flex flex-col gap-3">
-            <label className="text-sm font-semibold text-slate-700">انتخاب فایل PDF</label>
+            <label htmlFor="split-pdf-file" className="text-sm font-semibold text-slate-700">
+              انتخاب فایل PDF
+            </label>
             <input
+              id="split-pdf-file"
               type="file"
               accept="application/pdf"
               onChange={(e) => onSelectFile(e.target.files)}
@@ -168,8 +173,11 @@ export default function SplitPdfPage() {
           )}
 
           <div className="flex flex-col gap-3">
-            <label className="text-sm font-semibold text-slate-700">صفحات مورد نظر</label>
+            <label htmlFor="split-pdf-pages" className="text-sm font-semibold text-slate-700">
+              صفحات مورد نظر
+            </label>
             <input
+              id="split-pdf-pages"
               type="text"
               value={pagesInput}
               onChange={(e) => setPagesInput(e.target.value)}
@@ -182,7 +190,12 @@ export default function SplitPdfPage() {
           </div>
 
           <div className="flex flex-wrap items-center justify-between gap-4">
-            <Button type="button" variant="secondary" onClick={() => setFile(null)} disabled={busy || !file}>
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={() => setFile(null)}
+              disabled={busy || !file}
+            >
               تغییر فایل
             </Button>
             <Button type="button" onClick={onSplit} disabled={busy}>
@@ -193,7 +206,10 @@ export default function SplitPdfPage() {
           {busy && (
             <div className="space-y-2">
               <div className="h-2 w-full rounded-full bg-slate-100 overflow-hidden">
-                <div className="h-full bg-blue-500 transition-all duration-200" style={{ width: `${progress}%` }} />
+                <div
+                  className="h-full bg-blue-500 transition-all duration-200"
+                  style={{ width: `${progress}%` }}
+                />
               </div>
               <div className="text-xs text-slate-500">{progress}%</div>
             </div>
