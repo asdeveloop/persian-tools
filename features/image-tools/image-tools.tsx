@@ -7,6 +7,7 @@ import { formatBytesFa, formatPercentFa } from './utils/format';
 import { formatNumberFa, parseLooseNumber } from '@/shared/utils/number';
 import ImageDropzone from './components/ImageDropzone';
 import { useImageToolsWorker } from './hooks/useImageToolsWorker';
+import Alert from '@/shared/ui/Alert';
 import type {
   CompressionSettings,
   ImageCompressionPreset,
@@ -150,8 +151,12 @@ export default function ImageToolsPage() {
 
     setItems((prev) => [...prev, ...nextItems]);
 
+    if (typeof window === 'undefined') {
+      return;
+    }
+
     nextItems.forEach((item) => {
-      const img = new Image();
+      const img = new window.Image();
       img.onload = () => {
         setItems((prev) =>
           prev.map((entry) =>
@@ -197,33 +202,35 @@ export default function ImageToolsPage() {
   };
 
   const runCompression = async (item: ImageQueueItem) => {
-    updateItem(item.id, (current) => ({
-      ...current,
-      status: 'processing',
-      progress: 0,
-      error: undefined,
-    }));
+    updateItem(item.id, (current) => {
+      const { error, ...rest } = current;
+      void error;
+      return {
+        ...rest,
+        status: 'processing',
+        progress: 0,
+      };
+    });
 
     try {
       const buffer = await item.file.arrayBuffer();
       const outputType = getOutputMimeType(item.file.type, settings.outputFormat);
-      const result = await compress(
-        {
-          buffer,
-          mimeType: item.file.type,
-          outputType,
-          quality: settings.quality,
-          maxWidth: settings.maxDimension > 0 ? settings.maxDimension : undefined,
-          maxHeight: settings.maxDimension > 0 ? settings.maxDimension : undefined,
-          backgroundColor: settings.backgroundColor,
-        },
-        (value) => {
-          updateItem(item.id, (current) => ({
-            ...current,
-            progress: Math.round(value * 100),
-          }));
-        },
-      );
+      const request = {
+        buffer,
+        mimeType: item.file.type,
+        outputType,
+        quality: settings.quality,
+        ...(settings.maxDimension > 0
+          ? { maxWidth: settings.maxDimension, maxHeight: settings.maxDimension }
+          : {}),
+        ...(settings.backgroundColor ? { backgroundColor: settings.backgroundColor } : {}),
+      };
+      const result = await compress(request, (value) => {
+        updateItem(item.id, (current) => ({
+          ...current,
+          progress: Math.round(value * 100),
+        }));
+      });
 
       const blob = new Blob([result.buffer], { type: result.mimeType });
       const url = URL.createObjectURL(blob);
@@ -334,11 +341,7 @@ export default function ImageToolsPage() {
             maxFiles={MAX_FILES}
           />
 
-          {notice && (
-            <div className="rounded-2xl border border-[var(--border-light)] bg-[rgb(var(--color-warning-rgb)/0.12)] px-4 py-3 text-sm text-[var(--color-warning)]">
-              {notice}
-            </div>
-          )}
+          {notice && <Alert variant="warning">{notice}</Alert>}
 
           {hasItems && (
             <Card className="p-6">
@@ -488,11 +491,7 @@ export default function ImageToolsPage() {
                     </div>
                   )}
 
-                  {item.error && (
-                    <div className="rounded-xl border border-[var(--border-light)] bg-[rgb(var(--color-danger-rgb)/0.12)] px-3 py-2 text-sm text-[var(--color-danger)]">
-                      {item.error}
-                    </div>
-                  )}
+                  {item.error && <Alert variant="danger">{item.error}</Alert>}
 
                   <div className="flex flex-wrap items-center justify-between gap-4 text-sm text-[var(--text-muted)]">
                     <div>

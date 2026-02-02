@@ -21,11 +21,14 @@ Object.defineProperty(window, 'matchMedia', {
 });
 
 global.IntersectionObserver = class IntersectionObserver {
-  constructor() {}
+  constructor(callback: IntersectionObserverCallback, options?: IntersectionObserverInit) {
+    void callback;
+    void options;
+  }
   disconnect() {}
   observe() {}
   takeRecords() {
     return [];
   }
   unobserve() {}
-} as typeof IntersectionObserver;
+} as unknown as typeof IntersectionObserver;

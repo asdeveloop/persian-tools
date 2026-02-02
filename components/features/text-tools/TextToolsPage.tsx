@@ -30,11 +30,13 @@ const parseDateInput = (value: string): ParseResult => {
   if (parts.length !== 3) {
     return { ok: false, error: 'فرمت تاریخ باید به صورت سال/ماه/روز باشد.' };
   }
-  const [y, m, d] = parts.map((p) => Number(p));
-  if ([y, m, d].some((n) => Number.isNaN(n))) {
+  const year = Number(parts[0] ?? '');
+  const month = Number(parts[1] ?? '');
+  const day = Number(parts[2] ?? '');
+  if ([year, month, day].some((n) => Number.isNaN(n))) {
     return { ok: false, error: 'لطفاً فقط عدد وارد کنید.' };
   }
-  return { ok: true, date: { year: y, month: m, day: d } };
+  return { ok: true, date: { year, month, day } };
 };
 
 export default function TextToolsPage() {

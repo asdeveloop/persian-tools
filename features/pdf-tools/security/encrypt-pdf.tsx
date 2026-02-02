@@ -1,6 +1,7 @@
 'use client';
 
 import { Card } from '@/components/ui';
+import Alert from '@/shared/ui/Alert';
 
 export default function EncryptPdfPage() {
   return (
@@ -12,9 +13,9 @@ export default function EncryptPdfPage() {
         </div>
 
         <Card className="p-6 space-y-4">
-          <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+          <Alert variant="warning">
             در حال حاضر رمزگذاری PDF در مرورگر با کتابخانه های فعلی پشتیبانی نمی شود.
-          </div>
+          </Alert>
           <div className="text-sm text-[var(--text-secondary)] space-y-2">
             <p>
               برای حفظ حریم خصوصی، پردازش ها باید به صورت محلی انجام شوند و استفاده از سرویس خارجی

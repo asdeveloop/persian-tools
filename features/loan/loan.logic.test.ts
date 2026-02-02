@@ -41,4 +41,26 @@ describe('loan logic', () => {
 
     expect(result.stepDetails?.length).toBeGreaterThan(0);
   });
+
+  it('throws on invalid inputs', () => {
+    expect(() =>
+      calculateLoan({
+        calculationType: 'installment',
+        loanType: 'regular',
+        principal: -1,
+        annualInterestRatePercent: 10,
+        months: 12,
+      }),
+    ).toThrow('مبلغ وام نامعتبر است.');
+
+    expect(() =>
+      calculateLoan({
+        calculationType: 'installment',
+        loanType: 'regular',
+        principal: 1_000_000,
+        annualInterestRatePercent: 10,
+        months: 0,
+      }),
+    ).toThrow('مدت بازپرداخت باید بیشتر از صفر باشد.');
+  });
 });

@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Button, Card } from '@/components/ui';
+import Alert from '@/shared/ui/Alert';
 import { createPdfWorkerClient, type PdfWorkerClient } from '@/features/pdf-tools/workerClient';
 
 const POSITIONS = [
@@ -39,12 +40,18 @@ export default function AddWatermarkPage() {
   const workerRef = useRef<PdfWorkerClient | null>(null);
 
   useEffect(() => {
-    workerRef.current = createPdfWorkerClient();
     return () => {
       workerRef.current?.terminate();
       workerRef.current = null;
     };
   }, []);
+
+  const getWorker = () => {
+    if (!workerRef.current) {
+      workerRef.current = createPdfWorkerClient();
+    }
+    return workerRef.current;
+  };
 
   useEffect(() => {
     return () => {
@@ -89,10 +96,7 @@ export default function AddWatermarkPage() {
     setBusy(true);
     try {
       const buffer = await file.arrayBuffer();
-      const worker = workerRef.current;
-      if (!worker) {
-        throw new Error('پردازشگر PDF آماده نیست.');
-      }
+      const worker = getWorker();
       const result = await worker.request(
         { type: 'watermark', file: buffer, text, fontSize, opacity, rotation, position },
         (value) => setProgress(Math.round(value * 100)),
@@ -262,7 +266,7 @@ export default function AddWatermarkPage() {
             <div className="space-y-2">
               <div className="h-2 w-full rounded-full bg-[var(--bg-subtle)] overflow-hidden">
                 <div
-                  className="h-full bg-blue-500 transition-all duration-200"
+                  className="h-full bg-[var(--color-primary)] transition-all duration-200"
                   style={{ width: `${progress}%` }}
                 />
               </div>
@@ -270,14 +274,10 @@ export default function AddWatermarkPage() {
             </div>
           )}
 
-          {error && (
-            <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-              {error}
-            </div>
-          )}
+          {error && <Alert variant="danger">{error}</Alert>}
 
           {downloadUrl && resultSize !== null && (
-            <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700 space-y-2">
+            <Alert variant="success" className="space-y-2">
               <div>حجم خروجی: {formatBytes(resultSize)}</div>
               <div>
                 <a
@@ -288,7 +288,7 @@ export default function AddWatermarkPage() {
                   دانلود فایل
                 </a>
               </div>
-            </div>
+            </Alert>
           )}
         </Card>
       </div>

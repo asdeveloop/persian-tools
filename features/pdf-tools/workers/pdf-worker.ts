@@ -122,11 +122,13 @@ ctx.onmessage = async (event: MessageEvent<WorkerRequest>) => {
       }
       case 'merge': {
         const mergedPdf = await PDFDocument.create();
-        for (let i = 0; i < payload.files.length; i += 1) {
-          const pdf = await PDFDocument.load(payload.files[i]);
+        let index = 0;
+        for (const file of payload.files) {
+          const pdf = await PDFDocument.load(file);
           const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
           copiedPages.forEach((page) => mergedPdf.addPage(page));
-          postProgress(payload.id, (i + 1) / payload.files.length);
+          index += 1;
+          postProgress(payload.id, index / payload.files.length);
         }
         const bytes = await mergedPdf.save();
         const buffer = toArrayBuffer(bytes);

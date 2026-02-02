@@ -4,6 +4,7 @@ dist
 .vite
 coverage
 .DS_Store
+*.tsbuildinfo
 
 # Playwright
 /test-results/

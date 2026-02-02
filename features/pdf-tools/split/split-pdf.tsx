@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { Button, Card } from '@/components/ui';
+import Alert from '@/shared/ui/Alert';
 import { toEnglishDigits } from '@/shared/utils/number';
 import { createPdfWorkerClient, type PdfWorkerClient } from '@/features/pdf-tools/workerClient';
 
@@ -56,12 +57,18 @@ export default function SplitPdfPage() {
   const workerRef = useRef<PdfWorkerClient | null>(null);
 
   useEffect(() => {
-    workerRef.current = createPdfWorkerClient();
     return () => {
       workerRef.current?.terminate();
       workerRef.current = null;
     };
   }, []);
+
+  const getWorker = () => {
+    if (!workerRef.current) {
+      workerRef.current = createPdfWorkerClient();
+    }
+    return workerRef.current;
+  };
 
   useEffect(() => {
     return () => {
@@ -87,10 +94,7 @@ export default function SplitPdfPage() {
     }
 
     try {
-      const worker = workerRef.current;
-      if (!worker) {
-        throw new Error('پردازشگر PDF آماده نیست.');
-      }
+      const worker = getWorker();
       const buffer = await selected.arrayBuffer();
       const pages = await worker.countPages({ file: buffer });
       setTotalPages(pages);
@@ -123,10 +127,7 @@ export default function SplitPdfPage() {
         throw new Error('هیچ صفحه ای انتخاب نشده است.');
       }
 
-      const worker = workerRef.current;
-      if (!worker) {
-        throw new Error('پردازشگر PDF آماده نیست.');
-      }
+      const worker = getWorker();
       const result = await worker.request({ type: 'split', file: buffer, pages }, (value) =>
         setProgress(Math.round(value * 100)),
       );
@@ -215,7 +216,7 @@ export default function SplitPdfPage() {
             <div className="space-y-2">
               <div className="h-2 w-full rounded-full bg-[var(--bg-subtle)] overflow-hidden">
                 <div
-                  className="h-full bg-blue-500 transition-all duration-200"
+                  className="h-full bg-[var(--color-primary)] transition-all duration-200"
                   style={{ width: `${progress}%` }}
                 />
               </div>
@@ -223,19 +224,15 @@ export default function SplitPdfPage() {
             </div>
           )}
 
-          {error && (
-            <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-              {error}
-            </div>
-          )}
+          {error && <Alert variant="danger">{error}</Alert>}
 
           {downloadUrl && (
-            <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+            <Alert variant="success">
               فایل آماده است.{' '}
               <a className="font-semibold underline" href={downloadUrl} download="split.pdf">
                 دانلود فایل
               </a>
-            </div>
+            </Alert>
           )}
         </Card>
       </div>

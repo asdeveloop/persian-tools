@@ -1,6 +1,8 @@
 let pdfjsPromise: Promise<typeof import('pdfjs-dist')> | null = null;
 let pdfLibPromise: Promise<typeof import('pdf-lib')> | null = null;
-let jszipPromise: Promise<typeof import('jszip')> | null = null;
+import type JSZip from 'jszip';
+
+let jszipPromise: Promise<typeof JSZip> | null = null;
 
 export async function loadPdfJs() {
   if (!pdfjsPromise) {
@@ -18,7 +20,7 @@ export async function loadPdfLib() {
 
 export async function loadJsZip() {
   if (!jszipPromise) {
-    jszipPromise = import('jszip');
+    jszipPromise = import('jszip').then((mod) => mod.default);
   }
   return jszipPromise;
 }

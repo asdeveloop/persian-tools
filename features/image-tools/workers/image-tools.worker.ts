@@ -98,10 +98,11 @@ ctx.onmessage = async (event: MessageEvent<WorkerRequest>) => {
     postProgress(id, 0.7);
 
     const normalizedQuality = Math.min(1, Math.max(0.05, quality));
-    const resultBlob = await canvas.convertToBlob({
-      type: outputType,
-      quality: outputType === 'image/png' ? undefined : normalizedQuality,
-    });
+    const options =
+      outputType === 'image/png'
+        ? { type: outputType }
+        : { type: outputType, quality: normalizedQuality };
+    const resultBlob = await canvas.convertToBlob(options);
 
     const resultBuffer = await resultBlob.arrayBuffer();
     postProgress(id, 1);

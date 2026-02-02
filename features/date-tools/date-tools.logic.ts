@@ -17,7 +17,7 @@ const mod = (a: number, b: number) => a - Math.trunc(a / b) * b;
 const jalaliBreaks = [
   -61, 9, 38, 199, 426, 686, 756, 818, 1111, 1181, 1210, 1635, 2060, 2097, 2192, 2262, 2324, 2394,
   2456, 3178,
-];
+] as const;
 
 type JalaliCalc = {
   leap: number;
@@ -26,18 +26,20 @@ type JalaliCalc = {
 };
 
 function jalaliCalendar(jy: number): JalaliCalc {
-  if (jy < jalaliBreaks[0] || jy >= jalaliBreaks[jalaliBreaks.length - 1]) {
+  const minBreak = jalaliBreaks[0] ?? -61;
+  const maxBreak = jalaliBreaks[jalaliBreaks.length - 1] ?? 3178;
+  if (jy < minBreak || jy >= maxBreak) {
     throw new Error('سال شمسی خارج از بازه معتبر است.');
   }
 
   const gy = jy + 621;
   let leapJ = -14;
-  let jp = jalaliBreaks[0];
+  let jp = Number(jalaliBreaks[0] ?? -61);
   let jm = 0;
   let jump = 0;
 
   for (let i = 1; i < jalaliBreaks.length; i += 1) {
-    jm = jalaliBreaks[i];
+    jm = jalaliBreaks[i] ?? jp;
     jump = jm - jp;
     if (jy < jm) {
       break;
@@ -78,7 +80,7 @@ export function daysInGregorianMonth(year: number, month: number): number {
   if (month === 2) {
     return isLeapGregorian(year) ? 29 : 28;
   }
-  return gregorianMonthDays[month - 1];
+  return gregorianMonthDays[month - 1] ?? 0;
 }
 
 export function isValidGregorianDate({ year, month, day }: DateParts): boolean {
@@ -143,14 +145,14 @@ export function jalaliToGregorian(jy: number, jm: number, jd: number): DateParts
     gDayNo = gDayNo % 365;
   }
 
-  const monthDays = [...gregorianMonthDays];
+  const monthDays = [...gregorianMonthDays] as number[];
   if (leap) {
     monthDays[1] = 29;
   }
 
   let gm = 0;
-  for (; gm < 12 && gDayNo >= monthDays[gm]; gm += 1) {
-    gDayNo -= monthDays[gm];
+  for (; gm < 12 && gDayNo >= (monthDays[gm] ?? 0); gm += 1) {
+    gDayNo -= monthDays[gm] ?? 0;
   }
 
   const gd = gDayNo + 1;
@@ -165,7 +167,7 @@ export function gregorianToJalali(gy: number, gm: number, gd: number): DateParts
   let gDayNo = 365 * gy + div(gy + 3, 4) - div(gy + 99, 100) + div(gy + 399, 400);
 
   for (let i = 0; i < gm; i += 1) {
-    gDayNo += gregorianMonthDays[i];
+    gDayNo += gregorianMonthDays[i] ?? 0;
   }
   if (gm > 1 && isLeapGregorian(gy + 1600)) {
     gDayNo += 1;

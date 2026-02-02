@@ -40,11 +40,13 @@ const parseDateInput = (value: string): ParseResult => {
   if (parts.length !== 3) {
     return { ok: false, error: 'فرمت تاریخ باید به صورت سال/ماه/روز باشد.' };
   }
-  const [y, m, d] = parts.map((p) => Number(p));
-  if ([y, m, d].some((n) => Number.isNaN(n))) {
+  const year = Number(parts[0] ?? '');
+  const month = Number(parts[1] ?? '');
+  const day = Number(parts[2] ?? '');
+  if ([year, month, day].some((n) => Number.isNaN(n))) {
     return { ok: false, error: 'لطفاً فقط عدد وارد کنید.' };
   }
-  return { ok: true, date: { year: y, month: m, day: d } };
+  return { ok: true, date: { year, month, day } };
 };
 
 const CalendarToggle = ({
@@ -107,8 +109,12 @@ export default function DateToolsPage() {
   const handleConvert = () => {
     const jalaliParsed = parseDateInput(jalaliInput);
     const gregParsed = parseDateInput(gregInput);
-    if (!jalaliParsed.ok || !gregParsed.ok) {
-      setConvertError(jalaliParsed.ok ? gregParsed.error : jalaliParsed.error);
+    if (!jalaliParsed.ok) {
+      setConvertError(jalaliParsed.error);
+      return;
+    }
+    if (!gregParsed.ok) {
+      setConvertError(gregParsed.error);
       return;
     }
     if (!isValidJalaliDate(jalaliParsed.date)) {
@@ -168,8 +174,11 @@ export default function DateToolsPage() {
   const diffState = useMemo(() => {
     const sParsed = parseDateInput(startInput);
     const eParsed = parseDateInput(endInput);
-    if (!sParsed.ok || !eParsed.ok) {
-      return { result: null, error: sParsed.ok ? eParsed.error : sParsed.error };
+    if (!sParsed.ok) {
+      return { result: null, error: sParsed.error };
+    }
+    if (!eParsed.ok) {
+      return { result: null, error: eParsed.error };
     }
     const s = normalizeToGregorian(sParsed.date, startCal);
     const e = normalizeToGregorian(eParsed.date, endCal);

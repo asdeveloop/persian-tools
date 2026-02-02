@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
 import type { PDFPageProxy } from 'pdfjs-dist/types/src/display/api';
 import { Button, Card } from '@/components/ui';
+import Alert from '@/shared/ui/Alert';
 import { toEnglishDigits } from '@/shared/utils/number';
 import { loadJsZip, loadPdfJs } from '@/features/pdf-tools/lazy-deps';
 
@@ -208,7 +209,7 @@ export default function PdfToImagePage() {
     }
     setZipBusy(true);
     try {
-      const { default: JSZip } = await loadJsZip();
+      const JSZip = await loadJsZip();
       const zip = new JSZip();
       outputs.forEach((item) => {
         zip.file(`page-${item.page}.${format}`, item.blob);
@@ -355,15 +356,7 @@ export default function PdfToImagePage() {
             </Button>
           </div>
 
-          {error && (
-            <div
-              className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
-              role="alert"
-              aria-live="assertive"
-            >
-              {error}
-            </div>
-          )}
+          {error && <Alert variant="danger">{error}</Alert>}
         </Card>
 
         {outputs.length > 0 && (

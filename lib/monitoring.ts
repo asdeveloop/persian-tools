@@ -35,7 +35,7 @@ export class AnalyticsClient {
       timestamp: Date.now(),
       path: typeof window !== 'undefined' ? window.location.pathname : '',
       userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : '',
-      metadata,
+      ...(metadata ? { metadata } : {}),
     };
 
     this.events.push(event);
@@ -46,7 +46,7 @@ export class AnalyticsClient {
   }
 
   private flushEvents(): void {
-    if (process.env.NEXT_PUBLIC_ANALYTICS_ID) {
+    if (process.env['NEXT_PUBLIC_ANALYTICS_ID']) {
       // TODO: send events batch to self-hosted endpoint.
     }
     this.events = [];

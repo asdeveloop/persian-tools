@@ -1,8 +1,14 @@
-const CACHE_VERSION = 'v1';
+const CACHE_VERSION = 'v2-2026-02-02';
 const SHELL_CACHE = `persian-tools-shell-${CACHE_VERSION}`;
 const RUNTIME_CACHE = `persian-tools-runtime-${CACHE_VERSION}`;
 
 const SHELL_ASSETS = ['/', '/offline', '/manifest.webmanifest'];
+
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+});
 
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(SHELL_CACHE).then((cache) => cache.addAll(SHELL_ASSETS)));
@@ -49,16 +55,15 @@ self.addEventListener('fetch', (event) => {
   if (url.origin === self.location.origin) {
     event.respondWith(
       caches.match(request).then((cached) => {
-        if (cached) {
-          return cached;
-        }
-        return fetch(request)
+        const fetchPromise = fetch(request)
           .then((response) => {
             const clone = response.clone();
             caches.open(RUNTIME_CACHE).then((cache) => cache.put(request, clone));
             return response;
           })
           .catch(() => cached);
+
+        return cached || fetchPromise;
       }),
     );
   }

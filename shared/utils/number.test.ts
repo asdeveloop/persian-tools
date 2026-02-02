@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseLooseNumber, toEnglishDigits } from './number';
+import { numberToWordsFa, parseLooseNumber, toEnglishDigits } from './number';
 
 describe('number utils', () => {
   it('converts Persian digits to English', () => {
@@ -17,5 +17,16 @@ describe('number utils', () => {
 
   it('parses negative numbers', () => {
     expect(parseLooseNumber('-۱۲۳۴')).toBe(-1234);
+  });
+
+  it('converts numbers to Persian words', () => {
+    expect(numberToWordsFa(0)).toBe('صفر');
+    expect(numberToWordsFa(12)).toBe('دوازده');
+    expect(numberToWordsFa(1001)).toBe('یک هزار و یک');
+    expect(numberToWordsFa(12345)).toBe('دوازده هزار و سیصد و چهل و پنج');
+  });
+
+  it('handles negative and fractional numbers in words', () => {
+    expect(numberToWordsFa(-12.5)).toBe('منفی دوازده ممیز پنج');
   });
 });

@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import type { PDFPageProxy } from 'pdfjs-dist/types/src/display/api';
 import { Button, Card } from '@/components/ui';
+import Alert from '@/shared/ui/Alert';
 import { loadPdfJs, loadPdfLib } from '@/features/pdf-tools/lazy-deps';
 
 function formatBytes(bytes: number): string {
@@ -198,18 +199,10 @@ export default function DecryptPdfPage() {
             </Button>
           </div>
 
-          {error && (
-            <div
-              className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
-              role="alert"
-              aria-live="assertive"
-            >
-              {error}
-            </div>
-          )}
+          {error && <Alert variant="danger">{error}</Alert>}
 
           {downloadUrl && resultSize !== null && (
-            <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700 space-y-2">
+            <Alert variant="success" className="space-y-2">
               <div>حجم خروجی: {formatBytes(resultSize)}</div>
               <div>
                 <a className="font-semibold underline" href={downloadUrl} download="decrypted.pdf">
@@ -219,7 +212,7 @@ export default function DecryptPdfPage() {
               <div className="text-xs text-emerald-700/80">
                 خروجی به صورت صفحات تصویری ذخیره می شود و قابل جستجو نیست.
               </div>
-            </div>
+            </Alert>
           )}
         </Card>
       </div>

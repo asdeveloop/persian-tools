@@ -1,4 +1,5 @@
 import { buildMetadata } from '@/lib/seo';
+import OfflineActions from '@/components/ui/OfflineActions';
 
 export const metadata = buildMetadata({
   title: 'آفلاین - جعبه ابزار فارسی',
@@ -14,6 +15,7 @@ export default function OfflinePage() {
         <p className="text-[var(--text-secondary)]">
           به نظر می‌رسد اتصال اینترنت برقرار نیست. پس از اتصال مجدد، صفحه را تازه کنید.
         </p>
+        <OfflineActions />
       </div>
     </div>
   );

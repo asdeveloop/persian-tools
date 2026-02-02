@@ -50,7 +50,7 @@ const loadDrawable = async (blob: Blob): Promise<DrawableSource> => {
 
   const url = URL.createObjectURL(blob);
   const image = await new Promise<HTMLImageElement>((resolve, reject) => {
-    const img = new Image();
+    const img = new window.Image();
     img.onload = () => resolve(img);
     img.onerror = () => reject(new Error('بارگذاری تصویر با خطا مواجه شد.'));
     img.src = url;
@@ -200,7 +200,11 @@ export function useImageToolsWorker() {
 
       const id = createRequestId();
       return new Promise<ImageCompressionResult>((resolve, reject) => {
-        pendingRef.current.set(id, { resolve, reject, onProgress });
+        const entry: PendingRequest = { resolve, reject };
+        if (onProgress) {
+          entry.onProgress = onProgress;
+        }
+        pendingRef.current.set(id, entry);
         workerRef.current?.postMessage(
           {
             ...payload,

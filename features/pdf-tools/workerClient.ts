@@ -96,7 +96,11 @@ export const createPdfWorkerClient = (): PdfWorkerClient => {
   const request = (payload: PdfWorkerRequest, onProgress?: PdfWorkerProgress) => {
     const id = createRequestId();
     return new Promise<PdfWorkerResult>((resolve, reject) => {
-      pending.set(id, { resolve, reject, onProgress });
+      const entry: PendingRequest = { resolve, reject };
+      if (onProgress) {
+        entry.onProgress = onProgress;
+      }
+      pending.set(id, entry);
       if ('files' in payload) {
         worker.postMessage({ id, ...payload }, payload.files);
         return;
@@ -105,7 +109,6 @@ export const createPdfWorkerClient = (): PdfWorkerClient => {
         worker.postMessage({ id, ...payload }, [payload.file]);
         return;
       }
-      worker.postMessage({ id, ...payload });
     });
   };
 

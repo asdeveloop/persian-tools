@@ -82,19 +82,34 @@ function threeDigitToWords(n: number): string {
   const hundreds = Math.floor(n / 100);
   const remainder = n % 100;
   if (hundreds > 0) {
-    parts.push(faHundreds[hundreds]);
+    const word = faHundreds[hundreds];
+    if (word) {
+      parts.push(word);
+    }
   }
   if (remainder > 0) {
     if (remainder < 10) {
-      parts.push(faOnes[remainder]);
+      const word = faOnes[remainder];
+      if (word) {
+        parts.push(word);
+      }
     } else if (remainder < 20) {
-      parts.push(faTeens[remainder - 10]);
+      const word = faTeens[remainder - 10];
+      if (word) {
+        parts.push(word);
+      }
     } else {
       const tens = Math.floor(remainder / 10);
       const ones = remainder % 10;
-      parts.push(faTens[tens]);
+      const tensWord = faTens[tens];
+      if (tensWord) {
+        parts.push(tensWord);
+      }
       if (ones > 0) {
-        parts.push(faOnes[ones]);
+        const onesWord = faOnes[ones];
+        if (onesWord) {
+          parts.push(onesWord);
+        }
       }
     }
   }
