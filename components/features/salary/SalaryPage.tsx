@@ -39,6 +39,10 @@ type SalaryFormState = {
 const sessionKey = 'salary.form.v2';
 
 export default function SalaryPage() {
+  const financialActiveStyle = {
+    backgroundColor: toolCategories.financial.primary,
+    borderColor: toolCategories.financial.primary,
+  };
   const initial = useMemo<SalaryFormState>(() => {
     return (
       getSessionJson<SalaryFormState>(sessionKey) ?? {
@@ -161,7 +165,7 @@ export default function SalaryPage() {
         <FadeIn delay={0}>
           <div className="text-center max-w-4xl mx-auto">
             <motion.div
-              className="inline-flex items-center justify-center w-16 h-16 rounded-full text-white shadow-xl mb-6"
+              className="inline-flex items-center justify-center w-16 h-16 rounded-full text-white shadow-[var(--shadow-strong)] mb-6"
               style={{ backgroundColor: toolCategories.financial.primary }}
               animate={{
                 rotate: [0, 5, -5, 0],
@@ -200,7 +204,7 @@ export default function SalaryPage() {
         {error && (
           <div className="max-w-4xl mx-auto">
             <div
-              className="rounded-2xl border border-[var(--border-light)] bg-[rgb(var(--color-danger-rgb)/0.12)] px-6 py-4 text-sm text-[var(--color-danger)]"
+              className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[rgb(var(--color-danger-rgb)/0.12)] px-6 py-4 text-sm text-[var(--color-danger)]"
               role="alert"
               aria-live="assertive"
             >
@@ -220,19 +224,12 @@ export default function SalaryPage() {
                       key={mode}
                       onClick={() => setForm((s) => ({ ...s, mode }))}
                       className={[
-                        'p-4 rounded-2xl border-2 text-right transition-all duration-300',
+                        'p-4 rounded-[var(--radius-lg)] border-2 text-right transition-all duration-[var(--motion-medium)]',
                         form.mode === mode
-                          ? 'border-opacity-100 shadow-lg text-white'
+                          ? 'border-opacity-100 shadow-[var(--shadow-medium)] text-white'
                           : 'border-[var(--border-light)] bg-[var(--surface-1)] text-[var(--text-primary)] hover:border-[var(--border-medium)] hover:bg-[var(--bg-subtle)]',
                       ].join(' ')}
-                      style={
-                        form.mode === mode
-                          ? {
-                              backgroundColor: toolCategories.financial.primary,
-                              borderColor: toolCategories.financial.primary,
-                            }
-                          : {}
-                      }
+                      {...(form.mode === mode ? { style: financialActiveStyle } : {})}
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                     >
@@ -539,7 +536,7 @@ export default function SalaryPage() {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.1 }}
-                      className="rounded-2xl p-6 border"
+                      className="rounded-[var(--radius-lg)] p-6 border"
                       style={{
                         background: [
                           'linear-gradient(135deg,',
@@ -564,7 +561,7 @@ export default function SalaryPage() {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.2 }}
-                      className="rounded-2xl p-6 border"
+                      className="rounded-[var(--radius-lg)] p-6 border"
                       style={{
                         background:
                           'linear-gradient(135deg, rgb(var(--color-danger-rgb) / 0.2), rgb(var(--color-danger-rgb) / 0.3))',
@@ -586,7 +583,7 @@ export default function SalaryPage() {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.3 }}
-                      className="rounded-2xl p-6 border"
+                      className="rounded-[var(--radius-lg)] p-6 border"
                       style={{
                         background:
                           'linear-gradient(135deg, rgb(var(--color-success-rgb) / 0.2), rgb(var(--color-success-rgb) / 0.3))',
@@ -655,7 +652,7 @@ export default function SalaryPage() {
                         </div>
                         جزئیات حقوق
                       </h3>
-                      <div className="space-y-3 bg-[var(--bg-subtle)] rounded-xl p-4">
+                      <div className="space-y-3 bg-[var(--bg-subtle)] rounded-[var(--radius-md)] p-4">
                         <div className="flex justify-between items-center">
                           <span className="text-sm text-[var(--text-secondary)]">حقوق پایه:</span>
                           <span className="text-sm font-bold">
@@ -718,7 +715,7 @@ export default function SalaryPage() {
                         </div>
                         کسورات و خالص
                       </h3>
-                      <div className="space-y-3 bg-[var(--bg-subtle)] rounded-xl p-4">
+                      <div className="space-y-3 bg-[var(--bg-subtle)] rounded-[var(--radius-md)] p-4">
                         <div className="flex justify-between items-center">
                           <span className="text-sm text-[var(--text-secondary)]">بیمه:</span>
                           <span className="text-sm font-bold">

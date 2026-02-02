@@ -49,18 +49,20 @@ export const tokens = {
     },
     text: {
       DEFAULT: 'var(--text-primary)',
+      secondary: 'var(--text-secondary)',
       muted: 'var(--text-muted)',
       inverted: 'var(--text-inverted)',
     },
     border: {
       DEFAULT: 'var(--border-default)',
-      strong: 'var(--border-medium)',
+      strong: 'var(--border-strong)',
     },
     primary: {
       DEFAULT: 'var(--color-primary)',
       hover: 'var(--color-primary-hover)',
-      pressed: 'var(--color-primary-hover)',
+      pressed: 'var(--color-primary-pressed)',
     },
+    primaryRgb: 'var(--color-primary-rgb)',
     status: {
       success: 'var(--color-success)',
       warning: 'var(--color-warning)',
@@ -92,8 +94,8 @@ export const tokens = {
   motion: {
     duration: {
       fast: '0.15', // seconds
-      medium: '0.24', // seconds
-      modal: '0.21', // seconds
+      medium: '0.22', // seconds
+      modal: '0.24', // seconds
     },
     easing: {
       ease: 'cubic-bezier(0.2, 0.8, 0.2, 1)',

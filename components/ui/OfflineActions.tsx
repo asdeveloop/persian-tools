@@ -9,10 +9,10 @@ export default function OfflineActions() {
 
   return (
     <div className="flex flex-wrap items-center justify-center gap-3">
-      <button type="button" onClick={onRetry} className="btn-primary px-6 py-2 text-sm">
+      <button type="button" onClick={onRetry} className="btn btn-primary px-6 py-2 text-sm">
         تلاش مجدد
       </button>
-      <a href="/" className="btn-secondary px-6 py-2 text-sm">
+      <a href="/" className="btn btn-secondary px-6 py-2 text-sm">
         بازگشت به خانه
       </a>
     </div>

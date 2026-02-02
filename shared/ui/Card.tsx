@@ -14,11 +14,12 @@ export default function Card({
   onClick,
   ...rest
 }: Props) {
-  const baseClasses = 'card bg-[var(--surface-2)] backdrop-blur-xl rounded-[var(--radius-lg)] border border-[var(--border-primary)] shadow-[var(--shadow-subtle)] hover:shadow-[var(--shadow-medium)] transition-all duration-[var(--motion-medium)]';
+  const baseClasses =
+    'card bg-[var(--surface-1)]/90 backdrop-blur-xl rounded-[var(--radius-lg)] border border-[var(--border-light)] shadow-[var(--shadow-medium)] hover:shadow-[var(--shadow-strong)] transition-all duration-[var(--motion-medium)]';
 
   const variantClasses = {
     default: '',
-    clickable: 'card-clickable cursor-pointer hover:bg-[var(--surface-3)]',
+    clickable: 'card-clickable cursor-pointer hover:bg-[var(--surface-2)]',
   };
 
   const isClickable = variant === 'clickable' || typeof onClick === 'function';

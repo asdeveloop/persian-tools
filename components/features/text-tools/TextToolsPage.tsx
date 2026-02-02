@@ -109,7 +109,7 @@ export default function TextToolsPage() {
     <div className="space-y-6">
       <header className="space-y-3">
         <div className="inline-flex items-center gap-2 rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-2 text-xs font-semibold text-[var(--text-muted)]">
-          <span className="h-2 w-2 rounded-full bg-emerald-500"></span>
+          <span className="h-2 w-2 rounded-full bg-[var(--color-success)]"></span>
           ابزارهای متنی - کاملاً آفلاین
         </div>
         <h1 className="text-3xl font-black text-[var(--text-primary)]">ابزارهای متنی</h1>
@@ -127,9 +127,9 @@ export default function TextToolsPage() {
           <div className="inline-flex rounded-full border border-[var(--border-medium)] bg-[var(--surface-1)] p-1 text-xs">
             <button
               type="button"
-              className={`px-3 py-2 rounded-full font-bold transition-all ${
+              className={`px-3 py-2 rounded-full font-bold transition-all duration-[var(--motion-fast)] ${
                 calendarType === 'jalali'
-                  ? 'bg-[var(--color-primary)] text-[var(--text-inverted)] shadow-sm'
+                  ? 'bg-[var(--color-primary)] text-[var(--text-inverted)] shadow-[var(--shadow-subtle)]'
                   : 'text-[var(--text-primary)]'
               }`}
               onClick={() => setCalendarType('jalali')}
@@ -139,9 +139,9 @@ export default function TextToolsPage() {
             </button>
             <button
               type="button"
-              className={`px-3 py-2 rounded-full font-bold transition-all ${
+              className={`px-3 py-2 rounded-full font-bold transition-all duration-[var(--motion-fast)] ${
                 calendarType === 'gregorian'
-                  ? 'bg-[var(--color-primary)] text-[var(--text-inverted)] shadow-sm'
+                  ? 'bg-[var(--color-primary)] text-[var(--text-inverted)] shadow-[var(--shadow-subtle)]'
                   : 'text-[var(--text-primary)]'
               }`}
               onClick={() => setCalendarType('gregorian')}
@@ -196,7 +196,7 @@ export default function TextToolsPage() {
             {numberError}
           </div>
         )}
-        <div className="rounded-xl border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)]">
+        <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)]">
           {numberWords || 'خروجی اینجا نمایش داده می‌شود.'}
         </div>
       </Card>
@@ -214,13 +214,13 @@ export default function TextToolsPage() {
           placeholder="متن خود را وارد کنید..."
         />
         <div className="grid gap-3 sm:grid-cols-3 text-sm text-[var(--text-secondary)]">
-          <div className="rounded-xl border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3">
+          <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3">
             کلمات: {wordStats.words}
           </div>
-          <div className="rounded-xl border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3">
+          <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3">
             کاراکترها: {wordStats.characters}
           </div>
-          <div className="rounded-xl border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3">
+          <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3">
             بدون فاصله: {wordStats.charactersNoSpaces}
           </div>
         </div>

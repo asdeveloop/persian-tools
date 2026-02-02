@@ -159,14 +159,15 @@ export default function ImageToolsPage() {
       const img = new window.Image();
       img.onload = () => {
         setItems((prev) =>
-          prev.map((entry) =>
-            entry.id === item.id
-              ? {
-                  ...entry,
-                  originalDimensions: { width: img.naturalWidth, height: img.naturalHeight },
-                }
-              : entry,
-          ),
+          prev.map((entry) => {
+            if (entry.id !== item.id) {
+              return entry;
+            }
+            return {
+              ...entry,
+              originalDimensions: { width: img.naturalWidth, height: img.naturalHeight },
+            };
+          }),
         );
       };
       img.src = item.originalUrl;
@@ -308,8 +309,8 @@ export default function ImageToolsPage() {
 
   return (
     <div className="space-y-8">
-      <section className="relative overflow-hidden rounded-3xl border border-[var(--border-primary)] bg-[var(--surface-1)] p-6 md:p-10">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(59,130,246,0.18),transparent_55%)]" />
+      <section className="relative overflow-hidden section-surface p-6 md:p-10">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgb(var(--color-info-rgb)/0.18),_transparent_55%)]" />
         <div className="relative space-y-4">
           <h1 className="text-3xl md:text-4xl font-bold text-[var(--text-primary)]">
             ابزارهای تصویر
@@ -319,13 +320,13 @@ export default function ImageToolsPage() {
             آفلاین روی دستگاه شما انجام می‌شود.
           </p>
           <div className="flex flex-wrap gap-3 text-sm text-[var(--text-muted)]">
-            <span className="rounded-full border border-[var(--border-primary)] px-3 py-1">
+            <span className="rounded-full border border-[var(--border-light)] px-3 py-1">
               پردازش {mode === 'worker' ? 'سریع با Web Worker' : 'ایمن روی مرورگر'}
             </span>
-            <span className="rounded-full border border-[var(--border-primary)] px-3 py-1">
+            <span className="rounded-full border border-[var(--border-light)] px-3 py-1">
               حداکثر {MAX_FILES} تصویر همزمان
             </span>
-            <span className="rounded-full border border-[var(--border-primary)] px-3 py-1">
+            <span className="rounded-full border border-[var(--border-light)] px-3 py-1">
               خروجی WebP، JPG، PNG
             </span>
           </div>
@@ -367,19 +368,19 @@ export default function ImageToolsPage() {
                 </div>
               </div>
               <div className="mt-6 grid gap-4 md:grid-cols-3">
-                <div className="rounded-2xl border border-[var(--border-primary)] bg-[var(--surface-1)] p-4">
+                <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4">
                   <div className="text-xs text-[var(--text-muted)]">حجم اولیه</div>
                   <div className="mt-2 text-lg font-semibold text-[var(--text-primary)]">
                     {formatBytesFa(totals.original)}
                   </div>
                 </div>
-                <div className="rounded-2xl border border-[var(--border-primary)] bg-[var(--surface-1)] p-4">
+                <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4">
                   <div className="text-xs text-[var(--text-muted)]">حجم خروجی</div>
                   <div className="mt-2 text-lg font-semibold text-[var(--text-primary)]">
                     {totals.compressed > 0 ? formatBytesFa(totals.compressed) : '—'}
                   </div>
                 </div>
-                <div className="rounded-2xl border border-[var(--border-primary)] bg-[var(--surface-1)] p-4">
+                <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4">
                   <div className="text-xs text-[var(--text-muted)]">صرفه‌جویی</div>
                   <div className="mt-2 text-lg font-semibold text-[var(--text-primary)]">
                     {totals.compressed > 0 ? formatPercentFa(totals.savings) : '—'}
@@ -438,7 +439,7 @@ export default function ImageToolsPage() {
                         alt={`تصویر اصلی ${item.file.name}`}
                         width={item.originalDimensions?.width ?? 1200}
                         height={item.originalDimensions?.height ?? 900}
-                        className="w-full h-auto rounded-2xl border border-[var(--border-primary)]"
+                        className="w-full h-auto rounded-[var(--radius-lg)] border border-[var(--border-light)]"
                         sizes="100vw"
                         unoptimized
                       />
@@ -457,12 +458,12 @@ export default function ImageToolsPage() {
                           alt={`تصویر خروجی ${item.file.name}`}
                           width={item.result.width ?? 1200}
                           height={item.result.height ?? 900}
-                          className="w-full h-auto rounded-2xl border border-[var(--border-primary)]"
+                          className="w-full h-auto rounded-[var(--radius-lg)] border border-[var(--border-light)]"
                           sizes="100vw"
                           unoptimized
                         />
                       ) : (
-                        <div className="flex items-center justify-center h-48 rounded-2xl border border-dashed border-[var(--border-primary)] text-sm text-[var(--text-muted)]">
+                        <div className="flex items-center justify-center h-48 rounded-[var(--radius-lg)] border border-dashed border-[var(--border-light)] text-sm text-[var(--text-muted)]">
                           هنوز خروجی تولید نشده است
                         </div>
                       )}
@@ -529,7 +530,7 @@ export default function ImageToolsPage() {
                 <button
                   key={preset.id}
                   type="button"
-                  className="rounded-2xl border border-[var(--border-primary)] px-4 py-3 text-start transition-all hover:border-[var(--color-primary)] hover:bg-[var(--surface-2)]"
+                  className="rounded-[var(--radius-lg)] border border-[var(--border-light)] px-4 py-3 text-start transition-all hover:border-[var(--color-primary)] hover:bg-[var(--surface-2)]"
                   onClick={() => applyPreset(preset)}
                 >
                   <div className="text-sm font-semibold text-[var(--text-primary)]">
@@ -626,7 +627,7 @@ export default function ImageToolsPage() {
                   onChange={(event) =>
                     setSettings((prev) => ({ ...prev, backgroundColor: event.target.value }))
                   }
-                  className="h-10 w-16 rounded-lg border border-[var(--border-primary)]"
+                  className="h-10 w-16 rounded-lg border border-[var(--border-light)]"
                 />
                 <input
                   type="text"
@@ -640,7 +641,7 @@ export default function ImageToolsPage() {
             </div>
           </div>
 
-          <div className="rounded-2xl border border-[var(--border-primary)] bg-[var(--surface-1)] px-4 py-4 text-sm text-[var(--text-muted)]">
+          <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-4 text-sm text-[var(--text-muted)]">
             <p>
               نکته: اگر خروجی را روی JPG قرار دهید، تصاویر شفاف با رنگ پس‌زمینه انتخابی پر می‌شوند.
             </p>

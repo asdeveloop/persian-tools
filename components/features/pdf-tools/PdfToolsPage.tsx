@@ -152,7 +152,7 @@ export default function PdfToolsPage() {
   return (
     <div className="space-y-10">
       <section className="relative overflow-hidden section-surface p-8 md:p-10">
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,_rgba(239,68,68,0.18),_transparent_55%),radial-gradient(circle_at_bottom,_rgba(59,130,246,0.12),_transparent_60%)]"></div>
+        <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,_rgb(var(--color-danger-rgb)/0.18),_transparent_55%),radial-gradient(circle_at_bottom,_rgb(var(--color-info-rgb)/0.12),_transparent_60%)]"></div>
         <div className="relative space-y-4 text-center">
           <h1 className="text-3xl md:text-4xl font-black text-[var(--text-primary)]">
             ابزارهای PDF آنلاین
@@ -206,9 +206,9 @@ export default function PdfToolsPage() {
           <button
             key={category.id}
             onClick={() => setSelectedCategory(category.id)}
-            className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
+            className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-[var(--motion-fast)] ${
               selectedCategory === category.id
-                ? 'bg-[var(--color-primary)] text-[var(--text-inverted)] shadow-lg'
+                ? 'bg-[var(--color-primary)] text-[var(--text-inverted)] shadow-[var(--shadow-medium)]'
                 : 'bg-[var(--surface-1)] text-[var(--text-primary)] border border-[var(--border-light)] hover:bg-[var(--bg-subtle)]'
             }`}
           >
@@ -220,12 +220,15 @@ export default function PdfToolsPage() {
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {filteredTools.map((tool) => (
-          <Card key={tool.id} className="group hover:shadow-lg transition-all duration-200">
+          <Card
+            key={tool.id}
+            className="group hover:shadow-[var(--shadow-strong)] transition-all duration-[var(--motion-medium)]"
+          >
             <Link href={tool.path} className="block p-6 text-center">
-              <div className="text-4xl mb-4 group-hover:scale-110 transition-transform duration-200">
+              <div className="text-4xl mb-4 group-hover:scale-110 transition-transform duration-[var(--motion-fast)]">
                 {tool.icon}
               </div>
-              <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-2 group-hover:text-[var(--color-primary)] transition-colors">
+              <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-2 group-hover:text-[var(--color-primary)] transition-colors duration-[var(--motion-fast)]">
                 {tool.title}
               </h3>
               <p className="text-sm text-[var(--text-muted)] leading-relaxed">{tool.description}</p>

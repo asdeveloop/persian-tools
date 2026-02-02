@@ -28,6 +28,10 @@ type LoanFormState = {
 const sessionKey = 'loan.form.v3';
 
 export default function LoanPage() {
+  const financialActiveStyle = {
+    backgroundColor: toolCategories.financial.primary,
+    borderColor: toolCategories.financial.primary,
+  };
   const initial = useMemo<LoanFormState>(() => {
     return (
       getSessionJson<LoanFormState>(sessionKey) ?? {
@@ -301,7 +305,7 @@ export default function LoanPage() {
         <FadeIn delay={0}>
           <div className="text-center max-w-4xl mx-auto">
             <motion.div
-              className="inline-flex items-center justify-center w-16 h-16 rounded-full text-white shadow-xl mb-6"
+              className="inline-flex items-center justify-center w-16 h-16 rounded-full text-white shadow-[var(--shadow-strong)] mb-6"
               style={{ backgroundColor: toolCategories.financial.primary }}
               animate={{
                 rotate: [0, 5, -5, 0],
@@ -367,19 +371,14 @@ export default function LoanPage() {
                         <motion.button
                           onClick={() => setForm((s) => ({ ...s, calculationType: type }))}
                           className={[
-                            'p-6 rounded-2xl border-2 transition-all duration-300 text-right',
+                            'p-6 rounded-[var(--radius-lg)] border-2 transition-all duration-[var(--motion-medium)] text-right',
                             form.calculationType === type
-                              ? 'border-opacity-100 shadow-lg text-white'
+                              ? 'border-opacity-100 shadow-[var(--shadow-medium)] text-white'
                               : 'border-[var(--border-light)] bg-[var(--surface-1)] text-[var(--text-primary)] hover:border-[var(--border-medium)] hover:bg-[var(--bg-subtle)]',
                           ].join(' ')}
-                          style={
-                            form.calculationType === type
-                              ? {
-                                  backgroundColor: toolCategories.financial.primary,
-                                  borderColor: toolCategories.financial.primary,
-                                }
-                              : {}
-                          }
+                          {...(form.calculationType === type
+                            ? { style: financialActiveStyle }
+                            : {})}
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
                         >
@@ -437,11 +436,12 @@ export default function LoanPage() {
                       <motion.button
                         onClick={() => setForm((s) => ({ ...s, loanType: type }))}
                         className={[
-                          'p-6 rounded-2xl border-2 transition-all duration-300 text-right',
+                          'p-6 rounded-[var(--radius-lg)] border-2 transition-all duration-[var(--motion-medium)] text-right',
                           form.loanType === type
-                            ? 'border-[var(--color-primary)] bg-[var(--color-primary)] text-[var(--text-inverted)] shadow-lg'
+                            ? 'border-[var(--color-primary)] bg-[var(--color-primary)] text-[var(--text-inverted)] shadow-[var(--shadow-medium)]'
                             : 'border-[var(--border-light)] bg-[var(--surface-1)] text-[var(--text-primary)] hover:border-[var(--border-medium)] hover:bg-[var(--bg-subtle)]',
                         ].join(' ')}
+                        {...(form.loanType === type ? { style: financialActiveStyle } : {})}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                       >
@@ -496,7 +496,9 @@ export default function LoanPage() {
                           className="block text-sm font-bold text-[var(--text-primary)]"
                         >
                           {field.label}
-                          {field.required && <span className="text-red-500 mr-1">*</span>}
+                          {field.required && (
+                            <span className="text-[var(--color-danger)] mr-1">*</span>
+                          )}
                         </label>
                         <motion.input
                           id={field.id}
@@ -511,7 +513,7 @@ export default function LoanPage() {
                           transition={{ duration: 0.2 }}
                         />
                         {field.note && (
-                          <p className="text-xs text-[var(--text-muted)] bg-[var(--bg-subtle)] px-3 py-2 rounded-lg">
+                          <p className="text-xs text-[var(--text-muted)] bg-[var(--bg-subtle)] px-3 py-2 rounded-[var(--radius-md)]">
                             {field.note}
                           </p>
                         )}
@@ -525,7 +527,7 @@ export default function LoanPage() {
                 <motion.button
                   type="button"
                   onClick={onCalculate}
-                  className="btn-primary text-lg px-10 py-4"
+                  className="btn btn-primary text-lg px-10 py-4"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
@@ -545,7 +547,7 @@ export default function LoanPage() {
                 <AnimatePresence>
                   {error && (
                     <motion.div
-                      className="text-sm text-red-600 bg-red-50 px-6 py-3 rounded-xl border border-red-200"
+                      className="text-sm text-[var(--color-danger)] bg-[rgb(var(--color-danger-rgb)/0.12)] px-6 py-3 rounded-[var(--radius-md)] border border-[rgb(var(--color-danger-rgb)/0.3)]"
                       role="alert"
                       aria-live="assertive"
                       initial={{ opacity: 0, x: -20 }}
@@ -595,7 +597,7 @@ export default function LoanPage() {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                       <StaggerItem>
                         <motion.div
-                          className="p-8 rounded-2xl border border-[var(--border-light)] shadow-lg bg-[rgb(var(--color-info-rgb)/0.12)]"
+                          className="p-8 rounded-[var(--radius-lg)] border border-[var(--border-light)] shadow-[var(--shadow-medium)] bg-[rgb(var(--color-info-rgb)/0.12)]"
                           whileHover={{ scale: 1.05, y: -5 }}
                           transition={{ duration: 0.3 }}
                         >
@@ -623,7 +625,7 @@ export default function LoanPage() {
 
                       <StaggerItem>
                         <motion.div
-                          className="p-8 rounded-2xl border border-[var(--border-light)] shadow-lg bg-[rgb(var(--color-success-rgb)/0.12)]"
+                          className="p-8 rounded-[var(--radius-lg)] border border-[var(--border-light)] shadow-[var(--shadow-medium)] bg-[rgb(var(--color-success-rgb)/0.12)]"
                           whileHover={{ scale: 1.05, y: -5 }}
                           transition={{ duration: 0.3 }}
                         >
@@ -651,7 +653,7 @@ export default function LoanPage() {
 
                       <StaggerItem>
                         <motion.div
-                          className="p-8 rounded-2xl border border-[var(--border-light)] shadow-lg bg-[rgb(var(--color-warning-rgb)/0.12)]"
+                          className="p-8 rounded-[var(--radius-lg)] border border-[var(--border-light)] shadow-[var(--shadow-medium)] bg-[rgb(var(--color-warning-rgb)/0.12)]"
                           whileHover={{ scale: 1.05, y: -5 }}
                           transition={{ duration: 0.3 }}
                         >
@@ -686,7 +688,7 @@ export default function LoanPage() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                         transition={{ duration: 0.5, delay: 0.3 }}
-                        className="bg-[var(--bg-subtle)] p-6 rounded-2xl border border-[var(--border-light)] mb-8 shadow-lg"
+                        className="bg-[var(--bg-subtle)] p-6 rounded-[var(--radius-lg)] border border-[var(--border-light)] mb-8 shadow-[var(--shadow-medium)]"
                       >
                         <div className="text-[var(--color-primary)] text-sm font-bold mb-2 flex items-center gap-2">
                           <svg
@@ -718,7 +720,7 @@ export default function LoanPage() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                         transition={{ duration: 0.5, delay: 0.4 }}
-                        className="bg-[var(--bg-subtle)] p-8 rounded-2xl border border-[var(--border-light)]"
+                        className="bg-[var(--bg-subtle)] p-8 rounded-[var(--radius-lg)] border border-[var(--border-light)]"
                       >
                         <h3 className="text-xl font-black text-[var(--text-primary)] mb-6 flex items-center gap-3">
                           <svg

@@ -173,7 +173,7 @@ export default function SplitPdfPage() {
           </div>
 
           {file && (
-            <div className="rounded-xl border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)]">
+            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)]">
               {file.name} | تعداد صفحات: {totalPages ?? '-'}
             </div>
           )}

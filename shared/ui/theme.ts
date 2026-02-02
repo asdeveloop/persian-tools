@@ -54,8 +54,9 @@ export const colors = {
 
   // رنگ‌های مرزی
   border: {
-    primary: 'var(--border-primary)',
+    primary: 'var(--border-light)',
     secondary: 'var(--border-medium)',
+    strong: 'var(--border-strong)',
     focus: 'var(--color-primary)',
   },
 
@@ -191,7 +192,7 @@ export const components = {
       'inline-flex items-center justify-center px-8 py-3 text-sm font-bold',
       'focus:outline-none focus:ring-2 focus:ring-offset-2',
       'disabled:opacity-50 disabled:cursor-not-allowed',
-      'transition-all duration-200 shadow-sm hover:shadow-md rounded-full',
+      'transition-all duration-[var(--motion-fast)] shadow-[var(--shadow-subtle)] hover:shadow-[var(--shadow-medium)] rounded-full',
     ].join(' '),
     variants: {
       primary: [
@@ -207,46 +208,46 @@ export const components = {
       success: [
         'text-white bg-[var(--color-success)]',
         'border border-[var(--color-success)]',
-        'hover:bg-green-700 focus:ring-green-500',
+        'hover:brightness-95 focus:ring-[var(--color-success)]',
       ].join(' '),
       warning: [
         'text-white bg-[var(--color-warning)]',
         'border border-[var(--color-warning)]',
-        'hover:bg-amber-700 focus:ring-amber-500',
+        'hover:brightness-95 focus:ring-[var(--color-warning)]',
       ].join(' '),
       danger: [
         'text-white bg-[var(--color-danger)]',
         'border border-[var(--color-danger)]',
-        'hover:bg-red-700 focus:ring-red-500',
+        'hover:brightness-95 focus:ring-[var(--color-danger)]',
       ].join(' '),
     },
   },
 
   // کارت‌ها
   card: {
-    base: 'rounded-2xl border border-[var(--border-light)] bg-[var(--surface-1)] shadow-sm hover:shadow-md transition-all duration-200',
+    base: 'rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] shadow-[var(--shadow-medium)] hover:shadow-[var(--shadow-strong)] transition-all duration-[var(--motion-medium)]',
     elevated:
-      'rounded-2xl border border-[var(--border-light)] bg-[var(--surface-1)] shadow-lg hover:shadow-xl transition-all duration-200',
+      'rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] shadow-[var(--shadow-strong)] hover:shadow-[var(--shadow-strong)] transition-all duration-[var(--motion-medium)]',
     glass:
-      'rounded-2xl border border-[var(--border-light)] bg-[var(--surface-1)]/80 backdrop-blur-md shadow-lg',
+      'rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)]/80 backdrop-blur-md shadow-[var(--shadow-strong)]',
   },
 
   // فرم‌ها
   input: {
     base: [
-      'w-full px-4 py-3 rounded-xl border border-[var(--border-light)] bg-[var(--surface-1)]',
+      'w-full px-4 py-3 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)]',
       'focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20',
-      'transition-all duration-200',
+      'transition-all duration-[var(--motion-fast)]',
     ].join(' '),
     error: 'border-red-500 focus:border-red-500 focus:ring-red-500/20',
   },
 
   // نتایج
   result: {
-    success: 'bg-gradient-to-br from-green-50 to-green-100 border-green-200',
-    error: 'bg-gradient-to-br from-red-50 to-red-100 border-red-200',
-    info: 'bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200',
-    warning: 'bg-gradient-to-br from-amber-50 to-amber-100 border-amber-200',
+    success: 'bg-[rgb(var(--color-success-rgb)/0.12)] border-[rgb(var(--color-success-rgb)/0.3)]',
+    error: 'bg-[rgb(var(--color-danger-rgb)/0.12)] border-[rgb(var(--color-danger-rgb)/0.3)]',
+    info: 'bg-[rgb(var(--color-info-rgb)/0.12)] border-[rgb(var(--color-info-rgb)/0.3)]',
+    warning: 'bg-[rgb(var(--color-warning-rgb)/0.12)] border-[rgb(var(--color-warning-rgb)/0.3)]',
   },
 };
 

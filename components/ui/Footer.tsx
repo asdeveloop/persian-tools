@@ -18,7 +18,7 @@ export default function Footer() {
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-6">
             <div className="lg:col-span-2 space-y-6">
               <div className="flex items-center gap-2">
-                <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--color-primary)] text-white">
+                <span className="inline-flex h-10 w-10 items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-primary)] text-white">
                   <span className="text-lg font-bold">P</span>
                 </span>
                 <span className="text-xl font-black">جعبه ابزار فارسی</span>
@@ -34,19 +34,19 @@ export default function Footer() {
                     icon: IconShield,
                     title: 'امن و خصوصی',
                     desc: 'پردازش فقط روی دستگاه شما',
-                    tone: 'text-emerald-600 bg-emerald-500/10',
+                    tone: 'text-[var(--color-success)] bg-[rgb(var(--color-success-rgb)/0.12)]',
                   },
                   {
                     icon: IconZap,
                     title: 'سریع و کارآمد',
                     desc: 'پردازش سریع با بهترین الگوریتم‌ها',
-                    tone: 'text-blue-600 bg-blue-500/10',
+                    tone: 'text-[var(--color-info)] bg-[rgb(var(--color-info-rgb)/0.12)]',
                   },
                   {
                     icon: IconHeart,
                     title: 'کاملاً رایگان',
                     desc: 'بدون هزینه و محدودیت',
-                    tone: 'text-rose-600 bg-rose-500/10',
+                    tone: 'text-[var(--color-warning)] bg-[rgb(var(--color-warning-rgb)/0.12)]',
                   },
                 ].map((item) => (
                   <div key={item.title} className="flex items-center gap-3">
@@ -168,7 +168,7 @@ export default function Footer() {
 
             <div>
               <h3 className="mb-4 flex items-center gap-2 font-bold text-[var(--text-primary)]">
-                <IconCalendar className="h-5 w-5 text-amber-500" />
+                <IconCalendar className="h-5 w-5 text-[var(--color-warning)]" />
                 ابزارهای تاریخ
               </h3>
               <ul className="space-y-2">
@@ -194,7 +194,7 @@ export default function Footer() {
 
             <div>
               <h3 className="mb-4 flex items-center gap-2 font-bold text-[var(--text-primary)]">
-                <IconZap className="h-5 w-5 text-indigo-500" />
+                <IconZap className="h-5 w-5 text-[var(--color-info)]" />
                 ابزارهای متنی
               </h3>
               <ul className="space-y-2">

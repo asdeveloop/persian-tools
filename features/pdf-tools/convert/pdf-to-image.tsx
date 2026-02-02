@@ -255,7 +255,7 @@ export default function PdfToImagePage() {
           </div>
 
           {file && (
-            <div className="rounded-xl border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)]">
+            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)]">
               {file.name} | تعداد صفحات: {totalPages ?? '-'}
             </div>
           )}
@@ -371,7 +371,7 @@ export default function PdfToImagePage() {
               </Button>
               {zipUrl && (
                 <a
-                  className="text-sm font-semibold underline text-emerald-700"
+                  className="text-sm font-semibold underline text-[var(--color-success)]"
                   href={zipUrl}
                   download={`pdf-pages-${Date.now()}.zip`}
                 >
@@ -383,7 +383,7 @@ export default function PdfToImagePage() {
               {outputs.map((item) => (
                 <div
                   key={item.url}
-                  className="rounded-xl border border-[var(--border-light)] bg-[var(--surface-1)] p-4 space-y-3"
+                  className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 space-y-3"
                 >
                   <div className="text-sm font-semibold text-[var(--text-primary)]">
                     صفحه {item.page}

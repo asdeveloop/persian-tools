@@ -18,10 +18,10 @@ export default function ToolCard(props: Props) {
     <Card
       data-testid="tool-card"
       className={cx(
-        'group hover:shadow-xl transition-all duration-[var(--motion-medium)] hover:-translate-y-1.5',
-        'border-[var(--border-primary)] hover:border-[var(--color-primary)]',
-        'bg-[var(--surface-1)]/90 backdrop-blur',
-        'focus-within:ring-2 focus-within:ring-[var(--color-primary)] focus-within:ring-offset-2',
+        'group hover:shadow-[var(--shadow-strong)] transition-all duration-[var(--motion-medium)] hover:-translate-y-1.5',
+        'border-[var(--border-light)] hover:border-[var(--color-primary)]',
+        'bg-[var(--surface-1)]/92 backdrop-blur',
+        'focus-within:ring-2 focus-within:ring-[var(--color-primary)] focus-within:ring-offset-2 focus-within:ring-offset-[var(--bg-primary)]',
         props.className,
       )}
     >
@@ -32,7 +32,7 @@ export default function ToolCard(props: Props) {
         <div className="flex h-full flex-col gap-4 text-right">
           <div
             className={cx(
-              'flex h-14 w-14 items-center justify-center rounded-2xl transition-all duration-[var(--motion-medium)]',
+              'flex h-14 w-14 items-center justify-center rounded-[var(--radius-lg)] transition-all duration-[var(--motion-medium)]',
               'bg-[var(--bg-subtle)] group-hover:bg-[var(--color-primary)]/10',
               props.iconWrapClassName,
             )}

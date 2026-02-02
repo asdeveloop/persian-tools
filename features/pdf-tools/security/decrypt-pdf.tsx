@@ -163,7 +163,7 @@ export default function DecryptPdfPage() {
           </div>
 
           {file && (
-            <div className="rounded-xl border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)]">
+            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)]">
               {file.name} | حجم اولیه: {formatBytes(originalSize)}
             </div>
           )}
@@ -209,7 +209,7 @@ export default function DecryptPdfPage() {
                   دانلود فایل
                 </a>
               </div>
-              <div className="text-xs text-emerald-700/80">
+              <div className="text-xs text-[rgb(var(--color-success-rgb)/0.8)]">
                 خروجی به صورت صفحات تصویری ذخیره می شود و قابل جستجو نیست.
               </div>
             </Alert>

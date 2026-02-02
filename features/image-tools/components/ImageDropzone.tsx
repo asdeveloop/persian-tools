@@ -36,7 +36,7 @@ export default function ImageDropzone({
     <Card
       className={cx(
         'relative border-2 border-dashed rounded-[var(--radius-lg)] transition-all duration-[var(--motion-medium)]',
-        'bg-[var(--surface-1)] border-[var(--border-primary)]',
+        'bg-[var(--surface-1)] border-[var(--border-light)]',
         'hover:border-[var(--color-primary)] hover:bg-[var(--surface-2)]',
         isDragging && 'border-[var(--color-primary)] bg-[var(--surface-2)]',
         disabled && 'opacity-60 pointer-events-none',
@@ -66,7 +66,7 @@ export default function ImageDropzone({
         onDragLeave={() => setIsDragging(false)}
         onDrop={handleDrop}
       >
-        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[color-mix(in srgb, var(--color-primary) 18%, transparent)]">
+        <div className="flex h-16 w-16 items-center justify-center rounded-[var(--radius-lg)] bg-[color-mix(in srgb, var(--color-primary) 18%, transparent)]">
           <svg
             className="h-8 w-8 text-[var(--color-primary)]"
             fill="none"
@@ -95,7 +95,7 @@ export default function ImageDropzone({
             حداکثر {formatNumberFa(maxFiles)} فایل | فرمت‌های مجاز: JPG، PNG، WebP
           </p>
         </div>
-        <div className="inline-flex items-center gap-2 rounded-full border border-[var(--border-primary)] px-4 py-2 text-sm text-[var(--text-primary)]">
+        <div className="inline-flex items-center gap-2 rounded-full border border-[var(--border-light)] px-4 py-2 text-sm text-[var(--text-primary)]">
           <span className="h-2 w-2 rounded-full bg-[var(--color-primary)]" />
           انتخاب چند تصویر همزمان
         </div>

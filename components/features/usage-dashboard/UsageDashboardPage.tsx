@@ -50,13 +50,13 @@ export default function UsageDashboardPage() {
 
       <Card className="p-6 space-y-4">
         <div className="grid gap-4 md:grid-cols-3 text-sm">
-          <div className="rounded-xl border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3">
+          <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3">
             کل بازدیدها: {snapshot?.totalViews ?? 0}
           </div>
-          <div className="rounded-xl border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3">
+          <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3">
             آخرین بروزرسانی: {snapshot?.lastUpdated ? formatDate(snapshot.lastUpdated) : '-'}
           </div>
-          <div className="rounded-xl border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3">
+          <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3">
             تعداد مسیرها: {entries.length}
           </div>
         </div>
@@ -72,7 +72,7 @@ export default function UsageDashboardPage() {
             {entries.map(([path, count]) => (
               <div
                 key={path}
-                className="flex items-center justify-between rounded-xl border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm"
+                className="flex items-center justify-between rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm"
               >
                 <span className="text-[var(--text-primary)]">{path}</span>
                 <span className="font-semibold text-[var(--text-secondary)]">{count}</span>

@@ -232,7 +232,7 @@ export default function ImageToPdfPage() {
               {images.map((item, index) => (
                 <div
                   key={item.id}
-                  className="flex flex-col gap-3 rounded-xl border border-[var(--border-light)] bg-[var(--surface-1)] p-3 sm:flex-row sm:items-center sm:justify-between"
+                  className="flex flex-col gap-3 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 sm:flex-row sm:items-center sm:justify-between"
                 >
                   <div className="flex items-center gap-3">
                     <Image

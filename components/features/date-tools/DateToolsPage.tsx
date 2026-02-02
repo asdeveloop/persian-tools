@@ -63,9 +63,9 @@ const CalendarToggle = ({
         <button
           key={item}
           type="button"
-          className={`px-3 py-2 rounded-full font-bold transition-all ${
+          className={`px-3 py-2 rounded-full font-bold transition-all duration-[var(--motion-fast)] ${
             value === item
-              ? 'bg-[var(--color-primary)] text-[var(--text-inverted)] shadow-sm'
+              ? 'bg-[var(--color-primary)] text-[var(--text-inverted)] shadow-[var(--shadow-subtle)]'
               : 'text-[var(--text-primary)]'
           }`}
           onClick={() => onChange(item)}
@@ -149,16 +149,15 @@ export default function DateToolsPage() {
       return { result: null, error: 'تاریخ تولد معتبر نیست.' };
     }
 
-    const referenceParts = useCustomNow
-      ? (() => {
-          const parsed = parseDateInput(customNowInput || formatGregorian(today));
-          if (!parsed.ok) {
-            return null;
-          }
-          const g = normalizeToGregorian(parsed.date, customNowCal);
-          return g ?? null;
-        })()
-      : today;
+    let referenceParts: DateParts | null = today;
+    if (useCustomNow) {
+      const parsed = parseDateInput(customNowInput || formatGregorian(today));
+      if (!parsed.ok) {
+        referenceParts = null;
+      } else {
+        referenceParts = normalizeToGregorian(parsed.date, customNowCal);
+      }
+    }
 
     if (!referenceParts) {
       return { result: null, error: 'تاریخ مرجع معتبر نیست.' };
@@ -215,7 +214,7 @@ export default function DateToolsPage() {
     <div className="space-y-6">
       <header className="space-y-3">
         <div className="inline-flex items-center gap-2 rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-2 text-xs font-semibold text-[var(--text-muted)]">
-          <span className="h-2 w-2 rounded-full bg-blue-500"></span>
+          <span className="h-2 w-2 rounded-full bg-[var(--color-info)]"></span>
           ابزارهای تاریخ - کاملاً آفلاین
         </div>
         <h1 className="text-3xl font-black text-[var(--text-primary)]">ابزارهای تاریخ</h1>
@@ -312,19 +311,19 @@ export default function DateToolsPage() {
         )}
         {ageResult && (
           <div className="grid gap-3 md:grid-cols-3 text-sm">
-            <div className="rounded-2xl border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4">
+            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4">
               <div className="text-xs text-[var(--text-muted)]">سن دقیق</div>
               <div className="text-lg font-black text-[var(--text-primary)]">
                 {ageResult.ymd.years} سال و {ageResult.ymd.months} ماه و {ageResult.ymd.days} روز
               </div>
             </div>
-            <div className="rounded-2xl border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4">
+            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4">
               <div className="text-xs text-[var(--text-muted)]">کل روزها</div>
               <div className="text-lg font-black text-[var(--text-primary)]">
                 {ageResult.days.toLocaleString('fa-IR')} روز
               </div>
             </div>
-            <div className="rounded-2xl border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4">
+            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4">
               <div className="text-xs text-[var(--text-muted)]">تاریخ مرجع</div>
               <div className="text-base font-bold text-[var(--text-primary)]">
                 میلادی: {formatGregorian(ageResult.reference)} <br />
@@ -376,19 +375,19 @@ export default function DateToolsPage() {
         )}
         {diffResult && (
           <div className="grid gap-3 md:grid-cols-3 text-sm">
-            <div className="rounded-2xl border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4">
+            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4">
               <div className="text-xs text-[var(--text-muted)]">تعداد روز</div>
               <div className="text-lg font-black text-[var(--text-primary)]">
                 {diffResult.days.toLocaleString('fa-IR')} روز
               </div>
             </div>
-            <div className="rounded-2xl border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4">
+            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4">
               <div className="text-xs text-[var(--text-muted)]">بر حسب سال/ماه/روز</div>
               <div className="text-lg font-black text-[var(--text-primary)]">
                 {diffResult.ymd.years} سال، {diffResult.ymd.months} ماه، {diffResult.ymd.days} روز
               </div>
             </div>
-            <div className="rounded-2xl border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4 space-y-2">
+            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4 space-y-2">
               <div className="text-xs text-[var(--text-muted)]">نمایش دو تقویم</div>
               <div className="text-[var(--text-primary)] font-medium">
                 شروع: میلادی {formatGregorian(diffResult.s)} | شمسی {formatJalali(diffResult.s)}
@@ -435,19 +434,19 @@ export default function DateToolsPage() {
         )}
         {weekdayResult && (
           <div className="grid gap-3 md:grid-cols-3 text-sm">
-            <div className="rounded-2xl border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4">
+            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4">
               <div className="text-xs text-[var(--text-muted)]">روز هفته</div>
               <div className="text-lg font-black text-[var(--text-primary)]">
                 {getWeekdayName(weekdayResult.shifted)}
               </div>
             </div>
-            <div className="rounded-2xl border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4">
+            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4">
               <div className="text-xs text-[var(--text-muted)]">تاریخ نهایی (میلادی)</div>
               <div className="text-lg font-black text-[var(--text-primary)]">
                 {formatGregorian(weekdayResult.shifted)}
               </div>
             </div>
-            <div className="rounded-2xl border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4">
+            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4">
               <div className="text-xs text-[var(--text-muted)]">تاریخ نهایی (شمسی)</div>
               <div className="text-lg font-black text-[var(--text-primary)]">
                 {formatJalali(weekdayResult.shifted)}

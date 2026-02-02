@@ -133,7 +133,7 @@ export default function MergePdfPage() {
               {files.map((item, index) => (
                 <div
                   key={item.id}
-                  className="flex items-center justify-between rounded-xl border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3"
+                  className="flex items-center justify-between rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3"
                 >
                   <div className="text-sm text-[var(--text-primary)]">
                     {index + 1}. {item.file.name}
@@ -141,7 +141,7 @@ export default function MergePdfPage() {
                   <button
                     type="button"
                     onClick={() => removeFile(item.id)}
-                    className="text-sm text-red-500 hover:text-red-600"
+                    className="text-sm text-[var(--color-danger)] hover:brightness-90"
                   >
                     حذف
                   </button>

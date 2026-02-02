@@ -19,7 +19,7 @@ export function AnimatedCard({ children, className = '', delay = 0 }: AnimatedCa
       }}
       whileHover={{
         y: -5,
-        boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
+        boxShadow: 'var(--shadow-strong)',
       }}
       className={`card ${className}`}
     >
@@ -35,13 +35,18 @@ interface AnimatedButtonProps {
   disabled?: boolean;
 }
 
-export function AnimatedButton({ children, className = '', onClick, disabled = false }: AnimatedButtonProps) {
+export function AnimatedButton({
+  children,
+  className = '',
+  onClick,
+  disabled = false,
+}: AnimatedButtonProps) {
   return (
     <motion.button
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
       transition={{ type: 'spring', stiffness: 400, damping: 17 }}
-      className={`btn-primary ${className}`}
+      className={`btn btn-primary ${className}`}
       onClick={onClick}
       disabled={disabled}
     >
@@ -60,11 +65,16 @@ interface FadeInProps {
 export function FadeIn({ children, className = '', delay = 0, direction = 'up' }: FadeInProps) {
   const getInitialPosition = () => {
     switch (direction) {
-      case 'up': return { y: 20 };
-      case 'down': return { y: -20 };
-      case 'left': return { x: 20 };
-      case 'right': return { x: -20 };
-      default: return { y: 20 };
+      case 'up':
+        return { y: 20 };
+      case 'down':
+        return { y: -20 };
+      case 'left':
+        return { x: 20 };
+      case 'right':
+        return { x: -20 };
+      default:
+        return { y: 20 };
     }
   };
 
@@ -90,7 +100,11 @@ interface StaggerContainerProps {
   staggerDelay?: number;
 }
 
-export function StaggerContainer({ children, className = '', staggerDelay = 0.1 }: StaggerContainerProps) {
+export function StaggerContainer({
+  children,
+  className = '',
+  staggerDelay = 0.1,
+}: StaggerContainerProps) {
   return (
     <motion.div
       initial="hidden"
@@ -189,11 +203,16 @@ interface SlideInProps {
 export function SlideIn({ children, className = '', direction = 'left', delay = 0 }: SlideInProps) {
   const getInitialPosition = () => {
     switch (direction) {
-      case 'left': return { x: '-100%' };
-      case 'right': return { x: '100%' };
-      case 'up': return { y: '-100%' };
-      case 'down': return { y: '100%' };
-      default: return { x: '-100%' };
+      case 'left':
+        return { x: '-100%' };
+      case 'right':
+        return { x: '100%' };
+      case 'up':
+        return { y: '-100%' };
+      case 'down':
+        return { y: '100%' };
+      default:
+        return { x: '-100%' };
     }
   };
 

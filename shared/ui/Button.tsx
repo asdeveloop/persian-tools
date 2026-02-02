@@ -24,7 +24,8 @@ export default function Button({
   children,
   ...rest
 }: Props) {
-  const baseClasses = 'btn inline-flex items-center justify-center font-medium rounded-md transition-all duration-[150ms] focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none';
+  const baseClasses =
+    'btn inline-flex items-center justify-center font-semibold rounded-[var(--radius-md)] transition-all duration-[var(--motion-fast)] focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none';
 
   const sizeClasses = {
     sm: 'btn-sm h-8',
@@ -53,6 +54,7 @@ export default function Button({
         ${className ?? ''}
       `.trim()}
       disabled={isLoading || disabled === true}
+      aria-busy={isLoading ? true : undefined}
       {...rest}
     >
       {isLoading ? (
