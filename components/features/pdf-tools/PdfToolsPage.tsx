@@ -143,125 +143,153 @@ export default function PdfToolsPage() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
 
-  const filteredTools = pdfTools.filter(tool => {
+  const filteredTools = pdfTools.filter((tool) => {
     const matchesCategory = selectedCategory === 'all' || tool.category === selectedCategory;
-    const matchesSearch = tool.title.includes(searchTerm) ||
-                         tool.description.includes(searchTerm);
+    const matchesSearch = tool.title.includes(searchTerm) || tool.description.includes(searchTerm);
     return matchesCategory && matchesSearch;
   });
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      {/* Header */}
-      <div className="bg-white border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 py-6">
-          <div className="text-center">
-            <h1 className="text-3xl font-bold text-slate-900 mb-2">ابزارهای PDF آنلاین</h1>
-            <p className="text-lg text-slate-600">مجموعه کامل ابزارهای کاربردی برای مدیریت فایل‌های PDF</p>
+    <div className="space-y-10">
+      <section className="relative overflow-hidden section-surface p-8 md:p-10">
+        <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,_rgba(239,68,68,0.18),_transparent_55%),radial-gradient(circle_at_bottom,_rgba(59,130,246,0.12),_transparent_60%)]"></div>
+        <div className="relative space-y-4 text-center">
+          <h1 className="text-3xl md:text-4xl font-black text-[var(--text-primary)]">
+            ابزارهای PDF آنلاین
+          </h1>
+          <p className="text-base md:text-lg text-[var(--text-muted)]">
+            مجموعه کامل ابزارهای کاربردی برای مدیریت فایل‌های PDF با پردازش محلی و سریع.
+          </p>
+          <div className="flex flex-wrap justify-center gap-2 text-xs text-[var(--text-muted)]">
+            <span className="rounded-full border border-[var(--border-light)] bg-[var(--surface-1)]/70 px-3 py-1">
+              ادغام، تقسیم و فشرده‌سازی
+            </span>
+            <span className="rounded-full border border-[var(--border-light)] bg-[var(--surface-1)]/70 px-3 py-1">
+              رمزگذاری و واترمارک
+            </span>
+            <span className="rounded-full border border-[var(--border-light)] bg-[var(--surface-1)]/70 px-3 py-1">
+              تبدیل و استخراج
+            </span>
           </div>
         </div>
+      </section>
+
+      <Card className="p-6">
+        <div className="flex flex-col sm:flex-row gap-4 items-center">
+          <div className="flex-1 relative">
+            <input
+              type="text"
+              placeholder="جستجوی ابزار مورد نظر..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="input-field pr-12"
+            />
+            <svg
+              className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[var(--text-muted)]"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
+            </svg>
+          </div>
+        </div>
+      </Card>
+
+      <div className="flex flex-wrap gap-2">
+        {categories.map((category) => (
+          <button
+            key={category.id}
+            onClick={() => setSelectedCategory(category.id)}
+            className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
+              selectedCategory === category.id
+                ? 'bg-[var(--color-primary)] text-[var(--text-inverted)] shadow-lg'
+                : 'bg-[var(--surface-1)] text-[var(--text-primary)] border border-[var(--border-light)] hover:bg-[var(--bg-subtle)]'
+            }`}
+          >
+            <span className="ml-2">{category.icon}</span>
+            {category.name}
+          </button>
+        ))}
       </div>
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        {/* Search Bar */}
-        <Card className="mb-8">
-          <div className="flex flex-col sm:flex-row gap-4 items-center">
-            <div className="flex-1 relative">
-              <input
-                type="text"
-                placeholder="جستجوی ابزار مورد نظر..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full px-4 py-3 pr-12 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
-              />
-              <svg className="absolute right-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </div>
-          </div>
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {filteredTools.map((tool) => (
+          <Card key={tool.id} className="group hover:shadow-lg transition-all duration-200">
+            <Link href={tool.path} className="block p-6 text-center">
+              <div className="text-4xl mb-4 group-hover:scale-110 transition-transform duration-200">
+                {tool.icon}
+              </div>
+              <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-2 group-hover:text-[var(--color-primary)] transition-colors">
+                {tool.title}
+              </h3>
+              <p className="text-sm text-[var(--text-muted)] leading-relaxed">{tool.description}</p>
+              <div className="mt-4">
+                <span className="inline-flex items-center text-[var(--color-primary)] font-semibold text-sm">
+                  شروع کنید
+                  <svg
+                    className="mr-2 h-4 w-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M7 17l9.2-9.2M17 17V7H7"
+                    />
+                  </svg>
+                </span>
+              </div>
+            </Link>
+          </Card>
+        ))}
+      </div>
+
+      {filteredTools.length === 0 && (
+        <Card className="text-center py-12">
+          <div className="text-6xl mb-4">🔍</div>
+          <h3 className="text-xl font-semibold text-[var(--text-primary)] mb-2">ابزاری یافت نشد</h3>
+          <p className="text-[var(--text-muted)]">
+            متن جستجو را تغییر دهید یا دسته بندی دیگری را انتخاب کنید
+          </p>
         </Card>
+      )}
 
-        {/* Category Tabs */}
-        <div className="mb-8">
-          <div className="flex flex-wrap gap-2">
-            {categories.map(category => (
-              <button
-                key={category.id}
-                onClick={() => setSelectedCategory(category.id)}
-                className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
-                  selectedCategory === category.id
-                    ? 'bg-red-600 text-white shadow-lg'
-                    : 'bg-white text-slate-700 hover:bg-slate-50 border border-slate-200'
-                }`}
-              >
-                <span className="ml-2">{category.icon}</span>
-                {category.name}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Tools Grid */}
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {filteredTools.map(tool => (
-            <Card key={tool.id} className="group hover:shadow-lg transition-all duration-200 cursor-pointer">
-              <Link href={tool.path} className="block p-6">
-                <div className="text-center">
-                  <div className="text-4xl mb-4 group-hover:scale-110 transition-transform duration-200">
-                    {tool.icon}
-                  </div>
-                  <h3 className="text-lg font-semibold text-slate-900 mb-2 group-hover:text-red-600 transition-colors">
-                    {tool.title}
-                  </h3>
-                  <p className="text-sm text-slate-600 leading-relaxed">
-                    {tool.description}
-                  </p>
-                  <div className="mt-4">
-                    <span className="inline-flex items-center text-red-600 font-medium text-sm group-hover:text-red-700">
-                      شروع کنید
-                      <svg className="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 17l9.2-9.2M17 17V7H7" />
-                      </svg>
-                    </span>
-                  </div>
-                </div>
-              </Link>
+      <section className="section-surface p-8">
+        <h2 className="text-2xl font-black text-[var(--text-primary)] text-center mb-8">
+          چرا ابزارهای PDF ما؟
+        </h2>
+        <div className="grid gap-6 md:grid-cols-3">
+          {[
+            {
+              icon: '🚀',
+              title: 'سریع و کارآمد',
+              desc: 'پردازش سریع فایل‌ها با بهترین کیفیت ممکن',
+            },
+            {
+              icon: '🔒',
+              title: 'امن و محرمانه',
+              desc: 'فایل‌های شما به صورت محلی پردازش می‌شوند',
+            },
+            { icon: '💎', title: 'رایگان و نامحدود', desc: 'بدون محدودیت در تعداد و حجم فایل‌ها' },
+          ].map((item) => (
+            <Card key={item.title} className="text-center p-6">
+              <div className="text-3xl mb-4">{item.icon}</div>
+              <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-2">
+                {item.title}
+              </h3>
+              <p className="text-[var(--text-muted)] text-sm">{item.desc}</p>
             </Card>
           ))}
         </div>
-
-        {/* No Results */}
-        {filteredTools.length === 0 && (
-          <Card className="text-center py-12">
-            <div className="text-6xl mb-4">🔍</div>
-            <h3 className="text-xl font-semibold text-slate-900 mb-2">ابزاری یافت نشد</h3>
-            <p className="text-slate-600">متن جستجو را تغییر دهید یا دسته بندی دیگری را انتخاب کنید</p>
-          </Card>
-        )}
-
-        {/* Features Section */}
-        <div className="mt-16">
-          <h2 className="text-2xl font-bold text-slate-900 text-center mb-8">چرا از ابزارهای PDF ما استفاده کنید؟</h2>
-          <div className="grid gap-6 md:grid-cols-3">
-            <Card className="text-center p-6">
-              <div className="text-3xl mb-4">🚀</div>
-              <h3 className="text-lg font-semibold text-slate-900 mb-2">سریع و کارآمد</h3>
-              <p className="text-slate-600">پردازش سریع فایل‌ها با بهترین کیفیت ممکن</p>
-            </Card>
-            <Card className="text-center p-6">
-              <div className="text-3xl mb-4">🔒</div>
-              <h3 className="text-lg font-semibold text-slate-900 mb-2">امن و محرمانه</h3>
-              <p className="text-slate-600">فایل‌های شما به صورت محلی پردازش می‌شوند</p>
-            </Card>
-            <Card className="text-center p-6">
-              <div className="text-3xl mb-4">💎</div>
-              <h3 className="text-lg font-semibold text-slate-900 mb-2">رایگان و نامحدود</h3>
-              <p className="text-slate-600">بدون محدودیت در تعداد و حجم فایل‌ها</p>
-            </Card>
-          </div>
-        </div>
-      </div>
+      </section>
     </div>
   );
 }

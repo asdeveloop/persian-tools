@@ -113,16 +113,21 @@ export default function AddWatermarkPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="space-y-6">
       <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">افزودن واترمارک</h1>
-          <p className="text-lg text-slate-600">متن واترمارک را به همه صفحات PDF اضافه کنید</p>
+          <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-2">افزودن واترمارک</h1>
+          <p className="text-lg text-[var(--text-secondary)]">
+            متن واترمارک را به همه صفحات PDF اضافه کنید
+          </p>
         </div>
 
         <Card className="p-6 space-y-4">
           <div className="flex flex-col gap-3">
-            <label htmlFor="watermark-file" className="text-sm font-semibold text-slate-700">
+            <label
+              htmlFor="watermark-file"
+              className="text-sm font-semibold text-[var(--text-primary)]"
+            >
               انتخاب فایل PDF
             </label>
             <input
@@ -135,14 +140,17 @@ export default function AddWatermarkPage() {
           </div>
 
           {file && (
-            <div className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600">
+            <div className="rounded-xl border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)]">
               {file.name} | حجم اولیه: {formatBytes(originalSize)}
             </div>
           )}
 
           <div className="grid gap-4 md:grid-cols-2">
             <div className="flex flex-col gap-2">
-              <label htmlFor="watermark-text" className="text-sm font-semibold text-slate-700">
+              <label
+                htmlFor="watermark-text"
+                className="text-sm font-semibold text-[var(--text-primary)]"
+              >
                 متن واترمارک
               </label>
               <input
@@ -153,7 +161,7 @@ export default function AddWatermarkPage() {
                 placeholder="مثال: محرمانه"
                 className="input-field"
               />
-              <div className="text-xs text-slate-500">
+              <div className="text-xs text-[var(--text-muted)]">
                 فونت پیش فرض فقط حروف لاتین را به خوبی نمایش می دهد.
               </div>
             </div>
@@ -161,7 +169,7 @@ export default function AddWatermarkPage() {
               <div className="flex flex-col gap-2">
                 <label
                   htmlFor="watermark-font-size"
-                  className="text-sm font-semibold text-slate-700"
+                  className="text-sm font-semibold text-[var(--text-primary)]"
                 >
                   اندازه فونت
                 </label>
@@ -176,7 +184,10 @@ export default function AddWatermarkPage() {
                 />
               </div>
               <div className="flex flex-col gap-2">
-                <label htmlFor="watermark-opacity" className="text-sm font-semibold text-slate-700">
+                <label
+                  htmlFor="watermark-opacity"
+                  className="text-sm font-semibold text-[var(--text-primary)]"
+                >
                   شفافیت
                 </label>
                 <input
@@ -188,14 +199,17 @@ export default function AddWatermarkPage() {
                   value={opacity}
                   onChange={(e) => setOpacity(Number(e.target.value))}
                 />
-                <div className="text-xs text-slate-500">{Math.round(opacity * 100)}%</div>
+                <div className="text-xs text-[var(--text-muted)]">{Math.round(opacity * 100)}%</div>
               </div>
             </div>
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
             <div className="flex flex-col gap-2">
-              <label htmlFor="watermark-rotation" className="text-sm font-semibold text-slate-700">
+              <label
+                htmlFor="watermark-rotation"
+                className="text-sm font-semibold text-[var(--text-primary)]"
+              >
                 زاویه چرخش
               </label>
               <input
@@ -209,7 +223,10 @@ export default function AddWatermarkPage() {
               />
             </div>
             <div className="flex flex-col gap-2">
-              <label htmlFor="watermark-position" className="text-sm font-semibold text-slate-700">
+              <label
+                htmlFor="watermark-position"
+                className="text-sm font-semibold text-[var(--text-primary)]"
+              >
                 موقعیت
               </label>
               <select
@@ -243,13 +260,13 @@ export default function AddWatermarkPage() {
 
           {busy && (
             <div className="space-y-2">
-              <div className="h-2 w-full rounded-full bg-slate-100 overflow-hidden">
+              <div className="h-2 w-full rounded-full bg-[var(--bg-subtle)] overflow-hidden">
                 <div
                   className="h-full bg-blue-500 transition-all duration-200"
                   style={{ width: `${progress}%` }}
                 />
               </div>
-              <div className="text-xs text-slate-500">{progress}%</div>
+              <div className="text-xs text-[var(--text-muted)]">{progress}%</div>
             </div>
           )}
 

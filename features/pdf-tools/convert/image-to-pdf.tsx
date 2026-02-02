@@ -198,16 +198,21 @@ export default function ImageToPdfPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="space-y-6">
       <div className="max-w-5xl mx-auto px-4 py-8 space-y-6">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">تبدیل عکس به PDF</h1>
-          <p className="text-lg text-slate-600">چند تصویر را به یک فایل PDF تبدیل کنید</p>
+          <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-2">تبدیل عکس به PDF</h1>
+          <p className="text-lg text-[var(--text-secondary)]">
+            چند تصویر را به یک فایل PDF تبدیل کنید
+          </p>
         </div>
 
         <Card className="p-6 space-y-4">
           <div className="flex flex-col gap-3">
-            <label htmlFor="image-to-pdf-files" className="text-sm font-semibold text-slate-700">
+            <label
+              htmlFor="image-to-pdf-files"
+              className="text-sm font-semibold text-[var(--text-primary)]"
+            >
               انتخاب تصاویر
             </label>
             <input
@@ -225,7 +230,7 @@ export default function ImageToPdfPage() {
               {images.map((item, index) => (
                 <div
                   key={item.id}
-                  className="flex flex-col gap-3 rounded-xl border border-slate-200 bg-white p-3 sm:flex-row sm:items-center sm:justify-between"
+                  className="flex flex-col gap-3 rounded-xl border border-[var(--border-light)] bg-[var(--surface-1)] p-3 sm:flex-row sm:items-center sm:justify-between"
                 >
                   <div className="flex items-center gap-3">
                     <Image
@@ -236,11 +241,11 @@ export default function ImageToPdfPage() {
                       unoptimized
                       className="h-16 w-16 rounded-lg object-cover"
                     />
-                    <div className="text-sm text-slate-700">
+                    <div className="text-sm text-[var(--text-primary)]">
                       <div className="font-semibold">
                         {index + 1}. {item.file.name}
                       </div>
-                      <div className="text-slate-500">{formatBytes(item.file.size)}</div>
+                      <div className="text-[var(--text-muted)]">{formatBytes(item.file.size)}</div>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
@@ -278,7 +283,7 @@ export default function ImageToPdfPage() {
             <div className="flex flex-col gap-2">
               <label
                 htmlFor="image-to-pdf-page-size"
-                className="text-sm font-semibold text-slate-700"
+                className="text-sm font-semibold text-[var(--text-primary)]"
               >
                 اندازه صفحه
               </label>
@@ -296,7 +301,7 @@ export default function ImageToPdfPage() {
             <div className="flex flex-col gap-2">
               <label
                 htmlFor="image-to-pdf-orientation"
-                className="text-sm font-semibold text-slate-700"
+                className="text-sm font-semibold text-[var(--text-primary)]"
               >
                 جهت صفحه
               </label>
@@ -315,7 +320,7 @@ export default function ImageToPdfPage() {
           </div>
 
           <div className="flex flex-wrap items-center justify-between gap-4">
-            <div className="text-sm text-slate-500">
+            <div className="text-sm text-[var(--text-muted)]">
               تعداد تصاویر: {images.length} | حجم کل: {formatBytes(totalSize)}
             </div>
             <div className="flex gap-3">

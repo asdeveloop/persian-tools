@@ -1,7 +1,4 @@
 import PdfToolsPage from '@/components/features/pdf-tools/PdfToolsPage';
-import Container from '@/components/ui/Container';
-import Navigation from '@/components/ui/Navigation';
-import Footer from '@/components/ui/Footer';
 import { buildMetadata } from '@/lib/seo';
 
 export const metadata = buildMetadata({
@@ -22,17 +19,5 @@ export const metadata = buildMetadata({
 });
 
 export default function PdfToolsRoute() {
-  return (
-    <div className="min-h-dvh bg-[var(--bg-primary)] flex flex-col">
-      <Navigation />
-
-      <main className="flex-1">
-        <Container className="py-6">
-          <PdfToolsPage />
-        </Container>
-      </main>
-
-      <Footer />
-    </div>
-  );
+  return <PdfToolsPage />;
 }

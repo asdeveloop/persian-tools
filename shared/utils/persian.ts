@@ -33,8 +33,7 @@ export function toPersianNumbers(input: string | number): string {
  * @returns Formatted Persian number string
  */
 export function formatPersianNumber(num: number): string {
-  const withSeparator = num.toLocaleString('en-US');
-  return toPersianNumbers(withSeparator);
+  return new Intl.NumberFormat('fa-IR').format(num);
 }
 
 /**
@@ -75,17 +74,19 @@ export function isPersianText(text: string): boolean {
  */
 export function formatPersianDate(date: Date | number): string {
   const d = new Date(date);
-  const persianMonths = [
-    'فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور',
-    'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند',
-  ];
-
-  // Simple approximation - in real app, use proper Jalali calendar library
-  const day = d.getDate();
-  const month = persianMonths[d.getMonth()];
-  const year = d.getFullYear();
-
-  return `${toPersianNumbers(day)} ${month} ${toPersianNumbers(year)}`;
+  if (Number.isNaN(d.getTime())) {
+    return '';
+  }
+  const options: Intl.DateTimeFormatOptions = {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  };
+  try {
+    return new Intl.DateTimeFormat('fa-IR-u-ca-persian', options).format(d);
+  } catch {
+    return new Intl.DateTimeFormat('fa-IR', options).format(d);
+  }
 }
 
 /**
@@ -95,13 +96,15 @@ export function formatPersianDate(date: Date | number): string {
  */
 export function fixPersianSpacing(text: string): string {
   // Replace common suffixes with half-space
-  const suffixes = ['ها', 'های', 'تر', 'ترین', 'ی', 'ام', 'ای', 'است'];
-  let result = text;
-
-  suffixes.forEach(suffix => {
-    const regex = new RegExp(`(\\w+)${suffix}`, 'g');
-    result = result.replace(regex, `$1\u200C${suffix}`);
+  const suffixes = ['ترین', 'تر', 'های', 'ها', 'ی', 'ام', 'ای', 'است'];
+  const pattern = new RegExp(
+    `([\\u0600-\\u06FF]+)(\\u200C)?(${suffixes.join('|')})(?![\\u0600-\\u06FF])`,
+    'g',
+  );
+  return text.replace(pattern, (match, stem, zwnj, suffix) => {
+    if (zwnj) {
+      return match;
+    }
+    return `${stem}\u200C${suffix}`;
   });
-
-  return result;
 }

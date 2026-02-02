@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
+import Image from 'next/image';
 import { Button, Card } from '@/components/ui';
 import { formatBytesFa, formatPercentFa } from './utils/format';
 import { formatNumberFa, parseLooseNumber } from '@/shared/utils/number';
@@ -106,9 +107,7 @@ export default function ImageToolsPage() {
     const original = items.reduce((sum, item) => sum + item.originalSize, 0);
     const compressed = items.reduce((sum, item) => sum + (item.result?.size ?? 0), 0);
     const savings =
-      original > 0 && compressed > 0
-        ? Math.max(0, ((original - compressed) / original) * 100)
-        : 0;
+      original > 0 && compressed > 0 ? Math.max(0, ((original - compressed) / original) * 100) : 0;
     return { original, compressed, savings };
   }, [items]);
 
@@ -309,7 +308,8 @@ export default function ImageToolsPage() {
             ابزارهای تصویر
           </h1>
           <p className="text-base md:text-lg text-[var(--text-muted)] leading-relaxed">
-            فشرده‌سازی حرفه‌ای تصاویر با کنترل کامل روی کیفیت، اندازه و فرمت خروجی. همه‌چیز به‌صورت آفلاین روی دستگاه شما انجام می‌شود.
+            فشرده‌سازی حرفه‌ای تصاویر با کنترل کامل روی کیفیت، اندازه و فرمت خروجی. همه‌چیز به‌صورت
+            آفلاین روی دستگاه شما انجام می‌شود.
           </p>
           <div className="flex flex-wrap gap-3 text-sm text-[var(--text-muted)]">
             <span className="rounded-full border border-[var(--border-primary)] px-3 py-1">
@@ -335,7 +335,7 @@ export default function ImageToolsPage() {
           />
 
           {notice && (
-            <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700">
+            <div className="rounded-2xl border border-[var(--border-light)] bg-[rgb(var(--color-warning-rgb)/0.12)] px-4 py-3 text-sm text-[var(--color-warning)]">
               {notice}
             </div>
           )}
@@ -404,7 +404,8 @@ export default function ImageToolsPage() {
                         {item.file.name}
                       </h3>
                       <p className="text-sm text-[var(--text-muted)]">
-                        {formatBytesFa(item.originalSize)} · {item.file.type.replace('image/', '').toUpperCase()}
+                        {formatBytesFa(item.originalSize)} ·{' '}
+                        {item.file.type.replace('image/', '').toUpperCase()}
                       </p>
                     </div>
                     <div className="flex flex-wrap gap-2">
@@ -429,26 +430,33 @@ export default function ImageToolsPage() {
                   <div className="grid gap-4 md:grid-cols-2">
                     <div>
                       <div className="text-xs text-[var(--text-muted)] mb-2">تصویر اصلی</div>
-                      <img
+                      <Image
                         src={item.originalUrl}
                         alt={`تصویر اصلی ${item.file.name}`}
+                        width={item.originalDimensions?.width ?? 1200}
+                        height={item.originalDimensions?.height ?? 900}
                         className="w-full h-auto rounded-2xl border border-[var(--border-primary)]"
-                        loading="lazy"
+                        sizes="100vw"
+                        unoptimized
                       />
                       {item.originalDimensions && (
                         <div className="mt-2 text-xs text-[var(--text-muted)]">
-                          ابعاد: {formatNumberFa(item.originalDimensions.width)}×{formatNumberFa(item.originalDimensions.height)}
+                          ابعاد: {formatNumberFa(item.originalDimensions.width)}×
+                          {formatNumberFa(item.originalDimensions.height)}
                         </div>
                       )}
                     </div>
                     <div>
                       <div className="text-xs text-[var(--text-muted)] mb-2">خروجی فشرده</div>
                       {item.result ? (
-                        <img
+                        <Image
                           src={item.result.url}
                           alt={`تصویر خروجی ${item.file.name}`}
+                          width={item.result.width ?? 1200}
+                          height={item.result.height ?? 900}
                           className="w-full h-auto rounded-2xl border border-[var(--border-primary)]"
-                          loading="lazy"
+                          sizes="100vw"
+                          unoptimized
                         />
                       ) : (
                         <div className="flex items-center justify-center h-48 rounded-2xl border border-dashed border-[var(--border-primary)] text-sm text-[var(--text-muted)]">
@@ -459,7 +467,8 @@ export default function ImageToolsPage() {
                         <div className="mt-2 text-xs text-[var(--text-muted)]">
                           {formatBytesFa(item.result.size)} · صرفه‌جویی {formatPercentFa(savings)}
                           <span className="mx-2">|</span>
-                          ابعاد: {formatNumberFa(item.result.width)}×{formatNumberFa(item.result.height)}
+                          ابعاد: {formatNumberFa(item.result.width)}×
+                          {formatNumberFa(item.result.height)}
                         </div>
                       )}
                     </div>
@@ -480,14 +489,15 @@ export default function ImageToolsPage() {
                   )}
 
                   {item.error && (
-                    <div className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+                    <div className="rounded-xl border border-[var(--border-light)] bg-[rgb(var(--color-danger-rgb)/0.12)] px-3 py-2 text-sm text-[var(--color-danger)]">
                       {item.error}
                     </div>
                   )}
 
                   <div className="flex flex-wrap items-center justify-between gap-4 text-sm text-[var(--text-muted)]">
                     <div>
-                      فرمت خروجی: {outputMimeType.replace('image/', '').toUpperCase()} · کیفیت {formatPercentFa(settings.quality * 100, 0)}
+                      فرمت خروجی: {outputMimeType.replace('image/', '').toUpperCase()} · کیفیت{' '}
+                      {formatPercentFa(settings.quality * 100, 0)}
                     </div>
                     {item.result && (
                       <a
@@ -559,7 +569,10 @@ export default function ImageToolsPage() {
             </div>
 
             <div className="flex flex-col gap-2">
-              <label htmlFor="image-quality" className="text-sm font-semibold text-[var(--text-primary)]">
+              <label
+                htmlFor="image-quality"
+                className="text-sm font-semibold text-[var(--text-primary)]"
+              >
                 کیفیت خروجی
               </label>
               <input
@@ -579,7 +592,10 @@ export default function ImageToolsPage() {
             </div>
 
             <div className="flex flex-col gap-2">
-              <label htmlFor="image-max-dimension" className="text-sm font-semibold text-[var(--text-primary)]">
+              <label
+                htmlFor="image-max-dimension"
+                className="text-sm font-semibold text-[var(--text-primary)]"
+              >
                 حداکثر ضلع (اختیاری)
               </label>
               <input
@@ -597,7 +613,10 @@ export default function ImageToolsPage() {
             </div>
 
             <div className="flex flex-col gap-2">
-              <label htmlFor="image-bg-color" className="text-sm font-semibold text-[var(--text-primary)]">
+              <label
+                htmlFor="image-bg-color"
+                className="text-sm font-semibold text-[var(--text-primary)]"
+              >
                 پس‌زمینه JPG (برای تصاویر شفاف)
               </label>
               <div className="flex items-center gap-3">

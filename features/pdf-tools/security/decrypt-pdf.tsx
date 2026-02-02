@@ -132,18 +132,21 @@ export default function DecryptPdfPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="space-y-6">
       <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">حذف رمز PDF</h1>
-          <p className="text-lg text-slate-600">
+          <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-2">حذف رمز PDF</h1>
+          <p className="text-lg text-[var(--text-secondary)]">
             بازسازی PDF بدون رمز (صفحات به صورت تصویر ذخیره می شوند)
           </p>
         </div>
 
         <Card className="p-6 space-y-4">
           <div className="flex flex-col gap-3">
-            <label htmlFor="decrypt-pdf-file" className="text-sm font-semibold text-slate-700">
+            <label
+              htmlFor="decrypt-pdf-file"
+              className="text-sm font-semibold text-[var(--text-primary)]"
+            >
               انتخاب فایل PDF رمزدار
             </label>
             <input
@@ -156,13 +159,16 @@ export default function DecryptPdfPage() {
           </div>
 
           {file && (
-            <div className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600">
+            <div className="rounded-xl border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)]">
               {file.name} | حجم اولیه: {formatBytes(originalSize)}
             </div>
           )}
 
           <div className="flex flex-col gap-2">
-            <label htmlFor="decrypt-pdf-password" className="text-sm font-semibold text-slate-700">
+            <label
+              htmlFor="decrypt-pdf-password"
+              className="text-sm font-semibold text-[var(--text-primary)]"
+            >
               رمز عبور
             </label>
             <input

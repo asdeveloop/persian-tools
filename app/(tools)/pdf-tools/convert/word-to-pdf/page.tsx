@@ -1,6 +1,3 @@
-import Container from '@/components/ui/Container';
-import Navigation from '@/components/ui/Navigation';
-import Footer from '@/components/ui/Footer';
 import { buildMetadata } from '@/lib/seo';
 
 export const metadata = {
@@ -17,19 +14,11 @@ export const metadata = {
 
 export default function WordToPdfRoute() {
   return (
-    <div className="min-h-dvh bg-[var(--bg-primary)] flex flex-col">
-      <Navigation />
-
-      <main className="flex-1">
-        <Container className="py-6">
-          <div className="max-w-3xl mx-auto rounded-2xl border border-slate-200 bg-white p-8 text-center">
-            <h1 className="text-2xl font-bold text-slate-900">تبدیل Word به PDF</h1>
-            <p className="mt-3 text-slate-600">این ابزار در حال توسعه است و به‌زودی فعال می‌شود.</p>
-          </div>
-        </Container>
-      </main>
-
-      <Footer />
+    <div className="max-w-3xl mx-auto section-surface p-8 text-center">
+      <h1 className="text-2xl font-bold text-[var(--text-primary)]">تبدیل Word به PDF</h1>
+      <p className="mt-3 text-[var(--text-muted)]">
+        این ابزار در حال توسعه است و به‌زودی فعال می‌شود.
+      </p>
     </div>
   );
 }

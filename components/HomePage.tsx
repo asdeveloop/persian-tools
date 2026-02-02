@@ -1,117 +1,249 @@
 import Link from 'next/link';
 import Button from '@/shared/ui/Button';
 import ToolCard from '@/shared/ui/ToolCard';
-import { IconCalculator, IconImage, IconMoney, IconPdf } from '@/shared/ui/icons';
+import { IconCalculator, IconImage, IconMoney, IconPdf, IconShield } from '@/shared/ui/icons';
 
 export default function HomePage() {
   return (
-    <div className="space-y-8">
-      {/* Hero Section */}
-      <section className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-hover)] text-[var(--text-inverted)]" aria-labelledby="hero-heading">
-        <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-primary-hover)]/20 to-transparent"></div>
-        <div className="relative px-6 py-16 md:px-12 lg:py-24">
-          <div className="mx-auto max-w-4xl text-center">
-            <h1 id="hero-heading" className="text-4xl font-bold md:text-5xl lg:text-6xl">
-              ابزارهای فارسی برای کار و زندگی
-            </h1>
-            <p className="mt-6 text-lg md:text-xl text-[var(--text-inverted)]/80">
-              ابزارهای PDF، محاسبات مالی و پردازش تصویر - همه در یک مکان، رایگان و آسان
-            </p>
-            <div className="mt-8 flex flex-wrap justify-center gap-4">
+    <div className="space-y-16">
+      <section
+        className="relative overflow-hidden rounded-3xl border border-[var(--border-light)] bg-[var(--surface-1)]/80 p-6 shadow-[var(--shadow-strong)] md:p-10 lg:p-14"
+        aria-labelledby="hero-heading"
+      >
+        <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,_rgba(37,99,235,0.18),_transparent_55%),radial-gradient(circle_at_bottom,_rgba(16,185,129,0.18),_transparent_60%)]"></div>
+        <div className="absolute -left-24 top-24 h-56 w-56 rounded-full bg-[rgba(37,99,235,0.14)] blur-3xl"></div>
+        <div className="absolute -right-16 bottom-8 h-48 w-48 rounded-full bg-[rgba(245,158,11,0.18)] blur-3xl"></div>
+
+        <div className="grid gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+          <div className="space-y-8">
+            <div className="inline-flex flex-wrap items-center gap-2 rounded-full border border-[var(--border-light)] bg-[var(--surface-1)]/75 px-4 py-2 text-xs font-semibold text-[var(--text-muted)]">
+              <span className="h-2 w-2 rounded-full bg-emerald-500"></span>
+              پردازش کاملاً محلی
+              <span className="h-2 w-2 rounded-full bg-blue-500"></span>
+              بدون ثبت‌نام
+              <span className="h-2 w-2 rounded-full bg-amber-500"></span>
+              کاملاً رایگان
+            </div>
+
+            <div className="space-y-4">
+              <h1
+                id="hero-heading"
+                className="text-4xl font-black leading-tight md:text-5xl lg:text-6xl"
+              >
+                ابزارهای فارسی که
+                <span className="text-gradient block">کارها را سریع‌تر می‌کنند</span>
+              </h1>
+              <p className="text-lg text-[var(--text-secondary)] md:text-xl">
+                مجموعه‌ای یکپارچه از ابزارهای PDF، محاسبات مالی و پردازش تصویر — امن، سریع و بدون
+                وابستگی خارجی.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap gap-3">
               <Link href="/pdf-tools">
-                <Button
-                  variant="tertiary"
-                  size="lg"
-                  className="bg-[var(--text-inverted)] text-[var(--color-primary)] hover:bg-[var(--bg-subtle)] font-semibold"
-                >
-                  شروع با ابزار PDF
+                <Button size="lg" className="px-6">
+                  شروع سریع با PDF
+                </Button>
+              </Link>
+              <Link href="/image-tools">
+                <Button variant="secondary" size="lg" className="px-6">
+                  ابزارهای تصویر
                 </Button>
               </Link>
               <Link href="/loan">
-                <Button
-                  variant="secondary"
-                  size="lg"
-                  className="border-[var(--text-inverted)] text-[var(--text-inverted)] hover:bg-[var(--text-inverted)]/10 font-semibold"
-                >
-                  محاسبه وام
+                <Button variant="tertiary" size="lg" className="px-6">
+                  محاسبه‌گر وام
                 </Button>
               </Link>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-3">
+              {[
+                { value: '۲۰+', label: 'ابزار کاربردی' },
+                { value: '۳ ثانیه', label: 'میانگین آماده‌سازی' },
+                { value: '۱۰۰٪', label: 'پردازش محلی' },
+              ].map((item) => (
+                <div
+                  key={item.label}
+                  className="rounded-2xl border border-[var(--border-light)] bg-[var(--surface-1)]/75 px-4 py-4 text-center"
+                >
+                  <div className="text-2xl font-black text-[var(--text-primary)]">{item.value}</div>
+                  <div className="text-xs font-semibold text-[var(--text-muted)]">{item.label}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="relative">
+            <div className="rounded-3xl border border-[var(--border-light)] bg-[var(--surface-1)]/85 p-6 shadow-xl">
+              <div className="flex items-center justify-between text-xs font-semibold text-[var(--text-muted)]">
+                <span>داشبورد ابزارها</span>
+                <span>نسخه ۱.۰</span>
+              </div>
+              <div className="mt-6 space-y-4">
+                {[
+                  {
+                    title: 'ادغام PDF',
+                    caption: 'فایل‌های PDF را با هم یکی کنید',
+                    tone: 'bg-[rgba(239,68,68,0.1)] text-[var(--color-danger)]',
+                  },
+                  {
+                    title: 'فشرده‌سازی تصویر',
+                    caption: 'کاهش حجم با حفظ کیفیت',
+                    tone: 'bg-[rgba(59,130,246,0.12)] text-[var(--color-info)]',
+                  },
+                  {
+                    title: 'محاسبه حقوق',
+                    caption: 'خروجی خالص و جزئیات کسورات',
+                    tone: 'bg-[rgba(16,185,129,0.14)] text-[var(--color-success)]',
+                  },
+                ].map((item) => (
+                  <div
+                    key={item.title}
+                    className="flex items-center justify-between rounded-2xl border border-[var(--border-light)] bg-[var(--surface-1)]/75 px-4 py-3"
+                  >
+                    <div>
+                      <div className="text-sm font-bold text-[var(--text-primary)]">
+                        {item.title}
+                      </div>
+                      <div className="text-xs text-[var(--text-muted)]">{item.caption}</div>
+                    </div>
+                    <span className={`rounded-full px-3 py-1 text-xs font-semibold ${item.tone}`}>
+                      آماده
+                    </span>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-6 rounded-2xl border border-dashed border-[var(--border-medium)] bg-[var(--bg-subtle)]/70 px-4 py-4 text-sm text-[var(--text-muted)]">
+                ابزار جدید پیشنهاد دارید؟ به ما بگویید.
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Tools Section */}
-      <section className="space-y-6" aria-labelledby="tools-heading">
-        <div className="text-center">
-          <h2 id="tools-heading" className="text-3xl font-bold text-[var(--text-primary)]">ابزارهای کاربردی</h2>
-          <p className="mt-2 text-lg text-[var(--text-muted)]">
-            ابزارهای مورد نیاز خود را برای کار با فایل‌ها انتخاب کنید
+      <section className="space-y-8" aria-labelledby="tools-heading">
+        <div className="flex flex-col gap-3 text-center">
+          <h2 id="tools-heading" className="text-3xl font-black text-[var(--text-primary)]">
+            دسته‌بندی ابزارها
+          </h2>
+          <p className="text-lg text-[var(--text-muted)]">
+            سریع‌ترین مسیر به ابزار موردنیاز شما، همه چیز مرتب و آماده است.
           </p>
         </div>
 
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
           <ToolCard
             href="/pdf-tools"
             title="ابزارهای PDF"
-            description="مجموعه کامل ابزارهای PDF: تبدیل، فشرده‌سازی، ادغام، تقسیم، رمزگذاری و واترمارک"
-            icon={<IconPdf className="h-8 w-8 text-[var(--color-danger)]" />}
-            className="hover:border-[var(--color-danger)] hover:bg-[var(--color-danger)]/5 group"
-          />
-          <ToolCard
-            href="/loan"
-            title="محاسبه‌گر وام"
-            description="محاسبه قسط ماهانه، سود کل و پرداخت کل وام‌های مختلف"
-            icon={<IconCalculator className="h-8 w-8 text-[var(--color-info)]" />}
-            className="hover:border-[var(--color-info)] hover:bg-[var(--color-info)]/5 group"
-          />
-          <ToolCard
-            href="/salary"
-            title="محاسبه‌گر حقوق"
-            description="محاسبه حقوق خالص و بیمه از ورودی‌های حقوقی"
-            icon={<IconMoney className="h-8 w-8 text-[var(--color-success)]" />}
-            className="hover:border-[var(--color-success)] hover:bg-[var(--color-success)]/5 group"
+            meta="۷ ابزار"
+            description="تبدیل، فشرده‌سازی، ادغام، تقسیم، رمزگذاری و واترمارک"
+            icon={<IconPdf className="h-7 w-7 text-[var(--color-danger)]" />}
+            iconWrapClassName="bg-[rgba(239,68,68,0.1)]"
+            className="hover:border-[var(--color-danger)] hover:bg-[rgba(239,68,68,0.06)]"
           />
           <ToolCard
             href="/image-tools"
             title="ابزارهای تصویر"
+            meta="۳ ابزار"
             description="فشرده‌سازی و بهینه‌سازی تصاویر با کنترل کیفیت و ابعاد"
-            icon={<IconImage className="h-8 w-8 text-[var(--color-info)]" />}
-            className="hover:border-[var(--color-info)] hover:bg-[var(--color-info)]/5 group"
+            icon={<IconImage className="h-7 w-7 text-[var(--color-info)]" />}
+            iconWrapClassName="bg-[rgba(59,130,246,0.12)]"
+            className="hover:border-[var(--color-info)] hover:bg-[rgba(59,130,246,0.06)]"
+          />
+          <ToolCard
+            href="/loan"
+            title="محاسبه‌گر وام"
+            meta="محبوب"
+            description="محاسبه اقساط ماهانه، سود کل و برنامه بازپرداخت"
+            icon={<IconCalculator className="h-7 w-7 text-[var(--color-primary)]" />}
+            iconWrapClassName="bg-[rgba(37,99,235,0.12)]"
+            className="hover:border-[var(--color-primary)] hover:bg-[rgba(37,99,235,0.06)]"
+          />
+          <ToolCard
+            href="/salary"
+            title="محاسبه‌گر حقوق"
+            meta="جدید"
+            description="حقوق خالص، بیمه و مالیات را سریع محاسبه کنید"
+            icon={<IconMoney className="h-7 w-7 text-[var(--color-success)]" />}
+            iconWrapClassName="bg-[rgba(16,185,129,0.12)]"
+            className="hover:border-[var(--color-success)] hover:bg-[rgba(16,185,129,0.06)]"
           />
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="bg-[var(--surface-1)] rounded-2xl p-8" aria-labelledby="features-heading">
-        <div className="grid gap-8 md:grid-cols-3">
-          <div className="text-center">
-            <div className="mx-auto h-12 w-12 rounded-full bg-[var(--color-danger)]/10 flex items-center justify-center mb-4">
-              <svg className="h-6 w-6 text-[var(--color-danger)]" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-              </svg>
-            </div>
-            <h3 className="font-semibold text-[var(--text-primary)] mb-2">امن و خصوصی</h3>
-            <p className="text-sm text-[var(--text-muted)]">فایل‌ها فقط روی دستگاه شما پردازش می‌شوند و به هیچ‌جا ارسال نمی‌شوند</p>
+      <section className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]" aria-labelledby="flow-heading">
+        <div className="rounded-3xl border border-[var(--border-light)] bg-[var(--surface-1)]/75 p-8 shadow-lg">
+          <h3 id="flow-heading" className="text-2xl font-black text-[var(--text-primary)]">
+            روند استفاده در سه قدم
+          </h3>
+          <div className="mt-6 space-y-5">
+            {[
+              {
+                step: '۱',
+                title: 'انتخاب ابزار',
+                desc: 'ابزار مناسب را از دسته‌بندی‌ها انتخاب کنید.',
+              },
+              {
+                step: '۲',
+                title: 'بارگذاری فایل',
+                desc: 'فایل را بدون نیاز به ثبت‌نام اضافه کنید.',
+              },
+              { step: '۳', title: 'دریافت خروجی', desc: 'خروجی آماده را همان‌جا دانلود کنید.' },
+            ].map((item) => (
+              <div key={item.step} className="flex gap-4">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-primary)] text-white font-bold">
+                  {item.step}
+                </div>
+                <div>
+                  <div className="text-base font-bold text-[var(--text-primary)]">{item.title}</div>
+                  <div className="text-sm text-[var(--text-muted)]">{item.desc}</div>
+                </div>
+              </div>
+            ))}
           </div>
-          <div className="text-center">
-            <div className="mx-auto h-12 w-12 rounded-full bg-[var(--color-success)]/10 flex items-center justify-center mb-4">
-              <svg className="h-6 w-6 text-[var(--color-success)]" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-            </div>
-            <h3 className="font-semibold text-[var(--text-primary)] mb-2">سریع و کارآمد</h3>
-            <p className="text-sm text-[var(--text-muted)]">پردازش سریع فایل‌ها با بهترین الگوریتم‌های ممکن</p>
+        </div>
+
+        <div className="rounded-3xl border border-[var(--border-light)] bg-[var(--surface-2)]/75 p-8 shadow-lg">
+          <div className="flex items-center gap-3 text-[var(--text-primary)]">
+            <IconShield className="h-6 w-6 text-[var(--color-success)]" />
+            <h3 className="text-2xl font-black">حریم خصوصی واقعی</h3>
           </div>
-          <div className="text-center">
-            <div className="mx-auto h-12 w-12 rounded-full bg-[var(--color-info)]/10 flex items-center justify-center mb-4">
-              <svg className="h-6 w-6 text-[var(--color-info)]" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-            <h3 className="font-semibold text-[var(--text-primary)] mb-2">کاملاً رایگان</h3>
-            <p className="text-sm text-[var(--text-muted)]">تمام ابزارها بدون هزینه و محدودیت استفاده در دسترس هستند</p>
+          <p className="mt-4 text-sm text-[var(--text-muted)] leading-relaxed">
+            تمام پردازش‌ها در مرورگر شما انجام می‌شود. هیچ فایلی آپلود نمی‌شود و هیچ داده‌ای ذخیره
+            نخواهد شد. این یعنی کنترل کامل در اختیار شماست.
+          </p>
+          <div className="mt-6 space-y-3 text-sm">
+            {[
+              'بدون استفاده از API خارجی',
+              'پشتیبانی کامل از RTL و فارسی',
+              'سرعت بالا حتی در اینترنت ضعیف',
+            ].map((item) => (
+              <div key={item} className="flex items-center gap-2 text-[var(--text-secondary)]">
+                <span className="h-2 w-2 rounded-full bg-[var(--color-success)]"></span>
+                {item}
+              </div>
+            ))}
           </div>
+        </div>
+      </section>
+
+      <section className="rounded-3xl border border-[var(--border-light)] bg-gradient-to-br from-[var(--surface-1)]/90 to-[var(--bg-subtle)]/90 p-10 text-center shadow-lg">
+        <h3 className="text-3xl font-black text-[var(--text-primary)]">آماده‌ای شروع کنیم؟</h3>
+        <p className="mt-3 text-base text-[var(--text-muted)]">
+          از همین حالا اولین ابزار را امتحان کن و تجربه‌ای سریع و امن داشته باش.
+        </p>
+        <div className="mt-6 flex flex-wrap justify-center gap-3">
+          <Link href="/pdf-tools">
+            <Button size="lg" className="px-8">
+              شروع با PDF
+            </Button>
+          </Link>
+          <Link href="/image-tools">
+            <Button variant="secondary" size="lg" className="px-8">
+              ابزارهای تصویر
+            </Button>
+          </Link>
         </div>
       </section>
     </div>

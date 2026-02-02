@@ -181,14 +181,16 @@ export default function SalaryPage() {
                 />
               </svg>
             </motion.div>
-            <h1 className="text-4xl font-black text-black mb-4">محاسبه‌گر حقوق و دستمزد پیشرفته</h1>
-            <p className="text-lg text-gray-600 leading-relaxed">
+            <h1 className="text-4xl font-black text-[var(--text-primary)] mb-4">
+              محاسبه‌گر حقوق و دستمزد پیشرفته
+            </h1>
+            <p className="text-lg text-[var(--text-secondary)] leading-relaxed">
               {'محاسبه حقوق و مالیات بر اساس قوانین سال '}
               {laws.year}
               {' با پشتیبانی از معافیت‌های قانونی و نرخ‌های تصاعدی.'}{' '}
               {'شامل بیمه تامین اجتماعی، مزایا و کسورات مختلف.'}
             </p>
-            <div className="mt-4 text-sm text-gray-500">
+            <div className="mt-4 text-sm text-[var(--text-muted)]">
               حداقل دستمزد: {formatMoneyFa(laws.minimumWage)} تومان | معافیت مالیات:{' '}
               {formatMoneyFa(laws.taxExemption)} تومان ماهانه
             </div>
@@ -197,7 +199,7 @@ export default function SalaryPage() {
 
         {error && (
           <div className="max-w-4xl mx-auto">
-            <div className="rounded-2xl border border-red-200 bg-red-50 px-6 py-4 text-sm text-red-700">
+            <div className="rounded-2xl border border-[var(--border-light)] bg-[rgb(var(--color-danger-rgb)/0.12)] px-6 py-4 text-sm text-[var(--color-danger)]">
               {error}
             </div>
           </div>
@@ -217,7 +219,7 @@ export default function SalaryPage() {
                         'p-4 rounded-2xl border-2 text-right transition-all duration-300',
                         form.mode === mode
                           ? 'border-opacity-100 shadow-lg text-white'
-                          : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300 hover:bg-gray-50',
+                          : 'border-[var(--border-light)] bg-[var(--surface-1)] text-[var(--text-primary)] hover:border-[var(--border-medium)] hover:bg-[var(--bg-subtle)]',
                       ].join(' ')}
                       style={
                         form.mode === mode
@@ -236,7 +238,7 @@ export default function SalaryPage() {
                         {mode === 'minimum-wage' && 'حداقل دستمزد'}
                       </div>
                       <div
-                        className={`text-xs ${form.mode === mode ? 'text-gray-200' : 'text-gray-500'}`}
+                        className={`text-xs ${form.mode === mode ? 'text-[var(--text-inverted)]' : 'text-[var(--text-muted)]'}`}
                       >
                         {mode === 'gross-to-net' && 'محاسبه حقوق خالص بر اساس حقوق پایه'}
                         {mode === 'net-to-gross' && 'محاسبه حقوق پایه از خالص'}
@@ -251,7 +253,10 @@ export default function SalaryPage() {
                 <div className="grid gap-4 md:grid-cols-2">
                   {form.mode === 'gross-to-net' && (
                     <div className="flex flex-col gap-2">
-                      <label htmlFor="salary-base" className="text-sm font-semibold text-slate-700">
+                      <label
+                        htmlFor="salary-base"
+                        className="text-sm font-semibold text-[var(--text-primary)]"
+                      >
                         حقوق پایه (تومان)
                       </label>
                       <input
@@ -265,7 +270,10 @@ export default function SalaryPage() {
                   )}
                   {form.mode === 'net-to-gross' && (
                     <div className="flex flex-col gap-2">
-                      <label htmlFor="salary-net" className="text-sm font-semibold text-slate-700">
+                      <label
+                        htmlFor="salary-net"
+                        className="text-sm font-semibold text-[var(--text-primary)]"
+                      >
                         حقوق خالص (تومان)
                       </label>
                       <input
@@ -280,7 +288,7 @@ export default function SalaryPage() {
                   <div className="flex flex-col gap-2">
                     <label
                       htmlFor="salary-working-days"
-                      className="text-sm font-semibold text-slate-700"
+                      className="text-sm font-semibold text-[var(--text-primary)]"
                     >
                       روزهای کاری
                     </label>
@@ -299,7 +307,7 @@ export default function SalaryPage() {
                 <div className="flex flex-col gap-2">
                   <label
                     htmlFor="salary-experience"
-                    className="text-sm font-semibold text-slate-700"
+                    className="text-sm font-semibold text-[var(--text-primary)]"
                   >
                     سابقه کار (سال)
                   </label>
@@ -314,7 +322,10 @@ export default function SalaryPage() {
                   />
                 </div>
                 <div className="flex flex-col gap-2">
-                  <label htmlFor="salary-overtime" className="text-sm font-semibold text-slate-700">
+                  <label
+                    htmlFor="salary-overtime"
+                    className="text-sm font-semibold text-[var(--text-primary)]"
+                  >
                     ساعات اضافه کاری
                   </label>
                   <input
@@ -328,7 +339,7 @@ export default function SalaryPage() {
                 <div className="flex flex-col gap-2">
                   <label
                     htmlFor="salary-night-overtime"
-                    className="text-sm font-semibold text-slate-700"
+                    className="text-sm font-semibold text-[var(--text-primary)]"
                   >
                     اضافه کاری شب
                   </label>
@@ -345,7 +356,7 @@ export default function SalaryPage() {
                 <div className="flex flex-col gap-2">
                   <label
                     htmlFor="salary-holiday-overtime"
-                    className="text-sm font-semibold text-slate-700"
+                    className="text-sm font-semibold text-[var(--text-primary)]"
                   >
                     اضافه کاری تعطیل
                   </label>
@@ -362,7 +373,7 @@ export default function SalaryPage() {
                 <div className="flex flex-col gap-2">
                   <label
                     htmlFor="salary-mission-days"
-                    className="text-sm font-semibold text-slate-700"
+                    className="text-sm font-semibold text-[var(--text-primary)]"
                   >
                     روزهای ماموریت
                   </label>
@@ -375,7 +386,10 @@ export default function SalaryPage() {
                   />
                 </div>
                 <div className="flex flex-col gap-2">
-                  <label htmlFor="salary-children" className="text-sm font-semibold text-slate-700">
+                  <label
+                    htmlFor="salary-children"
+                    className="text-sm font-semibold text-[var(--text-primary)]"
+                  >
                     تعداد فرزند
                   </label>
                   <input
@@ -391,7 +405,7 @@ export default function SalaryPage() {
               </div>
 
               <div className="grid gap-4 md:grid-cols-2">
-                <label className="flex items-center gap-2 text-sm text-slate-700">
+                <label className="flex items-center gap-2 text-sm text-[var(--text-primary)]">
                   <input
                     type="checkbox"
                     checked={form.isMarried}
@@ -399,7 +413,7 @@ export default function SalaryPage() {
                   />
                   متاهل هستم
                 </label>
-                <label className="flex items-center gap-2 text-sm text-slate-700">
+                <label className="flex items-center gap-2 text-sm text-[var(--text-primary)]">
                   <input
                     type="checkbox"
                     checked={form.hasWorkerCoupon}
@@ -407,7 +421,7 @@ export default function SalaryPage() {
                   />
                   بن کارگری
                 </label>
-                <label className="flex items-center gap-2 text-sm text-slate-700">
+                <label className="flex items-center gap-2 text-sm text-[var(--text-primary)]">
                   <input
                     type="checkbox"
                     checked={form.hasTransportation}
@@ -417,7 +431,7 @@ export default function SalaryPage() {
                   />
                   کمک هزینه حمل و نقل
                 </label>
-                <label className="flex items-center gap-2 text-sm text-slate-700">
+                <label className="flex items-center gap-2 text-sm text-[var(--text-primary)]">
                   <input
                     type="checkbox"
                     checked={form.isDevelopmentZone}
@@ -433,7 +447,7 @@ export default function SalaryPage() {
                 <div className="flex flex-col gap-2">
                   <label
                     htmlFor="salary-other-benefits"
-                    className="text-sm font-semibold text-slate-700"
+                    className="text-sm font-semibold text-[var(--text-primary)]"
                   >
                     سایر مزایا (تومان)
                   </label>
@@ -448,7 +462,7 @@ export default function SalaryPage() {
                 <div className="flex flex-col gap-2">
                   <label
                     htmlFor="salary-other-deductions"
-                    className="text-sm font-semibold text-slate-700"
+                    className="text-sm font-semibold text-[var(--text-primary)]"
                   >
                     سایر کسورات (تومان)
                   </label>
@@ -483,7 +497,7 @@ export default function SalaryPage() {
               <div className="max-w-6xl mx-auto">
                 <AnimatedCard className="p-8">
                   <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-2xl font-black text-black flex items-center gap-3">
+                    <h2 className="text-2xl font-black text-[var(--text-primary)] flex items-center gap-3">
                       <div
                         className="w-8 h-8 rounded-full flex items-center justify-center"
                         style={{ backgroundColor: 'rgb(var(--color-financial-rgb) / 0.1)' }}
@@ -598,10 +612,10 @@ export default function SalaryPage() {
             <FadeIn delay={0.3}>
               <div className="max-w-6xl mx-auto">
                 <AnimatedCard className="p-8">
-                  <h2 className="text-2xl font-black text-black mb-6 flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-green-600/10 flex items-center justify-center">
+                  <h2 className="text-2xl font-black text-[var(--text-primary)] mb-6 flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-[rgb(var(--color-success-rgb)/0.12)] flex items-center justify-center">
                       <svg
-                        className="w-5 h-5 text-green-600"
+                        className="w-5 h-5 text-[var(--color-success)]"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
@@ -619,10 +633,10 @@ export default function SalaryPage() {
 
                   <div className="grid gap-6 md:grid-cols-2">
                     <div>
-                      <h3 className="text-lg font-bold text-black mb-4 flex items-center gap-2">
-                        <div className="w-5 h-5 rounded-full bg-green-600/10 flex items-center justify-center">
+                      <h3 className="text-lg font-bold text-[var(--text-primary)] mb-4 flex items-center gap-2">
+                        <div className="w-5 h-5 rounded-full bg-[rgb(var(--color-success-rgb)/0.12)] flex items-center justify-center">
                           <svg
-                            className="w-3 h-3 text-green-600"
+                            className="w-3 h-3 text-[var(--color-success)]"
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"
@@ -637,40 +651,44 @@ export default function SalaryPage() {
                         </div>
                         جزئیات حقوق
                       </h3>
-                      <div className="space-y-3 bg-gray-50 rounded-xl p-4">
+                      <div className="space-y-3 bg-[var(--bg-subtle)] rounded-xl p-4">
                         <div className="flex justify-between items-center">
-                          <span className="text-sm text-gray-600">حقوق پایه:</span>
+                          <span className="text-sm text-[var(--text-secondary)]">حقوق پایه:</span>
                           <span className="text-sm font-bold">
                             {formatMoneyFa(minimumWageResult.baseSalary)}
                           </span>
                         </div>
                         <div className="flex justify-between items-center">
-                          <span className="text-sm text-gray-600">کمک هزینه مسکن:</span>
+                          <span className="text-sm text-[var(--text-secondary)]">
+                            کمک هزینه مسکن:
+                          </span>
                           <span className="text-sm font-bold">
                             {formatMoneyFa(minimumWageResult.housingAllowance)}
                           </span>
                         </div>
                         <div className="flex justify-between items-center">
-                          <span className="text-sm text-gray-600">کمک هزینه غذا:</span>
+                          <span className="text-sm text-[var(--text-secondary)]">
+                            کمک هزینه غذا:
+                          </span>
                           <span className="text-sm font-bold">
                             {formatMoneyFa(minimumWageResult.foodAllowance)}
                           </span>
                         </div>
                         <div className="flex justify-between items-center">
-                          <span className="text-sm text-gray-600">حق اولاد:</span>
+                          <span className="text-sm text-[var(--text-secondary)]">حق اولاد:</span>
                           <span className="text-sm font-bold">
                             {formatMoneyFa(minimumWageResult.familyAllowance)}
                           </span>
                         </div>
                         <div className="flex justify-between items-center">
-                          <span className="text-sm text-gray-600">پاداش سابقه:</span>
+                          <span className="text-sm text-[var(--text-secondary)]">پاداش سابقه:</span>
                           <span className="text-sm font-bold">
                             {formatMoneyFa(minimumWageResult.experienceBonus)}
                           </span>
                         </div>
                         <div className="flex justify-between items-center pt-2 border-t">
                           <span className="text-sm font-bold">مجموع حقوق ناخالص:</span>
-                          <span className="text-sm font-bold text-green-600">
+                          <span className="text-sm font-bold text-[var(--color-success)]">
                             {formatMoneyFa(minimumWageResult.totalGross)}
                           </span>
                         </div>
@@ -678,10 +696,10 @@ export default function SalaryPage() {
                     </div>
 
                     <div>
-                      <h3 className="text-lg font-bold text-black mb-4 flex items-center gap-2">
-                        <div className="w-5 h-5 rounded-full bg-green-600/10 flex items-center justify-center">
+                      <h3 className="text-lg font-bold text-[var(--text-primary)] mb-4 flex items-center gap-2">
+                        <div className="w-5 h-5 rounded-full bg-[rgb(var(--color-success-rgb)/0.12)] flex items-center justify-center">
                           <svg
-                            className="w-3 h-3 text-green-600"
+                            className="w-3 h-3 text-[var(--color-success)]"
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"
@@ -696,22 +714,24 @@ export default function SalaryPage() {
                         </div>
                         کسورات و خالص
                       </h3>
-                      <div className="space-y-3 bg-gray-50 rounded-xl p-4">
+                      <div className="space-y-3 bg-[var(--bg-subtle)] rounded-xl p-4">
                         <div className="flex justify-between items-center">
-                          <span className="text-sm text-gray-600">بیمه:</span>
+                          <span className="text-sm text-[var(--text-secondary)]">بیمه:</span>
                           <span className="text-sm font-bold">
                             {formatMoneyFa(minimumWageResult.insuranceAmount)}
                           </span>
                         </div>
                         <div className="flex justify-between items-center">
-                          <span className="text-sm text-gray-600">مالیات:</span>
+                          <span className="text-sm text-[var(--text-secondary)]">مالیات:</span>
                           <span className="text-sm font-bold">
                             {formatMoneyFa(minimumWageResult.taxAmount)}
                           </span>
                         </div>
                         <div className="flex justify-between items-center pt-2 border-t">
-                          <span className="text-sm font-bold text-green-600">حقوق خالص:</span>
-                          <span className="text-sm font-bold text-green-600">
+                          <span className="text-sm font-bold text-[var(--color-success)]">
+                            حقوق خالص:
+                          </span>
+                          <span className="text-sm font-bold text-[var(--color-success)]">
                             {formatMoneyFa(minimumWageResult.netSalary)}
                           </span>
                         </div>

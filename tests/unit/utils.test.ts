@@ -1,5 +1,12 @@
 import { describe, it, expect } from 'vitest';
-import { toPersianNumbers, formatPersianCurrency, isPersianText } from '@/shared/utils/persian';
+import {
+  toPersianNumbers,
+  formatPersianCurrency,
+  formatPersianNumber,
+  formatPersianDate,
+  fixPersianSpacing,
+  isPersianText,
+} from '@/shared/utils/persian';
 
 describe('Persian Utils', () => {
   describe('toPersianNumbers', () => {
@@ -23,6 +30,43 @@ describe('Persian Utils', () => {
     it('should support custom currency', () => {
       const result = formatPersianCurrency(500, 'ریال');
       expect(result).toContain('ریال');
+    });
+  });
+
+  describe('formatPersianNumber', () => {
+    it('should use Persian digits and separators', () => {
+      const result = formatPersianNumber(12345);
+      expect(result).toContain('۱۲');
+      expect(result).toContain('٬');
+    });
+  });
+
+  describe('formatPersianDate', () => {
+    it('should format date using Persian calendar when available', () => {
+      const date = new Date(2024, 2, 20);
+      let expected = '';
+      const options: Intl.DateTimeFormatOptions = {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      };
+      try {
+        expected = new Intl.DateTimeFormat('fa-IR-u-ca-persian', options).format(date);
+      } catch {
+        expected = new Intl.DateTimeFormat('fa-IR', options).format(date);
+      }
+      expect(formatPersianDate(date)).toBe(expected);
+    });
+  });
+
+  describe('fixPersianSpacing', () => {
+    it('should insert half-space before suffixes', () => {
+      expect(fixPersianSpacing('کتابها')).toBe('کتاب\u200Cها');
+      expect(fixPersianSpacing('بهترین')).toBe('به\u200Cترین');
+    });
+
+    it('should not duplicate half-space', () => {
+      expect(fixPersianSpacing('کتاب\u200Cها')).toBe('کتاب\u200Cها');
     });
   });
 

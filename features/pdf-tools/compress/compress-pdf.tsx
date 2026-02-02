@@ -96,16 +96,21 @@ export default function CompressPdfPage() {
     : 0;
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="space-y-6">
       <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">فشرده سازی PDF</h1>
-          <p className="text-lg text-slate-600">کاهش حجم فایل PDF بدون ارسال به سرور</p>
+          <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-2">فشرده سازی PDF</h1>
+          <p className="text-lg text-[var(--text-secondary)]">
+            کاهش حجم فایل PDF بدون ارسال به سرور
+          </p>
         </div>
 
         <Card className="p-6 space-y-4">
           <div className="flex flex-col gap-3">
-            <label htmlFor="compress-pdf-file" className="text-sm font-semibold text-slate-700">
+            <label
+              htmlFor="compress-pdf-file"
+              className="text-sm font-semibold text-[var(--text-primary)]"
+            >
               انتخاب فایل PDF
             </label>
             <input
@@ -118,7 +123,7 @@ export default function CompressPdfPage() {
           </div>
 
           {file && (
-            <div className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600">
+            <div className="rounded-xl border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)]">
               {file.name} | حجم اولیه: {formatBytes(originalSize)}
             </div>
           )}
@@ -139,13 +144,13 @@ export default function CompressPdfPage() {
 
           {busy && (
             <div className="space-y-2">
-              <div className="h-2 w-full rounded-full bg-slate-100 overflow-hidden">
+              <div className="h-2 w-full rounded-full bg-[var(--bg-subtle)] overflow-hidden">
                 <div
                   className="h-full bg-blue-500 transition-all duration-200"
                   style={{ width: `${progress}%` }}
                 />
               </div>
-              <div className="text-xs text-slate-500">{progress}%</div>
+              <div className="text-xs text-[var(--text-muted)]">{progress}%</div>
             </div>
           )}
 

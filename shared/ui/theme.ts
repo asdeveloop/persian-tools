@@ -201,8 +201,8 @@ export const components = {
         'focus:ring-[var(--color-primary-500)]',
       ].join(' '),
       secondary: [
-        'text-black bg-white border border-black',
-        'hover:bg-gray-100 focus:ring-black',
+        'text-[var(--text-primary)] bg-[var(--surface-1)] border border-[var(--border-medium)]',
+        'hover:bg-[var(--bg-subtle)] focus:ring-[var(--color-primary)]',
       ].join(' '),
       success: [
         'text-white bg-[var(--color-success)]',
@@ -224,16 +224,18 @@ export const components = {
 
   // کارت‌ها
   card: {
-    base: 'rounded-2xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200',
-    elevated: 'rounded-2xl border border-gray-200 bg-white shadow-lg hover:shadow-xl transition-all duration-200',
-    glass: 'rounded-2xl border border-white/20 bg-white/80 backdrop-blur-md shadow-lg',
+    base: 'rounded-2xl border border-[var(--border-light)] bg-[var(--surface-1)] shadow-sm hover:shadow-md transition-all duration-200',
+    elevated:
+      'rounded-2xl border border-[var(--border-light)] bg-[var(--surface-1)] shadow-lg hover:shadow-xl transition-all duration-200',
+    glass:
+      'rounded-2xl border border-[var(--border-light)] bg-[var(--surface-1)]/80 backdrop-blur-md shadow-lg',
   },
 
   // فرم‌ها
   input: {
     base: [
-      'w-full px-4 py-3 rounded-xl border border-gray-200',
-      'focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20',
+      'w-full px-4 py-3 rounded-xl border border-[var(--border-light)] bg-[var(--surface-1)]',
+      'focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20',
       'transition-all duration-200',
     ].join(' '),
     error: 'border-red-500 focus:border-red-500 focus:ring-red-500/20',

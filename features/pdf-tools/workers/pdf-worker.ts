@@ -5,7 +5,8 @@
 
 export {};
 
-import { PDFDocument, StandardFonts, rgb, degrees } from 'pdf-lib';
+import { PDFDocument, rgb, degrees } from 'pdf-lib';
+import fontkit from '@pdf-lib/fontkit';
 
 type MergeRequest = {
   id: string;
@@ -57,6 +58,21 @@ type WorkerResponse =
   | { id: string; type: 'error'; message: string };
 
 const ctx: DedicatedWorkerGlobalScope = self as DedicatedWorkerGlobalScope;
+const fontBytesCache: { promise?: Promise<Uint8Array> } = {};
+
+const loadPersianFontBytes = async () => {
+  if (!fontBytesCache.promise) {
+    const fontUrl = new URL('/fonts/fonnts.com-IRANSansXRegular.ttf', ctx.location.href);
+    fontBytesCache.promise = fetch(fontUrl).then(async (response) => {
+      if (!response.ok) {
+        throw new Error('دانلود فونت فارسی ناموفق بود.');
+      }
+      const buffer = await response.arrayBuffer();
+      return new Uint8Array(buffer);
+    });
+  }
+  return fontBytesCache.promise;
+};
 
 const postProgress = (id: string, progress: number) => {
   const message: WorkerResponse = { id, type: 'progress', progress };
@@ -147,7 +163,9 @@ ctx.onmessage = async (event: MessageEvent<WorkerRequest>) => {
       case 'watermark': {
         postProgress(payload.id, 0.2);
         const pdfDoc = await PDFDocument.load(payload.file, { ignoreEncryption: false });
-        const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+        pdfDoc.registerFontkit(fontkit);
+        const fontBytes = await loadPersianFontBytes();
+        const font = await pdfDoc.embedFont(fontBytes, { subset: true });
         const pages = pdfDoc.getPages();
         pages.forEach((page) => {
           const { width, height } = page.getSize();

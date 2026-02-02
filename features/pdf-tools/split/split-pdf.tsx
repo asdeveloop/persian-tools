@@ -145,16 +145,21 @@ export default function SplitPdfPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="space-y-6">
       <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">تقسیم PDF</h1>
-          <p className="text-lg text-slate-600">صفحات دلخواه را از فایل PDF جدا کنید</p>
+          <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-2">تقسیم PDF</h1>
+          <p className="text-lg text-[var(--text-secondary)]">
+            صفحات دلخواه را از فایل PDF جدا کنید
+          </p>
         </div>
 
         <Card className="p-6 space-y-4">
           <div className="flex flex-col gap-3">
-            <label htmlFor="split-pdf-file" className="text-sm font-semibold text-slate-700">
+            <label
+              htmlFor="split-pdf-file"
+              className="text-sm font-semibold text-[var(--text-primary)]"
+            >
               انتخاب فایل PDF
             </label>
             <input
@@ -167,13 +172,16 @@ export default function SplitPdfPage() {
           </div>
 
           {file && (
-            <div className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600">
+            <div className="rounded-xl border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)]">
               {file.name} | تعداد صفحات: {totalPages ?? '-'}
             </div>
           )}
 
           <div className="flex flex-col gap-3">
-            <label htmlFor="split-pdf-pages" className="text-sm font-semibold text-slate-700">
+            <label
+              htmlFor="split-pdf-pages"
+              className="text-sm font-semibold text-[var(--text-primary)]"
+            >
               صفحات مورد نظر
             </label>
             <input
@@ -184,7 +192,7 @@ export default function SplitPdfPage() {
               placeholder="مثال: 1-3,5,8"
               className="input-field"
             />
-            <div className="text-xs text-slate-500">
+            <div className="text-xs text-[var(--text-muted)]">
               می توانید از بازه استفاده کنید (1-3) یا صفحات جداگانه را با کاما جدا کنید.
             </div>
           </div>
@@ -205,13 +213,13 @@ export default function SplitPdfPage() {
 
           {busy && (
             <div className="space-y-2">
-              <div className="h-2 w-full rounded-full bg-slate-100 overflow-hidden">
+              <div className="h-2 w-full rounded-full bg-[var(--bg-subtle)] overflow-hidden">
                 <div
                   className="h-full bg-blue-500 transition-all duration-200"
                   style={{ width: `${progress}%` }}
                 />
               </div>
-              <div className="text-xs text-slate-500">{progress}%</div>
+              <div className="text-xs text-[var(--text-muted)]">{progress}%</div>
             </div>
           )}
 

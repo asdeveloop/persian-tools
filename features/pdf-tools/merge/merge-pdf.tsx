@@ -97,16 +97,21 @@ export default function MergePdfPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="space-y-6">
       <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">ادغام PDF</h1>
-          <p className="text-lg text-slate-600">چند فایل PDF را به یک فایل واحد تبدیل کنید</p>
+          <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-2">ادغام PDF</h1>
+          <p className="text-lg text-[var(--text-secondary)]">
+            چند فایل PDF را به یک فایل واحد تبدیل کنید
+          </p>
         </div>
 
         <Card className="p-6 space-y-4">
           <div className="flex flex-col gap-3">
-            <label htmlFor="merge-pdf-files" className="text-sm font-semibold text-slate-700">
+            <label
+              htmlFor="merge-pdf-files"
+              className="text-sm font-semibold text-[var(--text-primary)]"
+            >
               انتخاب فایل های PDF
             </label>
             <input
@@ -124,9 +129,9 @@ export default function MergePdfPage() {
               {files.map((item, index) => (
                 <div
                   key={item.id}
-                  className="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3"
+                  className="flex items-center justify-between rounded-xl border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3"
                 >
-                  <div className="text-sm text-slate-700">
+                  <div className="text-sm text-[var(--text-primary)]">
                     {index + 1}. {item.file.name}
                   </div>
                   <button
@@ -142,7 +147,7 @@ export default function MergePdfPage() {
           )}
 
           <div className="flex flex-wrap items-center justify-between gap-4">
-            <div className="text-sm text-slate-500">
+            <div className="text-sm text-[var(--text-muted)]">
               تعداد فایل ها: {files.length} | حجم کل: {(totalSize / 1024 / 1024).toFixed(2)} MB
             </div>
             <div className="flex gap-3">
@@ -162,13 +167,13 @@ export default function MergePdfPage() {
 
           {busy && (
             <div className="space-y-2">
-              <div className="h-2 w-full rounded-full bg-slate-100 overflow-hidden">
+              <div className="h-2 w-full rounded-full bg-[var(--bg-subtle)] overflow-hidden">
                 <div
                   className="h-full bg-blue-500 transition-all duration-200"
                   style={{ width: `${progress}%` }}
                 />
               </div>
-              <div className="text-xs text-slate-500">{progress}%</div>
+              <div className="text-xs text-[var(--text-muted)]">{progress}%</div>
             </div>
           )}
 

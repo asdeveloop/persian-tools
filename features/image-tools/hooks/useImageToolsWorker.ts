@@ -67,11 +67,7 @@ const loadDrawable = async (blob: Blob): Promise<DrawableSource> => {
   };
 };
 
-const canvasToBlob = (
-  canvas: HTMLCanvasElement,
-  type: string,
-  quality: number,
-): Promise<Blob> =>
+const canvasToBlob = (canvas: HTMLCanvasElement, type: string, quality: number): Promise<Blob> =>
   new Promise((resolve, reject) => {
     const normalizedQuality = Math.min(1, Math.max(0.05, quality));
     const useQuality = type !== 'image/png';
@@ -160,35 +156,36 @@ export function useImageToolsWorker() {
       type: 'module',
     });
     workerRef.current = worker;
+    const pending = pendingRef.current;
 
     worker.onmessage = (event: MessageEvent<WorkerMessage>) => {
       const message = event.data;
-      const pending = pendingRef.current.get(message.id);
-      if (!pending) {
+      const request = pending.get(message.id);
+      if (!request) {
         return;
       }
 
       if (message.type === 'progress' && typeof message.progress === 'number') {
-        pending.onProgress?.(message.progress);
+        request.onProgress?.(message.progress);
         return;
       }
 
       if (message.type === 'error') {
-        pendingRef.current.delete(message.id);
-        pending.reject(new Error(message.message));
+        pending.delete(message.id);
+        request.reject(new Error(message.message));
         return;
       }
 
       if (message.type === 'result') {
-        pendingRef.current.delete(message.id);
-        pending.resolve(message);
+        pending.delete(message.id);
+        request.resolve(message);
       }
     };
 
     return () => {
       worker.terminate();
       workerRef.current = null;
-      pendingRef.current.clear();
+      pending.clear();
     };
   }, [useWorker]);
 

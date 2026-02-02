@@ -222,16 +222,21 @@ export default function PdfToImagePage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="space-y-6">
       <div className="max-w-5xl mx-auto px-4 py-8 space-y-6">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">تبدیل PDF به عکس</h1>
-          <p className="text-lg text-slate-600">صفحات PDF را به تصویر PNG یا JPG تبدیل کنید</p>
+          <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-2">تبدیل PDF به عکس</h1>
+          <p className="text-lg text-[var(--text-secondary)]">
+            صفحات PDF را به تصویر PNG یا JPG تبدیل کنید
+          </p>
         </div>
 
         <Card className="p-6 space-y-4">
           <div className="flex flex-col gap-3">
-            <label htmlFor="pdf-to-image-file" className="text-sm font-semibold text-slate-700">
+            <label
+              htmlFor="pdf-to-image-file"
+              className="text-sm font-semibold text-[var(--text-primary)]"
+            >
               انتخاب فایل PDF
             </label>
             <input
@@ -244,14 +249,17 @@ export default function PdfToImagePage() {
           </div>
 
           {file && (
-            <div className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600">
+            <div className="rounded-xl border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)]">
               {file.name} | تعداد صفحات: {totalPages ?? '-'}
             </div>
           )}
 
           <div className="grid gap-4 md:grid-cols-2">
             <div className="flex flex-col gap-2">
-              <label htmlFor="pdf-to-image-pages" className="text-sm font-semibold text-slate-700">
+              <label
+                htmlFor="pdf-to-image-pages"
+                className="text-sm font-semibold text-[var(--text-primary)]"
+              >
                 صفحات مورد نظر
               </label>
               <input
@@ -262,13 +270,15 @@ export default function PdfToImagePage() {
                 placeholder="all یا 1-3,5"
                 className="input-field"
               />
-              <div className="text-xs text-slate-500">برای همه صفحات مقدار all را وارد کنید.</div>
+              <div className="text-xs text-[var(--text-muted)]">
+                برای همه صفحات مقدار all را وارد کنید.
+              </div>
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="flex flex-col gap-2">
                 <label
                   htmlFor="pdf-to-image-format"
-                  className="text-sm font-semibold text-slate-700"
+                  className="text-sm font-semibold text-[var(--text-primary)]"
                 >
                   فرمت خروجی
                 </label>
@@ -285,7 +295,7 @@ export default function PdfToImagePage() {
               <div className="flex flex-col gap-2">
                 <label
                   htmlFor="pdf-to-image-scale"
-                  className="text-sm font-semibold text-slate-700"
+                  className="text-sm font-semibold text-[var(--text-primary)]"
                 >
                   کیفیت
                 </label>
@@ -307,7 +317,7 @@ export default function PdfToImagePage() {
             <div className="flex flex-col gap-2">
               <label
                 htmlFor="pdf-to-image-quality"
-                className="text-sm font-semibold text-slate-700"
+                className="text-sm font-semibold text-[var(--text-primary)]"
               >
                 فشرده سازی JPG
               </label>
@@ -320,7 +330,9 @@ export default function PdfToImagePage() {
                 value={quality}
                 onChange={(e) => setQuality(Number(e.target.value))}
               />
-              <div className="text-xs text-slate-500">کیفیت: {(quality * 100).toFixed(0)}%</div>
+              <div className="text-xs text-[var(--text-muted)]">
+                کیفیت: {(quality * 100).toFixed(0)}%
+              </div>
             </div>
           )}
 
@@ -347,7 +359,7 @@ export default function PdfToImagePage() {
 
         {outputs.length > 0 && (
           <Card className="p-6 space-y-4">
-            <div className="flex items-center justify-between text-sm text-slate-600">
+            <div className="flex items-center justify-between text-sm text-[var(--text-secondary)]">
               <div>تعداد خروجی: {outputs.length}</div>
               <div>حجم کل: {formatBytes(totalOutputSize)}</div>
             </div>
@@ -369,9 +381,11 @@ export default function PdfToImagePage() {
               {outputs.map((item) => (
                 <div
                   key={item.url}
-                  className="rounded-xl border border-slate-200 bg-white p-4 space-y-3"
+                  className="rounded-xl border border-[var(--border-light)] bg-[var(--surface-1)] p-4 space-y-3"
                 >
-                  <div className="text-sm font-semibold text-slate-700">صفحه {item.page}</div>
+                  <div className="text-sm font-semibold text-[var(--text-primary)]">
+                    صفحه {item.page}
+                  </div>
                   <Image
                     src={item.url}
                     alt={`page-${item.page}`}
@@ -381,7 +395,7 @@ export default function PdfToImagePage() {
                     unoptimized
                     className="w-full h-auto rounded-lg border"
                   />
-                  <div className="flex items-center justify-between text-xs text-slate-500">
+                  <div className="flex items-center justify-between text-xs text-[var(--text-muted)]">
                     <div>{formatBytes(item.size)}</div>
                     <a
                       className="font-semibold underline"

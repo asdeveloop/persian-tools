@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import Container from '@/shared/ui/Container';
+import Button from '@/shared/ui/Button';
 import { tokens, withAlpha } from '@/shared/constants/tokens';
 import {
   IconPdf,
@@ -80,7 +81,7 @@ export default function Navigation() {
 
   return (
     <header
-      className="sticky top-0 z-50 glass-strong border-b border-white/20 shadow-lg"
+      className="sticky top-0 z-50 border-b border-[var(--border-light)] bg-[var(--surface-1)]/75 backdrop-blur-2xl shadow-[0_12px_30px_-20px_rgba(15,23,42,0.35)]"
       role="banner"
     >
       <Container className="flex flex-wrap items-center justify-between gap-3 py-4">
@@ -89,7 +90,7 @@ export default function Navigation() {
           <Link
             href="/"
             className={[
-              'flex items-center gap-3 text-black group',
+              'flex items-center gap-3 text-[var(--text-primary)] group',
               'focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]',
               'focus-visible:ring-offset-2 rounded-lg p-2',
             ].join(' ')}
@@ -112,7 +113,7 @@ export default function Navigation() {
             >
               <span className="text-sm font-bold">P</span>
             </motion.span>
-            <span className="text-xl font-black text-black">جعبه ابزار فارسی</span>
+            <span className="text-xl font-black text-[var(--text-primary)]">جعبه ابزار فارسی</span>
           </Link>
         </motion.div>
 
@@ -125,11 +126,7 @@ export default function Navigation() {
           {/* PDF Tools Dropdown */}
           <div className="relative group">
             <motion.button
-              className="flex items-center gap-2 px-4 py-2.5 text-sm font-bold rounded-full transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2"
-              style={{
-                color: tokens.color.text.DEFAULT,
-                backgroundColor: 'transparent',
-              }}
+              className="flex items-center gap-2 rounded-full border border-transparent px-4 py-2.5 text-sm font-bold text-[var(--text-primary)] transition-all duration-300 hover:border-[var(--border-light)] hover:bg-[var(--surface-1)]/80 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2"
               onMouseEnter={() => setOpenDropdown('pdf')}
               onMouseLeave={() => setOpenDropdown(null)}
               whileHover={{ scale: 1.05 }}
@@ -155,7 +152,7 @@ export default function Navigation() {
                   initial="hidden"
                   animate="visible"
                   exit="exit"
-                  className="absolute top-full left-0 mt-2 w-80 glass-strong rounded-2xl shadow-2xl border border-white/20 py-4 overflow-hidden"
+                  className="absolute top-full left-0 mt-2 w-80 rounded-2xl border border-[var(--border-light)] bg-[var(--surface-1)]/95 shadow-2xl backdrop-blur-xl py-4 overflow-hidden"
                   onMouseEnter={() => setOpenDropdown('pdf')}
                   onMouseLeave={() => setOpenDropdown(null)}
                   role="menu"
@@ -163,20 +160,8 @@ export default function Navigation() {
                 >
                   <Link
                     href="/pdf-tools"
-                    className="flex items-center gap-3 px-4 py-3 text-sm transition-all duration-200 group focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 rounded-lg mx-2"
-                    style={{
-                      color: tokens.color.text.DEFAULT,
-                      backgroundColor: 'transparent',
-                    }}
+                    className="mx-2 flex items-center gap-3 rounded-lg px-4 py-3 text-sm transition-all duration-200 text-[var(--text-primary)] hover:bg-[rgba(15,23,42,0.04)] hover:text-[var(--color-primary)] focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
                     onClick={closeMobileMenu}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.color = tokens.color.primary.DEFAULT;
-                      e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.05)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.color = tokens.color.text.DEFAULT;
-                      e.currentTarget.style.backgroundColor = 'transparent';
-                    }}
                     role="menuitem"
                   >
                     <motion.div
@@ -213,11 +198,7 @@ export default function Navigation() {
           {/* Image Tools Dropdown */}
           <div className="relative group">
             <motion.button
-              className="flex items-center gap-2 px-4 py-2.5 text-sm font-bold rounded-full transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2"
-              style={{
-                color: tokens.color.text.DEFAULT,
-                backgroundColor: 'transparent',
-              }}
+              className="flex items-center gap-2 rounded-full border border-transparent px-4 py-2.5 text-sm font-bold text-[var(--text-primary)] transition-all duration-300 hover:border-[var(--border-light)] hover:bg-[var(--surface-1)]/80 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2"
               onMouseEnter={() => setOpenDropdown('image')}
               onMouseLeave={() => setOpenDropdown(null)}
               whileHover={{ scale: 1.05 }}
@@ -240,26 +221,14 @@ export default function Navigation() {
                   initial="hidden"
                   animate="visible"
                   exit="exit"
-                  className="absolute top-full left-0 mt-2 w-80 glass-strong rounded-2xl shadow-2xl border border-white/20 py-4 overflow-hidden"
+                  className="absolute top-full left-0 mt-2 w-80 rounded-2xl border border-[var(--border-light)] bg-[var(--surface-1)]/95 shadow-2xl backdrop-blur-xl py-4 overflow-hidden"
                   onMouseEnter={() => setOpenDropdown('image')}
                   onMouseLeave={() => setOpenDropdown(null)}
                 >
                   <Link
                     href="/image-tools"
-                    className="flex items-center gap-3 px-4 py-3 text-sm transition-all duration-200 group focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 rounded-lg"
-                    style={{
-                      color: tokens.color.text.DEFAULT,
-                      backgroundColor: 'transparent',
-                    }}
+                    className="mx-2 flex items-center gap-3 rounded-lg px-4 py-3 text-sm transition-all duration-200 text-[var(--text-primary)] hover:bg-[rgba(15,23,42,0.04)] hover:text-[var(--color-primary)] focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
                     onClick={closeMobileMenu}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.color = tokens.color.primary.DEFAULT;
-                      e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.05)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.color = tokens.color.text.DEFAULT;
-                      e.currentTarget.style.backgroundColor = 'transparent';
-                    }}
                   >
                     <motion.div
                       className="flex items-center justify-center w-8 h-8 rounded-full transition-colors"
@@ -281,7 +250,7 @@ export default function Navigation() {
                       </div>
                     </div>
                   </Link>
-                  <div className="border-t border-gray-200/50 my-2"></div>
+                  <div className="border-t border-[var(--border-light)]/50 my-2"></div>
                   <div
                     className="px-4 py-2 text-xs font-bold uppercase tracking-wider"
                     style={{ color: tokens.color.text.muted }}
@@ -338,7 +307,7 @@ export default function Navigation() {
           {/* Financial Tools */}
           <div className="relative group">
             <motion.button
-              className="flex items-center gap-2 px-4 py-2.5 text-sm font-bold text-gray-700 hover:text-black hover:bg-black/5 rounded-full transition-all duration-300"
+              className="flex items-center gap-2 rounded-full border border-transparent px-4 py-2.5 text-sm font-bold text-[var(--text-primary)] transition-all duration-300 hover:border-[var(--border-light)] hover:bg-[var(--surface-1)]/80"
               onMouseEnter={() => setOpenDropdown('financial')}
               onMouseLeave={() => setOpenDropdown(null)}
               whileHover={{ scale: 1.05 }}
@@ -361,13 +330,13 @@ export default function Navigation() {
                   initial="hidden"
                   animate="visible"
                   exit="exit"
-                  className="absolute top-full left-0 mt-2 w-80 glass-strong rounded-2xl shadow-2xl border border-white/20 py-4 overflow-hidden"
+                  className="absolute top-full left-0 mt-2 w-80 rounded-2xl border border-[var(--border-light)] bg-[var(--surface-1)]/95 shadow-2xl backdrop-blur-xl py-4 overflow-hidden"
                   onMouseEnter={() => setOpenDropdown('financial')}
                   onMouseLeave={() => setOpenDropdown(null)}
                 >
                   <Link
                     href="/loan"
-                    className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-black/5 hover:text-black transition-all duration-200 group"
+                    className="flex items-center gap-3 px-4 py-3 text-sm text-[var(--text-primary)] hover:bg-[rgba(15,23,42,0.04)] hover:text-[var(--color-primary)] transition-all duration-200 group"
                     onClick={closeMobileMenu}
                   >
                     <motion.div
@@ -378,12 +347,12 @@ export default function Navigation() {
                     </motion.div>
                     <div className="flex-1">
                       <div className="font-bold">محاسبه‌گر وام</div>
-                      <div className="text-xs text-gray-500">محاسبه قسط و سود وام</div>
+                      <div className="text-xs text-[var(--text-muted)]">محاسبه قسط و سود وام</div>
                     </div>
                   </Link>
                   <Link
                     href="/salary"
-                    className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-black/5 hover:text-black transition-all duration-200 group"
+                    className="flex items-center gap-3 px-4 py-3 text-sm text-[var(--text-primary)] hover:bg-[rgba(15,23,42,0.04)] hover:text-[var(--color-primary)] transition-all duration-200 group"
                     onClick={closeMobileMenu}
                   >
                     <motion.div
@@ -394,7 +363,7 @@ export default function Navigation() {
                     </motion.div>
                     <div className="flex-1">
                       <div className="font-bold">محاسبه‌گر حقوق</div>
-                      <div className="text-xs text-gray-500">محاسبه حقوق و بیمه</div>
+                      <div className="text-xs text-[var(--text-muted)]">محاسبه حقوق و بیمه</div>
                     </div>
                   </Link>
                 </motion.div>
@@ -403,10 +372,18 @@ export default function Navigation() {
           </div>
         </nav>
 
+        <div className="hidden lg:flex items-center gap-3">
+          <Link href="/pdf-tools">
+            <Button size="sm" className="px-4">
+              شروع سریع
+            </Button>
+          </Link>
+        </div>
+
         {/* Mobile Menu Button */}
         <motion.button
           data-testid="mobile-menu"
-          className="lg:hidden flex items-center gap-2 text-gray-700 hover:text-black p-2.5 rounded-full hover:bg-black/5 transition-all duration-200"
+          className="lg:hidden flex items-center gap-2 text-[var(--text-primary)] p-2.5 rounded-full hover:bg-[var(--surface-1)]/80 transition-all duration-200"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
@@ -445,13 +422,13 @@ export default function Navigation() {
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="lg:hidden border-t border-white/20 glass-strong"
+            className="lg:hidden border-t border-[var(--border-light)] bg-[var(--surface-1)]/85 backdrop-blur-xl"
           >
             <Container className="py-4 space-y-2">
               {/* PDF Tools */}
               <div>
                 <motion.button
-                  className="flex items-center gap-3 w-full px-4 py-3 text-sm font-bold text-gray-700 hover:bg-black/5 hover:text-black rounded-full transition-all duration-200"
+                  className="flex items-center gap-3 w-full px-4 py-3 text-sm font-bold text-[var(--text-primary)] hover:bg-[var(--bg-subtle)] hover:text-[var(--text-primary)] rounded-full transition-all duration-200"
                   onClick={() => toggleDropdown('pdf')}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
@@ -478,7 +455,7 @@ export default function Navigation() {
                     >
                       <Link
                         href="/pdf-tools"
-                        className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-black/5 hover:text-black rounded-full transition-all duration-200"
+                        className="flex items-center gap-3 px-4 py-3 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-subtle)] hover:text-[var(--text-primary)] rounded-full transition-all duration-200"
                         onClick={closeMobileMenu}
                       >
                         <motion.div
@@ -489,7 +466,9 @@ export default function Navigation() {
                         </motion.div>
                         <div className="flex-1">
                           <div className="font-bold">همه ابزارهای PDF</div>
-                          <div className="text-xs text-gray-500">تبدیل، فشرده‌سازی، ادغام و...</div>
+                          <div className="text-xs text-[var(--text-muted)]">
+                            تبدیل، فشرده‌سازی، ادغام و...
+                          </div>
                         </div>
                       </Link>
                     </motion.div>
@@ -500,7 +479,7 @@ export default function Navigation() {
               {/* Image Tools */}
               <div>
                 <motion.button
-                  className="flex items-center gap-3 w-full px-4 py-3 text-sm font-bold text-gray-700 hover:bg-black/5 hover:text-black rounded-full transition-all duration-200"
+                  className="flex items-center gap-3 w-full px-4 py-3 text-sm font-bold text-[var(--text-primary)] hover:bg-[var(--bg-subtle)] hover:text-[var(--text-primary)] rounded-full transition-all duration-200"
                   onClick={() => toggleDropdown('image')}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
@@ -527,7 +506,7 @@ export default function Navigation() {
                     >
                       <Link
                         href="/image-tools"
-                        className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-black/5 hover:text-black rounded-full transition-all duration-200"
+                        className="flex items-center gap-3 px-4 py-3 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-subtle)] hover:text-[var(--text-primary)] rounded-full transition-all duration-200"
                         onClick={closeMobileMenu}
                       >
                         <motion.div
@@ -538,19 +517,21 @@ export default function Navigation() {
                         </motion.div>
                         <div className="flex-1">
                           <div className="font-bold">ابزارهای تصویر</div>
-                          <div className="text-xs text-gray-500">فشرده‌سازی و بهینه‌سازی</div>
+                          <div className="text-xs text-[var(--text-muted)]">
+                            فشرده‌سازی و بهینه‌سازی
+                          </div>
                         </div>
                       </Link>
-                      <div className="flex items-center gap-3 px-4 py-3 text-sm text-gray-400 rounded-full">
+                      <div className="flex items-center gap-3 px-4 py-3 text-sm text-[var(--text-muted)] rounded-full">
                         <motion.div
-                          className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100"
+                          className="flex items-center justify-center w-8 h-8 rounded-full bg-[var(--bg-subtle)]"
                           whileHover={{ scale: 1.1 }}
                         >
-                          <IconImage className="h-4 w-4 text-gray-400" />
+                          <IconImage className="h-4 w-4 text-[var(--text-muted)]" />
                         </motion.div>
                         <div className="flex-1">
                           <div className="font-bold">تغییر اندازه عکس</div>
-                          <div className="text-xs text-gray-400">به زودی</div>
+                          <div className="text-xs text-[var(--text-muted)]">به زودی</div>
                         </div>
                       </div>
                     </motion.div>
@@ -561,7 +542,7 @@ export default function Navigation() {
               {/* Financial Tools */}
               <div>
                 <motion.button
-                  className="flex items-center gap-3 w-full px-4 py-3 text-sm font-bold text-gray-700 hover:bg-black/5 hover:text-black rounded-full transition-all duration-200"
+                  className="flex items-center gap-3 w-full px-4 py-3 text-sm font-bold text-[var(--text-primary)] hover:bg-[var(--bg-subtle)] hover:text-[var(--text-primary)] rounded-full transition-all duration-200"
                   onClick={() => toggleDropdown('financial')}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
@@ -588,7 +569,7 @@ export default function Navigation() {
                     >
                       <Link
                         href="/loan"
-                        className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-black/5 hover:text-black rounded-full transition-all duration-200"
+                        className="flex items-center gap-3 px-4 py-3 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-subtle)] hover:text-[var(--text-primary)] rounded-full transition-all duration-200"
                         onClick={closeMobileMenu}
                       >
                         <motion.div
@@ -599,12 +580,14 @@ export default function Navigation() {
                         </motion.div>
                         <div className="flex-1">
                           <div className="font-bold">محاسبه‌گر وام</div>
-                          <div className="text-xs text-gray-500">محاسبه قسط و سود وام</div>
+                          <div className="text-xs text-[var(--text-muted)]">
+                            محاسبه قسط و سود وام
+                          </div>
                         </div>
                       </Link>
                       <Link
                         href="/salary"
-                        className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-black/5 hover:text-black rounded-full transition-all duration-200"
+                        className="flex items-center gap-3 px-4 py-3 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-subtle)] hover:text-[var(--text-primary)] rounded-full transition-all duration-200"
                         onClick={closeMobileMenu}
                       >
                         <motion.div
@@ -615,7 +598,7 @@ export default function Navigation() {
                         </motion.div>
                         <div className="flex-1">
                           <div className="font-bold">محاسبه‌گر حقوق</div>
-                          <div className="text-xs text-gray-500">محاسبه حقوق و بیمه</div>
+                          <div className="text-xs text-[var(--text-muted)]">محاسبه حقوق و بیمه</div>
                         </div>
                       </Link>
                     </motion.div>
