@@ -1,10 +1,9 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { PDFDocument } from 'pdf-lib';
-import { getDocument, GlobalWorkerOptions, PasswordResponses } from 'pdfjs-dist';
 import type { PDFPageProxy } from 'pdfjs-dist/types/src/display/api';
 import { Button, Card } from '@/components/ui';
+import { loadPdfJs, loadPdfLib } from '@/features/pdf-tools/lazy-deps';
 
 function formatBytes(bytes: number): string {
   if (!Number.isFinite(bytes) || bytes <= 0) {
@@ -45,12 +44,13 @@ export default function DecryptPdfPage() {
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
   const [resultSize, setResultSize] = useState<number | null>(null);
 
-  useEffect(() => {
+  const ensurePdfWorker = async () => {
+    const { GlobalWorkerOptions } = await loadPdfJs();
     GlobalWorkerOptions.workerSrc = new URL(
       'pdfjs-dist/build/pdf.worker.min.mjs',
       import.meta.url,
     ).toString();
-  }, []);
+  };
 
   useEffect(() => {
     return () => {
@@ -89,6 +89,9 @@ export default function DecryptPdfPage() {
 
     setBusy(true);
     try {
+      await ensurePdfWorker();
+      const { getDocument, PasswordResponses } = await loadPdfJs();
+      const { PDFDocument } = await loadPdfLib();
       const buffer = await file.arrayBuffer();
       const pdfTask = getDocument({
         data: new Uint8Array(buffer),
@@ -196,7 +199,11 @@ export default function DecryptPdfPage() {
           </div>
 
           {error && (
-            <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+            <div
+              className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+              role="alert"
+              aria-live="assertive"
+            >
               {error}
             </div>
           )}

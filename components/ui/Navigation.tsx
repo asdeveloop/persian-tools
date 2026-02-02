@@ -14,6 +14,8 @@ import {
   IconChevronDown,
   IconMenu,
   IconX,
+  IconCalendar,
+  IconZap,
 } from '@/shared/ui/icons';
 
 export default function Navigation() {
@@ -370,12 +372,44 @@ export default function Navigation() {
               )}
             </AnimatePresence>
           </div>
+
+          {/* Date Tools */}
+          <div className="relative group">
+            <Link
+              href="/date-tools"
+              className="flex items-center gap-2 rounded-full border border-transparent px-4 py-2.5 text-sm font-bold text-[var(--text-primary)] transition-all duration-300 hover:border-[var(--border-light)] hover:bg-[var(--surface-1)]/80"
+            >
+              <IconCalendar className="h-4 w-4" />
+              ابزارهای تاریخ
+            </Link>
+          </div>
+
+          {/* Text Tools */}
+          <div className="relative group">
+            <Link
+              href="/text-tools"
+              className="flex items-center gap-2 rounded-full border border-transparent px-4 py-2.5 text-sm font-bold text-[var(--text-primary)] transition-all duration-300 hover:border-[var(--border-light)] hover:bg-[var(--surface-1)]/80"
+            >
+              <IconZap className="h-4 w-4" />
+              ابزارهای متنی
+            </Link>
+          </div>
         </nav>
 
         <div className="hidden lg:flex items-center gap-3">
           <Link href="/pdf-tools">
             <Button size="sm" className="px-4">
               شروع سریع
+            </Button>
+          </Link>
+          <Link href="/date-tools">
+            <Button size="sm" variant="secondary" className="px-4">
+              ابزارهای تاریخ
+            </Button>
+          </Link>
+          <Link href="/text-tools">
+            <Button size="sm" variant="tertiary" className="px-4">
+              ابزارهای متنی
             </Button>
           </Link>
         </div>
@@ -604,6 +638,48 @@ export default function Navigation() {
                     </motion.div>
                   )}
                 </AnimatePresence>
+              </div>
+
+              {/* Date Tools */}
+              <div>
+                <Link
+                  href="/date-tools"
+                  className="flex items-center gap-3 w-full px-4 py-3 text-sm font-bold text-[var(--text-primary)] hover:bg-[var(--bg-subtle)] hover:text-[var(--text-primary)] rounded-full transition-all duration-200"
+                  onClick={closeMobileMenu}
+                >
+                  <motion.div
+                    className="flex items-center justify-center w-8 h-8 rounded-full bg-amber-100"
+                    whileHover={{ scale: 1.1 }}
+                  >
+                    <IconCalendar className="h-4 w-4 text-amber-600" />
+                  </motion.div>
+                  <div className="flex-1">
+                    <div className="font-bold">ابزارهای تاریخ</div>
+                    <div className="text-xs text-[var(--text-muted)]">تبدیل تاریخ، سن، اختلاف</div>
+                  </div>
+                </Link>
+              </div>
+
+              {/* Text Tools */}
+              <div>
+                <Link
+                  href="/text-tools"
+                  className="flex items-center gap-3 w-full px-4 py-3 text-sm font-bold text-[var(--text-primary)] hover:bg-[var(--bg-subtle)] hover:text-[var(--text-primary)] rounded-full transition-all duration-200"
+                  onClick={closeMobileMenu}
+                >
+                  <motion.div
+                    className="flex items-center justify-center w-8 h-8 rounded-full bg-indigo-100"
+                    whileHover={{ scale: 1.1 }}
+                  >
+                    <IconZap className="h-4 w-4 text-indigo-600" />
+                  </motion.div>
+                  <div className="flex-1">
+                    <div className="font-bold">ابزارهای متنی</div>
+                    <div className="text-xs text-[var(--text-muted)]">
+                      تبدیل عدد، تاریخ و شمارش کلمات
+                    </div>
+                  </div>
+                </Link>
               </div>
             </Container>
           </motion.div>

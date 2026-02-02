@@ -546,6 +546,8 @@ export default function LoanPage() {
                   {error && (
                     <motion.div
                       className="text-sm text-red-600 bg-red-50 px-6 py-3 rounded-xl border border-red-200"
+                      role="alert"
+                      aria-live="assertive"
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: -20 }}

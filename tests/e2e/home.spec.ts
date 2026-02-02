@@ -5,16 +5,16 @@ test.describe('Home Page', () => {
     await page.goto('/');
 
     const hero = page.locator('h1');
-    await expect(hero).toContainText('ابزارهای فارسی برای کار و زندگی');
+    await expect(hero).toContainText('ابزارهای فارسی که');
 
     const toolCards = page.locator('[data-testid="tool-card"]');
-    await expect(toolCards).toHaveCount(4);
+    await expect(toolCards).toHaveCount(6);
   });
 
   test('should navigate to PDF tools', async ({ page }) => {
     await page.goto('/');
 
-    await page.click('text=ابزارهای PDF');
+    await page.locator('[data-testid="tool-card"]').filter({ hasText: 'ابزارهای PDF' }).click();
 
     await expect(page).toHaveURL('/pdf-tools');
     await expect(page.locator('h1')).toContainText('ابزارهای PDF');

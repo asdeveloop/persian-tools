@@ -1,11 +1,13 @@
 import { test, expect } from '@playwright/test';
 
 const routes = [
-  { path: '/', heading: 'جعبه ابزار فارسی' },
+  { path: '/', heading: 'ابزارهای فارسی که' },
   { path: '/loan', heading: 'محاسبه' },
   { path: '/salary', heading: 'حقوق' },
   { path: '/image-tools', heading: 'ابزارهای تصویر' },
   { path: '/pdf-tools', heading: 'ابزارهای PDF' },
+  { path: '/date-tools', heading: 'ابزارهای تاریخ' },
+  { path: '/text-tools', heading: 'ابزارهای متنی' },
 ];
 
 test.describe('main routes', () => {

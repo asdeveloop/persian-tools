@@ -1,18 +1,13 @@
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
-import {
-  defaultOgImage,
-  siteDescription,
-  siteName,
-  siteUrl,
-} from '@/lib/seo';
+import { defaultOgImage, siteDescription, siteName, siteUrl } from '@/lib/seo';
+import MotionProvider from '@/components/ui/MotionProvider';
+import ServiceWorkerRegistration from '@/components/ui/ServiceWorkerRegistration';
+import UsageTracker from '@/components/ui/UsageTracker';
 import './globals.css';
 
-const googleVerification =
-  process.env['NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION'];
-const verification = googleVerification
-  ? { verification: { google: googleVerification } }
-  : {};
+const googleVerification = process.env['NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION'];
+const verification = googleVerification ? { verification: { google: googleVerification } } : {};
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -81,11 +76,7 @@ export const viewport: Viewport = {
   colorScheme: 'light',
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: ReactNode;
-}) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   const structuredData = {
     '@context': 'https://schema.org',
     '@graph': [
@@ -121,7 +112,11 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen bg-[var(--bg-primary)]">
-        {children}
+        <MotionProvider>
+          <ServiceWorkerRegistration />
+          <UsageTracker />
+          {children}
+        </MotionProvider>
       </body>
     </html>
   );

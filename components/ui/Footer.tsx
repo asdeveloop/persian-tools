@@ -7,6 +7,7 @@ import {
   IconShield,
   IconZap,
   IconHeart,
+  IconCalendar,
 } from '@/shared/ui/icons';
 
 export default function Footer() {
@@ -14,7 +15,7 @@ export default function Footer() {
     <footer className="border-t border-[var(--border-light)] bg-[var(--bg-secondary)] text-[var(--text-primary)]">
       <div className="border-b border-[var(--border-light)]">
         <Container className="py-12">
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-5">
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-6">
             <div className="lg:col-span-2 space-y-6">
               <div className="flex items-center gap-2">
                 <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--color-primary)] text-white">
@@ -164,6 +165,55 @@ export default function Footer() {
                 </li>
               </ul>
             </div>
+
+            <div>
+              <h3 className="mb-4 flex items-center gap-2 font-bold text-[var(--text-primary)]">
+                <IconCalendar className="h-5 w-5 text-amber-500" />
+                ابزارهای تاریخ
+              </h3>
+              <ul className="space-y-2">
+                <li>
+                  <Link
+                    href="/date-tools"
+                    className="text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
+                  >
+                    تبدیل شمسی ↔ میلادی
+                  </Link>
+                </li>
+                <li>
+                  <span className="text-sm text-[var(--text-muted)]/80">محاسبه سن</span>
+                </li>
+                <li>
+                  <span className="text-sm text-[var(--text-muted)]/80">اختلاف دو تاریخ</span>
+                </li>
+                <li>
+                  <span className="text-sm text-[var(--text-muted)]/80">روز هفته</span>
+                </li>
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="mb-4 flex items-center gap-2 font-bold text-[var(--text-primary)]">
+                <IconZap className="h-5 w-5 text-indigo-500" />
+                ابزارهای متنی
+              </h3>
+              <ul className="space-y-2">
+                <li>
+                  <Link
+                    href="/text-tools"
+                    className="text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
+                  >
+                    تبدیل عدد به حروف
+                  </Link>
+                </li>
+                <li>
+                  <span className="text-sm text-[var(--text-muted)]/80">شمارش کلمات</span>
+                </li>
+                <li>
+                  <span className="text-sm text-[var(--text-muted)]/80">تبدیل تاریخ</span>
+                </li>
+              </ul>
+            </div>
           </div>
         </Container>
       </div>
@@ -177,6 +227,12 @@ export default function Footer() {
 
             <div className="flex flex-wrap items-center gap-6 text-sm text-[var(--text-muted)]">
               <span>ساخته شده با ❤️ برای کاربران فارسی‌زبان</span>
+              <Link
+                href="/dashboard"
+                className="text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
+              >
+                داشبورد استفاده
+              </Link>
             </div>
           </div>
 

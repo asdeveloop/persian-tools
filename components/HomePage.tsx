@@ -1,7 +1,15 @@
 import Link from 'next/link';
 import Button from '@/shared/ui/Button';
 import ToolCard from '@/shared/ui/ToolCard';
-import { IconCalculator, IconImage, IconMoney, IconPdf, IconShield } from '@/shared/ui/icons';
+import {
+  IconCalculator,
+  IconCalendar,
+  IconImage,
+  IconMoney,
+  IconPdf,
+  IconShield,
+  IconZap,
+} from '@/shared/ui/icons';
 
 export default function HomePage() {
   return (
@@ -59,7 +67,7 @@ export default function HomePage() {
 
             <div className="grid gap-4 sm:grid-cols-3">
               {[
-                { value: '۲۰+', label: 'ابزار کاربردی' },
+                { value: '۲۱+', label: 'ابزار کاربردی' },
                 { value: '۳ ثانیه', label: 'میانگین آماده‌سازی' },
                 { value: '۱۰۰٪', label: 'پردازش محلی' },
               ].map((item) => (
@@ -168,6 +176,24 @@ export default function HomePage() {
             icon={<IconMoney className="h-7 w-7 text-[var(--color-success)]" />}
             iconWrapClassName="bg-[rgba(16,185,129,0.12)]"
             className="hover:border-[var(--color-success)] hover:bg-[rgba(16,185,129,0.06)]"
+          />
+          <ToolCard
+            href="/date-tools"
+            title="ابزارهای تاریخ"
+            meta="۴ ابزار"
+            description="تبدیل شمسی/میلادی، محاسبه سن و اختلاف تاریخ"
+            icon={<IconCalendar className="h-7 w-7 text-amber-600" />}
+            iconWrapClassName="bg-[rgba(245,158,11,0.14)]"
+            className="hover:border-amber-500 hover:bg-[rgba(245,158,11,0.08)]"
+          />
+          <ToolCard
+            href="/text-tools"
+            title="ابزارهای متنی"
+            meta="۳ ابزار"
+            description="تبدیل تاریخ، عدد به حروف و شمارش کلمات"
+            icon={<IconZap className="h-7 w-7 text-indigo-600" />}
+            iconWrapClassName="bg-[rgba(99,102,241,0.14)]"
+            className="hover:border-indigo-500 hover:bg-[rgba(99,102,241,0.08)]"
           />
         </div>
       </section>

@@ -2,11 +2,10 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
-import JSZip from 'jszip';
-import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist';
 import type { PDFPageProxy } from 'pdfjs-dist/types/src/display/api';
 import { Button, Card } from '@/components/ui';
 import { toEnglishDigits } from '@/shared/utils/number';
+import { loadJsZip, loadPdfJs } from '@/features/pdf-tools/lazy-deps';
 
 type OutputImage = {
   page: number;
@@ -112,12 +111,13 @@ export default function PdfToImagePage() {
   const [outputs, setOutputs] = useState<OutputImage[]>([]);
   const [zipUrl, setZipUrl] = useState<string | null>(null);
 
-  useEffect(() => {
+  const ensurePdfWorker = async () => {
+    const { GlobalWorkerOptions } = await loadPdfJs();
     GlobalWorkerOptions.workerSrc = new URL(
       'pdfjs-dist/build/pdf.worker.min.mjs',
       import.meta.url,
     ).toString();
-  }, []);
+  };
 
   useEffect(() => {
     return () => {
@@ -150,6 +150,8 @@ export default function PdfToImagePage() {
     }
 
     try {
+      await ensurePdfWorker();
+      const { getDocument } = await loadPdfJs();
       const buffer = await selected.arrayBuffer();
       const pdf = await getDocument({ data: new Uint8Array(buffer) }).promise;
       setTotalPages(pdf.numPages);
@@ -173,6 +175,8 @@ export default function PdfToImagePage() {
 
     setBusy(true);
     try {
+      await ensurePdfWorker();
+      const { getDocument } = await loadPdfJs();
       const pages = parsePageRanges(pagesInput, totalPages);
       const buffer = await file.arrayBuffer();
       const pdf = await getDocument({ data: new Uint8Array(buffer) }).promise;
@@ -204,6 +208,7 @@ export default function PdfToImagePage() {
     }
     setZipBusy(true);
     try {
+      const { default: JSZip } = await loadJsZip();
       const zip = new JSZip();
       outputs.forEach((item) => {
         zip.file(`page-${item.page}.${format}`, item.blob);
@@ -351,7 +356,11 @@ export default function PdfToImagePage() {
           </div>
 
           {error && (
-            <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+            <div
+              className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+              role="alert"
+              aria-live="assertive"
+            >
               {error}
             </div>
           )}

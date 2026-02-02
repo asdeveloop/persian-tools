@@ -12,6 +12,7 @@ const routes = [
   '/pdf-tools/watermark/add-watermark',
   '/pdf-tools/split/split-pdf',
   '/image-tools',
+  '/date-tools',
   '/loan',
   '/salary',
 ];

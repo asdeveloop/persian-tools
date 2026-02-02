@@ -2,8 +2,8 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
-import { PDFDocument } from 'pdf-lib';
 import { Button, Card } from '@/components/ui';
+import { loadPdfLib } from '@/features/pdf-tools/lazy-deps';
 
 const PAGE_SIZES = {
   a4: { width: 595.28, height: 841.89 },
@@ -149,6 +149,7 @@ export default function ImageToPdfPage() {
 
     setBusy(true);
     try {
+      const { PDFDocument } = await loadPdfLib();
       const pdf = await PDFDocument.create();
 
       for (const item of images) {
@@ -339,7 +340,11 @@ export default function ImageToPdfPage() {
           </div>
 
           {error && (
-            <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+            <div
+              className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+              role="alert"
+              aria-live="assertive"
+            >
               {error}
             </div>
           )}

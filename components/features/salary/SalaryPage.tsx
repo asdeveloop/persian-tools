@@ -199,7 +199,11 @@ export default function SalaryPage() {
 
         {error && (
           <div className="max-w-4xl mx-auto">
-            <div className="rounded-2xl border border-[var(--border-light)] bg-[rgb(var(--color-danger-rgb)/0.12)] px-6 py-4 text-sm text-[var(--color-danger)]">
+            <div
+              className="rounded-2xl border border-[var(--border-light)] bg-[rgb(var(--color-danger-rgb)/0.12)] px-6 py-4 text-sm text-[var(--color-danger)]"
+              role="alert"
+              aria-live="assertive"
+            >
               {error}
             </div>
           </div>
