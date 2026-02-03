@@ -68,7 +68,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: '📊 Run Lighthouse CI'
-        uses: treosh/lighthouse-ci-action@v10
+        uses: treosh/lighthouse-ci-action@v12
         env:
           LHCI_TOKEN: ${{ secrets.LHCI_TOKEN }}
         with:
