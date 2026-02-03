@@ -39,7 +39,7 @@ jobs:
 
       - name: '📤 Upload test results'
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v6
         with:
           name: playwright-report
           path: playwright-report/
