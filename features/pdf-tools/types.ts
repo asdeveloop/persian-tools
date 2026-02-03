@@ -15,4 +15,5 @@ export type PdfToolItem = {
   icon: string;
   path: string;
   category: PdfToolCategory;
+  status?: 'ready' | 'coming-soon';
 };

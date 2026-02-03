@@ -1,28 +1,56 @@
 const faDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'] as const;
+const enDigits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'] as const;
 
-export function toEnglishDigits(input: string): string {
-  let out = input;
-  faDigits.forEach((digit, i) => {
-    out = out.replaceAll(digit, String(i));
-  });
+const faToEnMap: Record<(typeof faDigits)[number], (typeof enDigits)[number]> = {
+  '۰': '0',
+  '۱': '1',
+  '۲': '2',
+  '۳': '3',
+  '۴': '4',
+  '۵': '5',
+  '۶': '6',
+  '۷': '7',
+  '۸': '8',
+  '۹': '9',
+};
 
-  out = out.replaceAll('٬', ',');
-  out = out.replaceAll('٫', '.');
-  return out;
-}
+const faDigitRegex = /[۰-۹]/g;
+const rtlMarkersRegex = /[\u200e\u200f\u202a-\u202e]/g;
 
-export function parseLooseNumber(input: string): number | null {
-  const normalized = toEnglishDigits(input)
+const faNumberFormatter = new Intl.NumberFormat('fa-IR', { maximumFractionDigits: 2 });
+const faMoneyFormatter = new Intl.NumberFormat('fa-IR', { maximumFractionDigits: 0 });
+
+function normalizeNumericInput(input: string): string {
+  return toEnglishDigits(input)
     .trim()
     .replaceAll(',', '')
-    .replaceAll(' ', '')
-    .replaceAll('\u200f', '')
-    .replaceAll('\u200e', '');
+    .replace(/\s+/g, '')
+    .replace(rtlMarkersRegex, '');
+}
+
+/**
+ * Normalize Persian/Arabic digits into ASCII digits.
+ * Complexity: O(n) where n is input length.
+ */
+export function toEnglishDigits(input: string): string {
+  return input
+    .replace(faDigitRegex, (digit) => faToEnMap[digit as keyof typeof faToEnMap])
+    .replaceAll('٬', ',')
+    .replaceAll('٫', '.');
+}
+
+/**
+ * Parse a number from loose user input (Persian/English digits, separators).
+ * Complexity: O(n) where n is input length.
+ */
+export function parseLooseNumber(input: string): number | null {
+  const normalized = normalizeNumericInput(input);
 
   if (normalized.length === 0) {
     return null;
   }
-  if (!/^-?\d*(?:\.\d+)?$/.test(normalized)) {
+
+  if (!/^-?(?:\d+|\d*\.\d+)$/.test(normalized)) {
     return null;
   }
 
@@ -33,12 +61,20 @@ export function parseLooseNumber(input: string): number | null {
   return n;
 }
 
+/**
+ * Format a number with Persian digits and separators.
+ * Complexity: O(1) per Intl.NumberFormat implementation.
+ */
 export function formatNumberFa(n: number): string {
-  return new Intl.NumberFormat('fa-IR', { maximumFractionDigits: 2 }).format(n);
+  return faNumberFormatter.format(n);
 }
 
+/**
+ * Format currency-style numbers without fractional digits.
+ * Complexity: O(1) per Intl.NumberFormat implementation.
+ */
 export function formatMoneyFa(n: number): string {
-  return new Intl.NumberFormat('fa-IR', { maximumFractionDigits: 0 }).format(n);
+  return faMoneyFormatter.format(n);
 }
 
 const faOnes = ['صفر', 'یک', 'دو', 'سه', 'چهار', 'پنج', 'شش', 'هفت', 'هشت', 'نه'] as const;
@@ -116,6 +152,10 @@ function threeDigitToWords(n: number): string {
   return parts.join(' و ');
 }
 
+/**
+ * Convert a number into Persian words (supports fractions up to 6 digits).
+ * Complexity: O(d) where d is number of digits.
+ */
 export function numberToWordsFa(input: number): string {
   if (!Number.isFinite(input)) {
     return '';

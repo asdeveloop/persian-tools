@@ -1,4 +1,5 @@
 export { default as Button } from '@/shared/ui/Button';
+export { default as ButtonLink } from '@/shared/ui/ButtonLink';
 export { default as Card } from '@/shared/ui/Card';
 export { default as Container } from '@/shared/ui/Container';
 export { default as Footer } from '@/shared/ui/Footer';

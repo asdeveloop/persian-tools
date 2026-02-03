@@ -1,15 +1,10 @@
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
-
-// Button variants based on PROJECT_STANDARDS.md
-type Variant = 'primary' | 'secondary' | 'tertiary' | 'danger';
-
-// Button sizes based on PROJECT_STANDARDS.md
-type Size = 'sm' | 'md' | 'lg';
+import { getButtonClasses, type ButtonSize, type ButtonVariant } from './buttonStyles';
 
 type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
   children: ReactNode;
-  variant?: Variant;
-  size?: Size;
+  variant?: ButtonVariant;
+  size?: ButtonSize;
   fullWidth?: boolean;
   isLoading?: boolean;
 };
@@ -24,35 +19,9 @@ export default function Button({
   children,
   ...rest
 }: Props) {
-  const baseClasses =
-    'btn inline-flex items-center justify-center font-semibold rounded-[var(--radius-md)] transition-all duration-[var(--motion-fast)] focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none';
-
-  const sizeClasses = {
-    sm: 'btn-sm h-8',
-    md: 'btn-md h-10',
-    lg: 'btn-lg h-12',
-  };
-
-  const variantClasses = {
-    primary: 'btn-primary',
-    secondary: 'btn-secondary',
-    tertiary: 'btn-tertiary',
-    danger: 'btn-danger',
-  };
-
-  const widthClass = fullWidth ? 'w-full' : '';
-  const loadingClass = isLoading ? 'opacity-75 cursor-wait' : '';
-
   return (
     <button
-      className={`
-        ${baseClasses}
-        ${sizeClasses[size]}
-        ${variantClasses[variant]}
-        ${widthClass}
-        ${loadingClass}
-        ${className ?? ''}
-      `.trim()}
+      className={getButtonClasses({ variant, size, fullWidth, isLoading, className })}
       disabled={isLoading || disabled === true}
       aria-busy={isLoading ? true : undefined}
       {...rest}

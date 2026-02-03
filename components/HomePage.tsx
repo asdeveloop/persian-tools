@@ -1,5 +1,4 @@
-import Link from 'next/link';
-import Button from '@/shared/ui/Button';
+import ButtonLink from '@/shared/ui/ButtonLink';
 import ToolCard from '@/shared/ui/ToolCard';
 import {
   IconCalculator,
@@ -48,21 +47,15 @@ export default function HomePage() {
             </div>
 
             <div className="flex flex-wrap gap-3">
-              <Link href="/pdf-tools">
-                <Button size="lg" className="px-6">
-                  شروع سریع با PDF
-                </Button>
-              </Link>
-              <Link href="/image-tools">
-                <Button variant="secondary" size="lg" className="px-6">
-                  ابزارهای تصویر
-                </Button>
-              </Link>
-              <Link href="/loan">
-                <Button variant="tertiary" size="lg" className="px-6">
-                  محاسبه‌گر وام
-                </Button>
-              </Link>
+              <ButtonLink href="/pdf-tools" size="lg" className="px-6">
+                شروع سریع با PDF
+              </ButtonLink>
+              <ButtonLink href="/image-tools" variant="secondary" size="lg" className="px-6">
+                ابزارهای تصویر
+              </ButtonLink>
+              <ButtonLink href="/loan" variant="tertiary" size="lg" className="px-6">
+                محاسبه‌گر وام
+              </ButtonLink>
             </div>
 
             <div className="grid gap-4 sm:grid-cols-3">
@@ -260,16 +253,12 @@ export default function HomePage() {
           از همین حالا اولین ابزار را امتحان کن و تجربه‌ای سریع و امن داشته باش.
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-3">
-          <Link href="/pdf-tools">
-            <Button size="lg" className="px-8">
-              شروع با PDF
-            </Button>
-          </Link>
-          <Link href="/image-tools">
-            <Button variant="secondary" size="lg" className="px-8">
-              ابزارهای تصویر
-            </Button>
-          </Link>
+          <ButtonLink href="/pdf-tools" size="lg" className="px-8">
+            شروع با PDF
+          </ButtonLink>
+          <ButtonLink href="/image-tools" variant="secondary" size="lg" className="px-8">
+            ابزارهای تصویر
+          </ButtonLink>
         </div>
       </section>
     </div>

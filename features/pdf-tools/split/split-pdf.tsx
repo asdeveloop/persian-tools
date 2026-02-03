@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Button, Card } from '@/components/ui';
 import Alert from '@/shared/ui/Alert';
-import { toEnglishDigits } from '@/shared/utils/number';
+import { toEnglishDigits } from '@/shared/utils/numbers';
 import { createPdfWorkerClient, type PdfWorkerClient } from '@/features/pdf-tools/workerClient';
 
 function parsePageRanges(input: string, totalPages: number): number[] {

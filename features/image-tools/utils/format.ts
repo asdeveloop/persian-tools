@@ -1,4 +1,4 @@
-import { formatNumberFa } from '@/shared/utils/number';
+import { formatNumberFa } from '@/shared/utils/numbers';
 
 const BYTE_UNITS = ['بایت', 'کیلوبایت', 'مگابایت', 'گیگابایت'] as const;
 
@@ -7,10 +7,7 @@ export function formatBytesFa(bytes: number): string {
     return '۰ بایت';
   }
 
-  const index = Math.min(
-    BYTE_UNITS.length - 1,
-    Math.floor(Math.log(bytes) / Math.log(1024)),
-  );
+  const index = Math.min(BYTE_UNITS.length - 1, Math.floor(Math.log(bytes) / Math.log(1024)));
   const value = bytes / Math.pow(1024, index);
   const unit = BYTE_UNITS[index] ?? 'بایت';
 

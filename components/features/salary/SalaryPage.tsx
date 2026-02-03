@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { formatMoneyFa, parseLooseNumber } from '@/shared/utils/number';
+import { formatMoneyFa, parseLooseNumber } from '@/shared/utils/numbers';
 import { getSessionJson, setSessionJson } from '@/shared/storage/sessionStorage';
 import {
   calculateSalary,
@@ -13,7 +13,7 @@ import {
 import type { SalaryInput, SalaryOutput, MinimumWageOutput } from '@/features/salary/salary.types';
 import { AnimatedCard, FadeIn } from '@/shared/ui/AnimatedComponents';
 import Button from '@/shared/ui/Button';
-import { colors, toolCategories } from '@/shared/ui/theme';
+import { tokens, toolCategories } from '@/shared/constants/tokens';
 
 type CalculationMode = 'gross-to-net' | 'net-to-gross' | 'minimum-wage';
 
@@ -540,19 +540,22 @@ export default function SalaryPage() {
                       style={{
                         background: [
                           'linear-gradient(135deg,',
-                          `${colors.primary[50]},`,
-                          `${colors.primary[100]})`,
+                          `${tokens.color.primaryScale[50]},`,
+                          `${tokens.color.primaryScale[100]})`,
                         ].join(' '),
-                        borderColor: colors.primary[200],
+                        borderColor: tokens.color.primaryScale[200],
                       }}
                     >
                       <div
                         className="text-sm font-bold mb-2"
-                        style={{ color: colors.primary[600] }}
+                        style={{ color: tokens.color.primaryScale[600] }}
                       >
                         حقوق ناخالص
                       </div>
-                      <div className="text-2xl font-black" style={{ color: colors.primary[800] }}>
+                      <div
+                        className="text-2xl font-black"
+                        style={{ color: tokens.color.primaryScale[800] }}
+                      >
                         {formatMoneyFa(result.grossSalary)} تومان
                       </div>
                     </motion.div>
@@ -570,11 +573,14 @@ export default function SalaryPage() {
                     >
                       <div
                         className="text-sm font-bold mb-2"
-                        style={{ color: colors.status.error }}
+                        style={{ color: tokens.color.status.error }}
                       >
                         مجموع کسورات
                       </div>
-                      <div className="text-2xl font-black" style={{ color: colors.status.error }}>
+                      <div
+                        className="text-2xl font-black"
+                        style={{ color: tokens.color.status.error }}
+                      >
                         {formatMoneyFa(result.summary.totalDeductions)} تومان
                       </div>
                     </motion.div>
@@ -592,11 +598,14 @@ export default function SalaryPage() {
                     >
                       <div
                         className="text-sm font-bold mb-2"
-                        style={{ color: colors.status.success }}
+                        style={{ color: tokens.color.status.success }}
                       >
                         حقوق خالص
                       </div>
-                      <div className="text-2xl font-black" style={{ color: colors.status.success }}>
+                      <div
+                        className="text-2xl font-black"
+                        style={{ color: tokens.color.status.success }}
+                      >
                         {formatMoneyFa(result.netSalary)} تومان
                       </div>
                     </motion.div>

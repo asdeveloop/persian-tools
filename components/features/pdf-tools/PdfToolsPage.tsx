@@ -30,6 +30,7 @@ const pdfTools: PdfToolItem[] = [
     icon: '📝',
     path: '/pdf-tools/convert/pdf-to-text',
     category: 'convert',
+    status: 'coming-soon',
   },
   {
     id: 'word-to-pdf',
@@ -38,6 +39,7 @@ const pdfTools: PdfToolItem[] = [
     icon: '📄',
     path: '/pdf-tools/convert/word-to-pdf',
     category: 'convert',
+    status: 'coming-soon',
   },
 
   // Compress tools
@@ -106,6 +108,7 @@ const pdfTools: PdfToolItem[] = [
     icon: '🔢',
     path: '/pdf-tools/paginate/add-page-numbers',
     category: 'paginate',
+    status: 'coming-soon',
   },
 
   // Extract tools
@@ -116,6 +119,7 @@ const pdfTools: PdfToolItem[] = [
     icon: '📑',
     path: '/pdf-tools/extract/extract-pages',
     category: 'extract',
+    status: 'coming-soon',
   },
   {
     id: 'extract-text',
@@ -124,6 +128,7 @@ const pdfTools: PdfToolItem[] = [
     icon: '📋',
     path: '/pdf-tools/extract/extract-text',
     category: 'extract',
+    status: 'coming-soon',
   },
 ];
 
@@ -219,27 +224,39 @@ export default function PdfToolsPage() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {filteredTools.map((tool) => (
-          <Card
-            key={tool.id}
-            className="group hover:shadow-[var(--shadow-strong)] transition-all duration-[var(--motion-medium)]"
-          >
-            <Link href={tool.path} className="block p-6 text-center">
-              <div className="text-4xl mb-4 group-hover:scale-110 transition-transform duration-[var(--motion-fast)]">
+        {filteredTools.map((tool) => {
+          const isComingSoon = tool.status === 'coming-soon';
+          const content = (
+            <div className="block p-6 text-center">
+              <div
+                className={`text-4xl mb-4 transition-transform duration-[var(--motion-fast)] ${isComingSoon ? '' : 'group-hover:scale-110'}`}
+              >
                 {tool.icon}
               </div>
-              <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-2 group-hover:text-[var(--color-primary)] transition-colors duration-[var(--motion-fast)]">
-                {tool.title}
-              </h3>
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <h3
+                  className={`text-lg font-semibold transition-colors duration-[var(--motion-fast)] ${isComingSoon ? 'text-[var(--text-primary)]' : 'text-[var(--text-primary)] group-hover:text-[var(--color-primary)]'}`}
+                >
+                  {tool.title}
+                </h3>
+                {isComingSoon && (
+                  <span className="rounded-full border border-[var(--border-light)] bg-[var(--bg-subtle)] px-2 py-0.5 text-[10px] font-bold text-[var(--text-muted)]">
+                    به‌زودی
+                  </span>
+                )}
+              </div>
               <p className="text-sm text-[var(--text-muted)] leading-relaxed">{tool.description}</p>
               <div className="mt-4">
-                <span className="inline-flex items-center text-[var(--color-primary)] font-semibold text-sm">
-                  شروع کنید
+                <span
+                  className={`inline-flex items-center font-semibold text-sm ${isComingSoon ? 'text-[var(--text-muted)]' : 'text-[var(--color-primary)]'}`}
+                >
+                  {isComingSoon ? 'در حال توسعه' : 'شروع کنید'}
                   <svg
                     className="mr-2 h-4 w-4"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
+                    aria-hidden="true"
                   >
                     <path
                       strokeLinecap="round"
@@ -250,9 +267,28 @@ export default function PdfToolsPage() {
                   </svg>
                 </span>
               </div>
-            </Link>
-          </Card>
-        ))}
+            </div>
+          );
+
+          return (
+            <Card
+              key={tool.id}
+              className={`group transition-all duration-[var(--motion-medium)] ${
+                isComingSoon
+                  ? 'opacity-80'
+                  : 'hover:shadow-[var(--shadow-strong)] hover:-translate-y-1'
+              }`}
+            >
+              {isComingSoon ? (
+                <div aria-disabled="true">{content}</div>
+              ) : (
+                <Link href={tool.path} className="block">
+                  {content}
+                </Link>
+              )}
+            </Card>
+          );
+        })}
       </div>
 
       {filteredTools.length === 0 && (

@@ -4,7 +4,7 @@ import type { DragEvent } from 'react';
 import { useId, useState } from 'react';
 import { Card } from '@/components/ui';
 import { cx } from '@/shared/ui/cx';
-import { formatNumberFa } from '@/shared/utils/number';
+import { formatNumberFa } from '@/shared/utils/numbers';
 
 type Props = {
   onFilesSelected: (files: FileList | null) => void;

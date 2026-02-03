@@ -1,6 +1,5 @@
-'use client';
-
 import type { ReactNode } from 'react';
+import Link from 'next/link';
 import { cx } from './cx';
 
 type Props = {
@@ -15,14 +14,10 @@ type Props = {
 
 export default function ToolCard(props: Props) {
   return (
-    <a
+    <Link
       href={props.href}
       data-testid="tool-card"
       aria-label={props.title}
-      onClick={(event) => {
-        event.preventDefault();
-        window.location.assign(props.href);
-      }}
       className={cx(
         'block group focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-primary)]',
         'rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)]/92 backdrop-blur',
@@ -62,6 +57,6 @@ export default function ToolCard(props: Props) {
           <span aria-hidden="true">←</span>
         </div>
       </div>
-    </a>
+    </Link>
   );
 }

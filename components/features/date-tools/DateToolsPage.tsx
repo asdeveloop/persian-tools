@@ -17,7 +17,7 @@ import {
   type DateParts,
   getWeekdayName,
 } from '@/features/date-tools/date-tools.logic';
-import { toEnglishDigits } from '@/shared/utils/number';
+import { toEnglishDigits } from '@/shared/utils/numbers';
 
 type ParseResult = { ok: true; date: DateParts } | { ok: false; error: string };
 

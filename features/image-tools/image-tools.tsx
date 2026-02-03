@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
 import { Button, Card } from '@/components/ui';
 import { formatBytesFa, formatPercentFa } from './utils/format';
-import { formatNumberFa, parseLooseNumber } from '@/shared/utils/number';
+import { formatNumberFa, parseLooseNumber } from '@/shared/utils/numbers';
 import ImageDropzone from './components/ImageDropzone';
 import { useImageToolsWorker } from './hooks/useImageToolsWorker';
 import Alert from '@/shared/ui/Alert';

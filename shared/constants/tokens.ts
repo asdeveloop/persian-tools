@@ -62,11 +62,24 @@ export const tokens = {
       hover: 'var(--color-primary-hover)',
       pressed: 'var(--color-primary-pressed)',
     },
+    primaryScale: {
+      50: 'var(--color-primary-50)',
+      100: 'var(--color-primary-100)',
+      200: 'var(--color-primary-200)',
+      300: 'var(--color-primary-300)',
+      400: 'var(--color-primary-400)',
+      500: 'var(--color-primary-500)',
+      600: 'var(--color-primary-600)',
+      700: 'var(--color-primary-700)',
+      800: 'var(--color-primary-800)',
+      900: 'var(--color-primary-900)',
+    },
     primaryRgb: 'var(--color-primary-rgb)',
     status: {
       success: 'var(--color-success)',
       warning: 'var(--color-warning)',
       danger: 'var(--color-danger)',
+      error: 'var(--color-danger)',
       info: 'var(--color-info)',
     },
     statusRgb: {
@@ -119,6 +132,29 @@ export const tokens = {
       desktop: '32px',
     },
     maxWidth: '1200px',
+  },
+} as const;
+
+export const toolCategories = {
+  financial: {
+    primary: 'var(--color-financial)',
+    name: 'مالی',
+    icon: '💰',
+  },
+  document: {
+    primary: 'var(--color-document)',
+    name: 'مستندات',
+    icon: '📄',
+  },
+  image: {
+    primary: 'var(--color-image)',
+    name: 'تصویر',
+    icon: '🖼️',
+  },
+  utility: {
+    primary: 'var(--color-utility)',
+    name: 'کاربردی',
+    icon: '🛠️',
   },
 } as const;
 

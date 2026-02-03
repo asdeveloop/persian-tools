@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { formatMoneyFa, parseLooseNumber } from '@/shared/utils/number';
+import { formatMoneyFa, parseLooseNumber } from '@/shared/utils/numbers';
 import { getSessionJson, setSessionJson } from '@/shared/storage/sessionStorage';
 import { calculateLoan } from '@/features/loan/loan.logic';
 import type { LoanResult, LoanType, CalculationType } from '@/features/loan/loan.types';
@@ -12,7 +12,7 @@ import {
   StaggerItem,
   FadeIn,
 } from '@/shared/ui/AnimatedComponents';
-import { toolCategories } from '@/shared/ui/theme';
+import { toolCategories } from '@/shared/constants/tokens';
 
 type LoanFormState = {
   calculationType: CalculationType;

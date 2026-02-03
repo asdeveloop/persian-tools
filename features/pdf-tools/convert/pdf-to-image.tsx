@@ -5,7 +5,7 @@ import Image from 'next/image';
 import type { PDFPageProxy } from 'pdfjs-dist/types/src/display/api';
 import { Button, Card } from '@/components/ui';
 import Alert from '@/shared/ui/Alert';
-import { toEnglishDigits } from '@/shared/utils/number';
+import { toEnglishDigits } from '@/shared/utils/numbers';
 import { loadJsZip, loadPdfJs } from '@/features/pdf-tools/lazy-deps';
 
 type OutputImage = {

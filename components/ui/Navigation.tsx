@@ -1,10 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, type FocusEvent, type KeyboardEvent } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import Container from '@/shared/ui/Container';
-import Button from '@/shared/ui/Button';
+import ButtonLink from '@/shared/ui/ButtonLink';
 import { tokens, withAlpha } from '@/shared/constants/tokens';
 import {
   IconPdf,
@@ -29,6 +29,22 @@ export default function Navigation() {
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
     setOpenDropdown(null);
+  };
+
+  const handleMenuBlur = (menu: string) => (event: FocusEvent<HTMLElement>) => {
+    if (openDropdown !== menu) {
+      return;
+    }
+    if (event.currentTarget.contains(event.relatedTarget as Node | null)) {
+      return;
+    }
+    setOpenDropdown(null);
+  };
+
+  const handleMenuKeyDown = (event: KeyboardEvent<HTMLElement>) => {
+    if (event.key === 'Escape') {
+      setOpenDropdown(null);
+    }
   };
 
   const dropdownVariants = {
@@ -126,15 +142,21 @@ export default function Navigation() {
           aria-label="Main navigation"
         >
           {/* PDF Tools Dropdown */}
-          <div className="relative group">
+          <div
+            className="relative group"
+            onFocusCapture={() => setOpenDropdown('pdf')}
+            onBlurCapture={handleMenuBlur('pdf')}
+          >
             <motion.button
               className="flex items-center gap-2 rounded-full border border-transparent px-4 py-2.5 text-sm font-bold text-[var(--text-primary)] transition-all duration-[var(--motion-medium)] hover:border-[var(--border-light)] hover:bg-[var(--surface-1)]/85 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-primary)]"
               onMouseEnter={() => setOpenDropdown('pdf')}
               onMouseLeave={() => setOpenDropdown(null)}
+              onKeyDown={handleMenuKeyDown}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               aria-expanded={openDropdown === 'pdf'}
               aria-haspopup="true"
+              aria-controls="pdf-dropdown-menu"
               id="pdf-dropdown-button"
             >
               <IconPdf className="h-4 w-4" />
@@ -159,6 +181,7 @@ export default function Navigation() {
                   onMouseLeave={() => setOpenDropdown(null)}
                   role="menu"
                   aria-labelledby="pdf-dropdown-button"
+                  id="pdf-dropdown-menu"
                 >
                   <Link
                     href="/pdf-tools"
@@ -198,13 +221,22 @@ export default function Navigation() {
           </div>
 
           {/* Image Tools Dropdown */}
-          <div className="relative group">
+          <div
+            className="relative group"
+            onFocusCapture={() => setOpenDropdown('image')}
+            onBlurCapture={handleMenuBlur('image')}
+          >
             <motion.button
               className="flex items-center gap-2 rounded-full border border-transparent px-4 py-2.5 text-sm font-bold text-[var(--text-primary)] transition-all duration-[var(--motion-medium)] hover:border-[var(--border-light)] hover:bg-[var(--surface-1)]/85 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-primary)]"
               onMouseEnter={() => setOpenDropdown('image')}
               onMouseLeave={() => setOpenDropdown(null)}
+              onKeyDown={handleMenuKeyDown}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              aria-expanded={openDropdown === 'image'}
+              aria-haspopup="true"
+              aria-controls="image-dropdown-menu"
+              id="image-dropdown-button"
             >
               <IconImage className="h-4 w-4" />
               ابزارهای تصویر
@@ -226,11 +258,15 @@ export default function Navigation() {
                   className="absolute top-full left-0 mt-2 w-80 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)]/96 shadow-[var(--shadow-strong)] backdrop-blur-xl py-4 overflow-hidden"
                   onMouseEnter={() => setOpenDropdown('image')}
                   onMouseLeave={() => setOpenDropdown(null)}
+                  role="menu"
+                  aria-labelledby="image-dropdown-button"
+                  id="image-dropdown-menu"
                 >
                   <Link
                     href="/image-tools"
                     className="mx-2 flex items-center gap-3 rounded-lg px-4 py-3 text-sm transition-all duration-[var(--motion-fast)] text-[var(--text-primary)] hover:bg-[var(--bg-subtle)] hover:text-[var(--color-primary)] focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-primary)]"
                     onClick={closeMobileMenu}
+                    role="menuitem"
                   >
                     <motion.div
                       className="flex items-center justify-center w-8 h-8 rounded-full transition-colors"
@@ -271,6 +307,7 @@ export default function Navigation() {
                     style={{ color: tokens.color.text.muted }}
                     disabled
                     aria-disabled="true"
+                    role="menuitem"
                   >
                     <motion.div
                       className="flex items-center justify-center w-8 h-8 rounded-full"
@@ -292,6 +329,7 @@ export default function Navigation() {
                     style={{ color: tokens.color.text.muted }}
                     disabled
                     aria-disabled="true"
+                    role="menuitem"
                   >
                     <motion.div
                       className="flex items-center justify-center w-8 h-8 rounded-full"
@@ -313,13 +351,22 @@ export default function Navigation() {
           </div>
 
           {/* Financial Tools */}
-          <div className="relative group">
+          <div
+            className="relative group"
+            onFocusCapture={() => setOpenDropdown('financial')}
+            onBlurCapture={handleMenuBlur('financial')}
+          >
             <motion.button
               className="flex items-center gap-2 rounded-full border border-transparent px-4 py-2.5 text-sm font-bold text-[var(--text-primary)] transition-all duration-[var(--motion-medium)] hover:border-[var(--border-light)] hover:bg-[var(--surface-1)]/85"
               onMouseEnter={() => setOpenDropdown('financial')}
               onMouseLeave={() => setOpenDropdown(null)}
+              onKeyDown={handleMenuKeyDown}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              aria-expanded={openDropdown === 'financial'}
+              aria-haspopup="true"
+              aria-controls="financial-dropdown-menu"
+              id="financial-dropdown-button"
             >
               <IconCalculator className="h-4 w-4" />
               ابزارهای مالی
@@ -341,11 +388,15 @@ export default function Navigation() {
                   className="absolute top-full left-0 mt-2 w-80 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)]/96 shadow-[var(--shadow-strong)] backdrop-blur-xl py-4 overflow-hidden"
                   onMouseEnter={() => setOpenDropdown('financial')}
                   onMouseLeave={() => setOpenDropdown(null)}
+                  role="menu"
+                  aria-labelledby="financial-dropdown-button"
+                  id="financial-dropdown-menu"
                 >
                   <Link
                     href="/loan"
                     className="flex items-center gap-3 px-4 py-3 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-subtle)] hover:text-[var(--color-primary)] transition-all duration-[var(--motion-fast)] group"
                     onClick={closeMobileMenu}
+                    role="menuitem"
                   >
                     <motion.div
                       className="flex items-center justify-center w-8 h-8 rounded-full transition-colors"
@@ -363,6 +414,7 @@ export default function Navigation() {
                     href="/salary"
                     className="flex items-center gap-3 px-4 py-3 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-subtle)] hover:text-[var(--color-primary)] transition-all duration-[var(--motion-fast)] group"
                     onClick={closeMobileMenu}
+                    role="menuitem"
                   >
                     <motion.div
                       className="flex items-center justify-center w-8 h-8 rounded-full transition-colors"
@@ -405,21 +457,15 @@ export default function Navigation() {
         </nav>
 
         <div className="hidden lg:flex items-center gap-3">
-          <Link href="/pdf-tools">
-            <Button size="sm" className="px-4">
-              شروع سریع
-            </Button>
-          </Link>
-          <Link href="/date-tools">
-            <Button size="sm" variant="secondary" className="px-4">
-              ابزارهای تاریخ
-            </Button>
-          </Link>
-          <Link href="/text-tools">
-            <Button size="sm" variant="tertiary" className="px-4">
-              ابزارهای متنی
-            </Button>
-          </Link>
+          <ButtonLink href="/pdf-tools" size="sm" className="px-4">
+            شروع سریع
+          </ButtonLink>
+          <ButtonLink href="/date-tools" size="sm" variant="secondary" className="px-4">
+            ابزارهای تاریخ
+          </ButtonLink>
+          <ButtonLink href="/text-tools" size="sm" variant="tertiary" className="px-4">
+            ابزارهای متنی
+          </ButtonLink>
         </div>
 
         {/* Mobile Menu Button */}

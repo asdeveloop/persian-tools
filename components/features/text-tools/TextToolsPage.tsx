@@ -9,7 +9,7 @@ import {
   isValidJalaliDate,
   jalaliToGregorian,
 } from '@/features/date-tools/date-tools.logic';
-import { numberToWordsFa, parseLooseNumber, toEnglishDigits } from '@/shared/utils/number';
+import { numberToWordsFa, parseLooseNumber, toEnglishDigits } from '@/shared/utils/numbers';
 
 type CalendarType = 'jalali' | 'gregorian';
 
