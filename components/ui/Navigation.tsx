@@ -434,6 +434,17 @@ export default function Navigation() {
             </AnimatePresence>
           </div>
 
+          {/* Tools Dashboard */}
+          <div className="relative group">
+            <Link
+              href="/tools"
+              className="flex items-center gap-2 rounded-full border border-transparent px-4 py-2.5 text-sm font-bold text-[var(--text-primary)] transition-all duration-[var(--motion-medium)] hover:border-[var(--border-light)] hover:bg-[var(--surface-1)]/85"
+            >
+              <IconChevronDown className="h-4 w-4 rotate-90" />
+              همه ابزارها
+            </Link>
+          </div>
+
           {/* Date Tools */}
           <div className="relative group">
             <Link
@@ -466,9 +477,23 @@ export default function Navigation() {
               ابزارهای اعتبارسنجی
             </Link>
           </div>
+
+          {/* Developers */}
+          <div className="relative group">
+            <Link
+              href="/developers"
+              className="flex items-center gap-2 rounded-full border border-transparent px-4 py-2.5 text-sm font-bold text-[var(--text-primary)] transition-all duration-[var(--motion-medium)] hover:border-[var(--border-light)] hover:bg-[var(--surface-1)]/85"
+            >
+              <IconZap className="h-4 w-4" />
+              توسعه‌دهندگان
+            </Link>
+          </div>
         </nav>
 
         <div className="hidden lg:flex items-center gap-3">
+          <ButtonLink href="/tools" size="sm" variant="secondary" className="px-4">
+            همه ابزارها
+          </ButtonLink>
           <ButtonLink href="/pdf-tools" size="sm" className="px-4">
             شروع سریع
           </ButtonLink>
@@ -717,6 +742,29 @@ export default function Navigation() {
                 </AnimatePresence>
               </div>
 
+              {/* Tools Dashboard */}
+              <div>
+                <Link
+                  href="/tools"
+                  className="flex items-center gap-3 w-full px-4 py-3 text-sm font-bold text-[var(--text-primary)] hover:bg-[var(--bg-subtle)] hover:text-[var(--text-primary)] rounded-full transition-all duration-[var(--motion-fast)]"
+                  onClick={closeMobileMenu}
+                >
+                  <motion.div
+                    className="flex items-center justify-center w-8 h-8 rounded-full"
+                    style={{ backgroundColor: withAlpha(tokens.color.statusRgb.info, 0.16) }}
+                    whileHover={{ scale: 1.1 }}
+                  >
+                    <IconChevronDown className="h-4 w-4 text-[var(--color-primary)] rotate-90" />
+                  </motion.div>
+                  <div className="flex-1">
+                    <div className="font-bold">همه ابزارها</div>
+                    <div className="text-xs text-[var(--text-muted)]">
+                      جست‌وجو و مسیرهای پیشنهادی
+                    </div>
+                  </div>
+                </Link>
+              </div>
+
               {/* Date Tools */}
               <div>
                 <Link
@@ -779,6 +827,29 @@ export default function Navigation() {
                     <div className="font-bold">اعتبارسنجی داده‌ها</div>
                     <div className="text-xs text-[var(--text-muted)]">
                       کد ملی، موبایل، شبا و پلاک
+                    </div>
+                  </div>
+                </Link>
+              </div>
+
+              {/* Developers */}
+              <div>
+                <Link
+                  href="/developers"
+                  className="flex items-center gap-3 w-full px-4 py-3 text-sm font-bold text-[var(--text-primary)] hover:bg-[var(--bg-subtle)] hover:text-[var(--text-primary)] rounded-full transition-all duration-[var(--motion-fast)]"
+                  onClick={closeMobileMenu}
+                >
+                  <motion.div
+                    className="flex items-center justify-center w-8 h-8 rounded-full"
+                    style={{ backgroundColor: withAlpha(tokens.color.statusRgb.info, 0.16) }}
+                    whileHover={{ scale: 1.1 }}
+                  >
+                    <IconZap className="h-4 w-4 text-[var(--color-info)]" />
+                  </motion.div>
+                  <div className="flex-1">
+                    <div className="font-bold">توسعه‌دهندگان</div>
+                    <div className="text-xs text-[var(--text-muted)]">
+                      راهنمای استفاده از کتابخانه
                     </div>
                   </div>
                 </Link>

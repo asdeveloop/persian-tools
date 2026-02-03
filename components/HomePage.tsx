@@ -56,6 +56,9 @@ export default function HomePage() {
               <ButtonLink href="/loan" variant="tertiary" size="lg" className="px-6">
                 محاسبه‌گر وام
               </ButtonLink>
+              <ButtonLink href="/tools" variant="secondary" size="lg" className="px-6">
+                همه ابزارها
+              </ButtonLink>
             </div>
 
             <div className="grid gap-4 sm:grid-cols-3">

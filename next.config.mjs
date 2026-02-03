@@ -74,11 +74,6 @@ const nextConfig = {
   async redirects() {
     return [
       {
-        source: '/tools',
-        destination: '/pdf-tools',
-        permanent: false,
-      },
-      {
         source: '/image-compress',
         destination: '/image-tools',
         permanent: true,

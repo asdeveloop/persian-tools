@@ -9,6 +9,8 @@ const routes = [
   { path: '/date-tools', heading: 'ابزارهای تاریخ' },
   { path: '/text-tools', heading: 'ابزارهای متنی' },
   { path: '/validation-tools', heading: 'اعتبارسنجی' },
+  { path: '/tools', heading: 'همه ابزارها' },
+  { path: '/developers', heading: 'توسعه‌دهندگان' },
 ];
 
 test.describe('main routes', () => {
