@@ -35,7 +35,7 @@
 ### 3. Shared Layer (shared/)
 
 - UI primitives
-- Utilities
+- Utilities (numbers, localization, analytics)
 - Constants
 - Types
 

@@ -1,0 +1,26 @@
+{
+  "name": "جعبه ابزار فارسی",
+  "short_name": "Persian Tools",
+  "description": "مجموعه ابزارهای آنلاین فارسی برای PDF، محاسبات مالی و پردازش تصویر",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f5f7fb",
+  "theme_color": "#2563eb",
+  "lang": "fa-IR",
+  "dir": "rtl",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/apple-touch-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

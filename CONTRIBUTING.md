@@ -6,13 +6,13 @@
 
 ### 📋 پیش‌نیازها
 
-- Node.js 18+ و pnpm 9+
+- Node.js 20+ و pnpm 9+
 - Git
 - VS Code (توصیه شده)
 - Essential extensions:
   - ESLint
   - Prettier
-  - TypeScript Vue Plugin
+  - TypeScript
 
 ### 🚀 شروع سریع
 
@@ -72,20 +72,20 @@ Closes #123
 قبل از ارسال PR:
 
 ```bash
-# Run all tests
+# Run lint + typecheck + format
 pnpm check
 
 # Run specific test
 pnpm test -- utils.test.ts
 
-# Run with coverage
-pnpm test:coverage
+# Run with coverage (CI mode)
+pnpm test:ci
 
 # E2E tests
 pnpm test:e2e
 ```
 
-**Coverage requirement:** حداقل 80%
+**Coverage requirement:** 100% برای ماژول‌های هسته (shared/utils و منطق‌های اصلی)
 
 ### 📦 نامگذاری فایل‌ها
 
@@ -106,6 +106,17 @@ pnpm format:check
 # ESLint
 pnpm lint:fix
 ```
+
+### 📚 مستندات و API
+
+```bash
+# Generate API docs
+pnpm docs:api
+```
+
+### 🚀 انتشار
+
+انتشار به صورت خودکار با **semantic-release** انجام می‌شود. لطفاً از **Conventional Commits** استفاده کنید تا نسخه‌گذاری و CHANGELOG به‌درستی تولید شوند.
 
 ### ✅ Checklist قبل از PR
 
