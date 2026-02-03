@@ -16,6 +16,7 @@ import {
   IconX,
   IconCalendar,
   IconZap,
+  IconShield,
 } from '@/shared/ui/icons';
 
 export default function Navigation() {
@@ -454,6 +455,17 @@ export default function Navigation() {
               ابزارهای متنی
             </Link>
           </div>
+
+          {/* Validation Tools */}
+          <div className="relative group">
+            <Link
+              href="/validation-tools"
+              className="flex items-center gap-2 rounded-full border border-transparent px-4 py-2.5 text-sm font-bold text-[var(--text-primary)] transition-all duration-[var(--motion-medium)] hover:border-[var(--border-light)] hover:bg-[var(--surface-1)]/85"
+            >
+              <IconShield className="h-4 w-4" />
+              ابزارهای اعتبارسنجی
+            </Link>
+          </div>
         </nav>
 
         <div className="hidden lg:flex items-center gap-3">
@@ -465,6 +477,9 @@ export default function Navigation() {
           </ButtonLink>
           <ButtonLink href="/text-tools" size="sm" variant="tertiary" className="px-4">
             ابزارهای متنی
+          </ButtonLink>
+          <ButtonLink href="/validation-tools" size="sm" variant="tertiary" className="px-4">
+            اعتبارسنجی
           </ButtonLink>
         </div>
 
@@ -741,6 +756,29 @@ export default function Navigation() {
                     <div className="font-bold">ابزارهای متنی</div>
                     <div className="text-xs text-[var(--text-muted)]">
                       تبدیل عدد، تاریخ و شمارش کلمات
+                    </div>
+                  </div>
+                </Link>
+              </div>
+
+              {/* Validation Tools */}
+              <div>
+                <Link
+                  href="/validation-tools"
+                  className="flex items-center gap-3 w-full px-4 py-3 text-sm font-bold text-[var(--text-primary)] hover:bg-[var(--bg-subtle)] hover:text-[var(--text-primary)] rounded-full transition-all duration-[var(--motion-fast)]"
+                  onClick={closeMobileMenu}
+                >
+                  <motion.div
+                    className="flex items-center justify-center w-8 h-8 rounded-full"
+                    style={{ backgroundColor: withAlpha(tokens.color.statusRgb.success, 0.16) }}
+                    whileHover={{ scale: 1.1 }}
+                  >
+                    <IconShield className="h-4 w-4 text-[var(--color-success)]" />
+                  </motion.div>
+                  <div className="flex-1">
+                    <div className="font-bold">اعتبارسنجی داده‌ها</div>
+                    <div className="text-xs text-[var(--text-muted)]">
+                      کد ملی، موبایل، شبا و پلاک
                     </div>
                   </div>
                 </Link>

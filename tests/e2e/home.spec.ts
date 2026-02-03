@@ -8,7 +8,7 @@ test.describe('Home Page', () => {
     await expect(hero).toContainText('ابزارهای فارسی که');
 
     const toolCards = page.locator('[data-testid="tool-card"]');
-    await expect(toolCards).toHaveCount(6);
+    await expect(toolCards).toHaveCount(7);
   });
 
   test('should navigate to PDF tools', async ({ page }) => {

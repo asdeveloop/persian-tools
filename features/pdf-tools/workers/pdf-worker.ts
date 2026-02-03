@@ -21,6 +21,21 @@ type SplitRequest = {
   pages: number[];
 };
 
+type ReorderRequest = {
+  id: string;
+  type: 'reorder';
+  file: ArrayBuffer;
+  pages: number[];
+};
+
+type RotateRequest = {
+  id: string;
+  type: 'rotate';
+  file: ArrayBuffer;
+  pages: number[];
+  rotation: number;
+};
+
 type CompressRequest = {
   id: string;
   type: 'compress';
@@ -47,6 +62,8 @@ type CountPagesRequest = {
 type WorkerRequest =
   | MergeRequest
   | SplitRequest
+  | ReorderRequest
+  | RotateRequest
   | CompressRequest
   | WatermarkRequest
   | CountPagesRequest;
@@ -145,6 +162,42 @@ ctx.onmessage = async (event: MessageEvent<WorkerRequest>) => {
         const bytes = await resultPdf.save();
         const buffer = toArrayBuffer(bytes);
         postProgress(payload.id, 1);
+        const response: WorkerResponse = { id: payload.id, type: 'result', buffer };
+        ctx.postMessage(response, [buffer]);
+        return;
+      }
+      case 'reorder': {
+        postProgress(payload.id, 0.1);
+        const sourcePdf = await PDFDocument.load(payload.file);
+        const resultPdf = await PDFDocument.create();
+        const copiedPages = await resultPdf.copyPages(sourcePdf, payload.pages);
+        if (copiedPages.length === 0) {
+          throw new Error('هیچ صفحه ای برای جابجایی ارسال نشده است.');
+        }
+        copiedPages.forEach((page, index) => {
+          resultPdf.addPage(page);
+          postProgress(payload.id, (index + 1) / copiedPages.length);
+        });
+        const bytes = await resultPdf.save();
+        const buffer = toArrayBuffer(bytes);
+        const response: WorkerResponse = { id: payload.id, type: 'result', buffer };
+        ctx.postMessage(response, [buffer]);
+        return;
+      }
+      case 'rotate': {
+        postProgress(payload.id, 0.1);
+        const pdfDoc = await PDFDocument.load(payload.file);
+        const total = payload.pages.length;
+        if (total === 0) {
+          throw new Error('هیچ صفحه ای برای چرخش ارسال نشده است.');
+        }
+        payload.pages.forEach((index, idx) => {
+          const page = pdfDoc.getPage(index);
+          page.setRotation(degrees(payload.rotation));
+          postProgress(payload.id, (idx + 1) / total);
+        });
+        const bytes = await pdfDoc.save();
+        const buffer = toArrayBuffer(bytes);
         const response: WorkerResponse = { id: payload.id, type: 'result', buffer };
         ctx.postMessage(response, [buffer]);
         return;

@@ -72,12 +72,28 @@ const pdfTools: PdfToolItem[] = [
     category: 'split',
   },
   {
+    id: 'rotate-pages',
+    title: 'چرخش صفحات',
+    description: 'چرخاندن صفحات انتخابی در PDF',
+    icon: '🔄',
+    path: '/pdf-tools/edit/rotate-pages',
+    category: 'edit',
+  },
+  {
+    id: 'reorder-pages',
+    title: 'جابجایی صفحات',
+    description: 'تغییر ترتیب صفحات PDF',
+    icon: '↔️',
+    path: '/pdf-tools/edit/reorder-pages',
+    category: 'edit',
+  },
+  {
     id: 'delete-pages',
     title: 'حذف صفحات PDF',
     description: 'صفحات انتخابی را از فایل PDF حذف کنید',
     icon: '🧹',
     path: '/pdf-tools/edit/delete-pages',
-    category: 'split',
+    category: 'edit',
   },
 
   // Security tools
@@ -145,6 +161,7 @@ const categories = [
   { id: 'compress', name: 'فشرده‌سازی', icon: '🗜️' },
   { id: 'merge', name: 'ادغام', icon: '➕' },
   { id: 'split', name: 'تقسیم', icon: '✂️' },
+  { id: 'edit', name: 'ویرایش', icon: '🧩' },
   { id: 'security', name: 'امنیت', icon: '🔒' },
   { id: 'watermark', name: 'واترمارک', icon: '🖋️' },
   { id: 'paginate', name: 'صفحه‌بندی', icon: '🔢' },

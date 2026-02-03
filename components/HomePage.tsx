@@ -188,6 +188,15 @@ export default function HomePage() {
             iconWrapClassName="bg-[rgb(var(--color-info-rgb)/0.14)]"
             className="hover:border-[var(--color-info)] hover:bg-[rgb(var(--color-info-rgb)/0.08)]"
           />
+          <ToolCard
+            href="/validation-tools"
+            title="اعتبارسنجی داده‌ها"
+            meta="۶ ابزار"
+            description="کد ملی، موبایل، کارت بانکی، شبا، کدپستی و پلاک"
+            icon={<IconShield className="h-7 w-7 text-[var(--color-success)]" />}
+            iconWrapClassName="bg-[rgb(var(--color-success-rgb)/0.12)]"
+            className="hover:border-[var(--color-success)] hover:bg-[rgb(var(--color-success-rgb)/0.06)]"
+          />
         </div>
       </section>
 

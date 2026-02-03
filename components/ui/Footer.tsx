@@ -214,6 +214,29 @@ export default function Footer() {
                 </li>
               </ul>
             </div>
+
+            <div>
+              <h3 className="mb-4 flex items-center gap-2 font-bold text-[var(--text-primary)]">
+                <IconShield className="h-5 w-5 text-[var(--color-success)]" />
+                اعتبارسنجی داده‌ها
+              </h3>
+              <ul className="space-y-2">
+                <li>
+                  <Link
+                    href="/validation-tools"
+                    className="text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
+                  >
+                    کد ملی و موبایل
+                  </Link>
+                </li>
+                <li>
+                  <span className="text-sm text-[var(--text-muted)]/80">کارت بانکی و شبا</span>
+                </li>
+                <li>
+                  <span className="text-sm text-[var(--text-muted)]/80">کدپستی و پلاک</span>
+                </li>
+              </ul>
+            </div>
           </div>
         </Container>
       </div>

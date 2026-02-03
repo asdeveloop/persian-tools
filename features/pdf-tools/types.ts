@@ -3,6 +3,7 @@ export type PdfToolCategory =
   | 'compress'
   | 'merge'
   | 'split'
+  | 'edit'
   | 'security'
   | 'watermark'
   | 'paginate'

@@ -63,6 +63,26 @@ test.describe('Tool flows', () => {
     await expect(alert).toBeVisible();
   });
 
+  test('pdf rotate pages should show error when no file selected', async ({ page }) => {
+    await page.goto('/pdf-tools/edit/rotate-pages');
+
+    await page.getByRole('button', { name: 'چرخش صفحات' }).click();
+    const alert = page
+      .locator('[role="alert"]')
+      .filter({ hasText: 'ابتدا فایل PDF را انتخاب کنید.' });
+    await expect(alert).toBeVisible();
+  });
+
+  test('pdf reorder pages should show error when no file selected', async ({ page }) => {
+    await page.goto('/pdf-tools/edit/reorder-pages');
+
+    await page.getByRole('button', { name: 'جابجایی صفحات' }).click();
+    const alert = page
+      .locator('[role="alert"]')
+      .filter({ hasText: 'ابتدا فایل PDF را انتخاب کنید.' });
+    await expect(alert).toBeVisible();
+  });
+
   test('pdf merge should show error when less than two files selected', async ({ page }) => {
     await page.goto('/pdf-tools/merge/merge-pdf');
 
