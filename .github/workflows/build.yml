@@ -35,12 +35,12 @@ jobs:
         run: pnpm build:lib
 
       - name: '📤 Upload build artifacts'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v6
         with:
           name: next-build
           path: .next/
       - name: '📤 Upload library artifacts'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v6
         with:
           name: dist
           path: dist/
