@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import {
   toPersianNumbers,
   formatPersianCurrency,
@@ -6,7 +6,8 @@ import {
   formatPersianDate,
   fixPersianSpacing,
   isPersianText,
-} from '@/shared/utils/persian';
+  rtlAttributes,
+} from '@/shared/utils/localization';
 
 describe('Persian Utils', () => {
   describe('toPersianNumbers', () => {
@@ -57,6 +58,44 @@ describe('Persian Utils', () => {
       }
       expect(formatPersianDate(date)).toBe(expected);
     });
+
+    it('should return empty string for invalid date', () => {
+      expect(formatPersianDate(Number.NaN)).toBe('');
+    });
+
+    it('should fallback when persian calendar is unsupported', async () => {
+      vi.resetModules();
+      const originalIntl = Intl;
+
+      vi.stubGlobal('Intl', {
+        NumberFormat: originalIntl.NumberFormat,
+        DateTimeFormat: function DateTimeFormat(
+          locales: string | string[],
+          options?: Intl.DateTimeFormatOptions,
+        ) {
+          if (locales === 'fa-IR-u-ca-persian') {
+            return {
+              format: () => {
+                throw new Error('unsupported');
+              },
+            } as unknown as Intl.DateTimeFormat;
+          }
+          return new originalIntl.DateTimeFormat(locales, options);
+        },
+      });
+
+      const { formatPersianDate: formatPersianDateDynamic } =
+        await import('@/shared/utils/localization/persian');
+      const date = new Date(2024, 2, 20);
+      const expected = new originalIntl.DateTimeFormat('fa-IR', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      }).format(date);
+
+      expect(formatPersianDateDynamic(date)).toBe(expected);
+      vi.unstubAllGlobals();
+    });
   });
 
   describe('fixPersianSpacing', () => {
@@ -75,6 +114,12 @@ describe('Persian Utils', () => {
       expect(isPersianText('سلام')).toBe(true);
       expect(isPersianText('hello')).toBe(false);
       expect(isPersianText('hello سلام')).toBe(true);
+    });
+  });
+
+  describe('rtlAttributes', () => {
+    it('should return RTL attributes', () => {
+      expect(rtlAttributes()).toEqual({ dir: 'rtl', 'aria-orientation': 'horizontal' });
     });
   });
 });
