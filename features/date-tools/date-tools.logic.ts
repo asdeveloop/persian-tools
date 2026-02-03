@@ -1,6 +1,6 @@
 import { fail, ok, type ToolResult } from '@/shared/utils/result';
 
-export type CalendarType = 'jalali' | 'gregorian';
+export type CalendarType = 'jalali' | 'gregorian' | 'islamic';
 
 export type DateParts = {
   year: number;
@@ -10,6 +10,10 @@ export type DateParts = {
 
 const JALALI_YEAR_MIN = 1;
 const JALALI_YEAR_MAX = 3177;
+const ISLAMIC_YEAR_MIN = 1;
+const ISLAMIC_YEAR_MAX = 9666;
+
+const ISLAMIC_EPOCH = 1948439;
 
 const gregorianMonthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31] as const;
 
@@ -106,6 +110,94 @@ export function isValidJalaliDate({ year, month, day }: DateParts): boolean {
   }
   const maxDay = month <= 6 ? 31 : month <= 11 ? 30 : isLeapJalali(year) ? 30 : 29;
   return day >= 1 && day <= maxDay;
+}
+
+const islamicLeapYears = new Set([2, 5, 7, 10, 13, 16, 18, 21, 24, 26, 29]);
+
+export function isLeapIslamic(year: number): boolean {
+  const cycleYear = mod(year - 1, 30) + 1;
+  return islamicLeapYears.has(cycleYear);
+}
+
+export function daysInIslamicMonth(year: number, month: number): number {
+  if (month < 1 || month > 12) {
+    return 0;
+  }
+  if (month === 12) {
+    return isLeapIslamic(year) ? 30 : 29;
+  }
+  return month % 2 === 1 ? 30 : 29;
+}
+
+export function isValidIslamicDate({ year, month, day }: DateParts): boolean {
+  if (year < ISLAMIC_YEAR_MIN || year > ISLAMIC_YEAR_MAX) {
+    return false;
+  }
+  if (month < 1 || month > 12) {
+    return false;
+  }
+  const maxDay = daysInIslamicMonth(year, month);
+  return day >= 1 && day <= maxDay;
+}
+
+function gregorianToJdn(year: number, month: number, day: number): number {
+  const a = Math.trunc((14 - month) / 12);
+  const y = year + 4800 - a;
+  const m = month + 12 * a - 3;
+  return (
+    day +
+    Math.trunc((153 * m + 2) / 5) +
+    365 * y +
+    Math.trunc(y / 4) -
+    Math.trunc(y / 100) +
+    Math.trunc(y / 400) -
+    32045
+  );
+}
+
+function jdnToGregorian(jdn: number): DateParts {
+  const a = jdn + 32044;
+  const b = Math.trunc((4 * a + 3) / 146097);
+  const c = a - Math.trunc((146097 * b) / 4);
+  const d = Math.trunc((4 * c + 3) / 1461);
+  const e = c - Math.trunc((1461 * d) / 4);
+  const m = Math.trunc((5 * e + 2) / 153);
+  const day = e - Math.trunc((153 * m + 2) / 5) + 1;
+  const month = m + 3 - 12 * Math.trunc(m / 10);
+  const year = 100 * b + d - 4800 + Math.trunc(m / 10);
+  return { year, month, day };
+}
+
+function islamicToJdn(year: number, month: number, day: number): number {
+  const daysBeforeMonth = 30 * (month - 1) - Math.trunc((month - 1) / 2);
+  return (
+    day + daysBeforeMonth + (year - 1) * 354 + Math.trunc((3 + 11 * year) / 30) + ISLAMIC_EPOCH - 1
+  );
+}
+
+function jdnToIslamic(jdn: number): DateParts {
+  const year = Math.trunc((30 * (jdn - ISLAMIC_EPOCH) + 10646) / 10631);
+  let month = 1;
+  for (let m = 1; m <= 12; m += 1) {
+    const start = islamicToJdn(year, m, 1);
+    if (start <= jdn) {
+      month = m;
+    } else {
+      break;
+    }
+  }
+  const day = jdn - islamicToJdn(year, month, 1) + 1;
+  return { year, month, day };
+}
+
+export function islamicToGregorian(year: number, month: number, day: number): DateParts {
+  const jdn = islamicToJdn(year, month, day);
+  return jdnToGregorian(jdn);
+}
+
+export function gregorianToIslamic(year: number, month: number, day: number): DateParts {
+  const jdn = gregorianToJdn(year, month, day);
+  return jdnToIslamic(jdn);
 }
 
 // Conversion formulas adapted from jalaali-js (MIT)
@@ -220,7 +312,10 @@ export function normalizeToGregorian(date: DateParts, calendar: CalendarType): D
   if (calendar === 'gregorian') {
     return isValidGregorianDate(date) ? date : null;
   }
-  return isValidJalaliDate(date) ? jalaliToGregorian(date.year, date.month, date.day) : null;
+  if (calendar === 'jalali') {
+    return isValidJalaliDate(date) ? jalaliToGregorian(date.year, date.month, date.day) : null;
+  }
+  return isValidIslamicDate(date) ? islamicToGregorian(date.year, date.month, date.day) : null;
 }
 
 export function compareDateParts(a: DateParts, b: DateParts): number {
@@ -319,15 +414,22 @@ export function convertDate(input: DateConversionInput): ToolResult<DateParts> {
     return ok(input.date);
   }
 
-  if (input.from === 'jalali') {
-    if (!isValidJalaliDate(input.date)) {
-      return fail('تاریخ شمسی معتبر نیست.', 'INVALID_JALALI_DATE');
-    }
-    return ok(jalaliToGregorian(input.date.year, input.date.month, input.date.day));
+  const gregorian = normalizeToGregorian(input.date, input.from);
+  if (!gregorian) {
+    const error =
+      input.from === 'jalali'
+        ? { message: 'تاریخ شمسی معتبر نیست.', code: 'INVALID_JALALI_DATE' }
+        : input.from === 'islamic'
+          ? { message: 'تاریخ قمری معتبر نیست.', code: 'INVALID_ISLAMIC_DATE' }
+          : { message: 'تاریخ میلادی معتبر نیست.', code: 'INVALID_GREGORIAN_DATE' };
+    return fail(error.message, error.code);
   }
 
-  if (!isValidGregorianDate(input.date)) {
-    return fail('تاریخ میلادی معتبر نیست.', 'INVALID_GREGORIAN_DATE');
+  if (input.to === 'gregorian') {
+    return ok(gregorian);
   }
-  return ok(gregorianToJalali(input.date.year, input.date.month, input.date.day));
+  if (input.to === 'jalali') {
+    return ok(gregorianToJalali(gregorian.year, gregorian.month, gregorian.day));
+  }
+  return ok(gregorianToIslamic(gregorian.year, gregorian.month, gregorian.day));
 }

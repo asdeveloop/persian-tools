@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { Button, Card } from '@/components/ui';
+import { Card } from '@/components/ui';
 import Input from '@/shared/ui/Input';
 import {
   addDays,
@@ -9,25 +9,39 @@ import {
   differenceInDays,
   differenceInYmd,
   gregorianToJalali,
-  isValidGregorianDate,
+  gregorianToIslamic,
+  isValidIslamicDate,
   isValidJalaliDate,
-  jalaliToGregorian,
   normalizeToGregorian,
   type CalendarType,
   type DateParts,
   getWeekdayName,
 } from '@/features/date-tools/date-tools.logic';
-import { getJalaliHoliday } from '@/features/date-tools/holidays';
+import { getIslamicHoliday, getJalaliHoliday } from '@/features/date-tools/holidays';
 import { toEnglishDigits } from '@/shared/utils/numbers';
 
 type ParseResult = { ok: true; date: DateParts } | { ok: false; error: string };
 
 const pad = (n: number) => n.toString().padStart(2, '0');
 
-const formatGregorian = (d: DateParts) => `${d.year}/${pad(d.month)}/${pad(d.day)}`;
+const formatDateParts = (d: DateParts) => `${d.year}/${pad(d.month)}/${pad(d.day)}`;
+const formatGregorian = (d: DateParts) => formatDateParts(d);
 const formatJalali = (d: DateParts) => {
   const j = gregorianToJalali(d.year, d.month, d.day);
   return `${j.year}/${pad(j.month)}/${pad(j.day)}`;
+};
+const formatIslamic = (d: DateParts) => {
+  const i = gregorianToIslamic(d.year, d.month, d.day);
+  return `${i.year}/${pad(i.month)}/${pad(i.day)}`;
+};
+const calendarPlaceholder = (calendar: CalendarType) => {
+  if (calendar === 'jalali') {
+    return '1403/01/01';
+  }
+  if (calendar === 'gregorian') {
+    return '2024/03/20';
+  }
+  return '1445/09/01';
 };
 
 const parseDateInput = (value: string): ParseResult => {
@@ -50,14 +64,18 @@ const parseDateInput = (value: string): ParseResult => {
   return { ok: true, date: { year, month, day } };
 };
 
-const CalendarToggle = ({
+const HolidayCalendarToggle = ({
   value,
   onChange,
 }: {
-  value: CalendarType;
-  onChange: (v: CalendarType) => void;
+  value: 'jalali' | 'islamic';
+  onChange: (v: 'jalali' | 'islamic') => void;
 }) => {
-  const options: CalendarType[] = ['jalali', 'gregorian'];
+  const options: Array<'jalali' | 'islamic'> = ['jalali', 'islamic'];
+  const labels: Record<'jalali' | 'islamic', string> = {
+    jalali: 'شمسی',
+    islamic: 'قمری',
+  };
   return (
     <div className="inline-flex rounded-full border border-[var(--border-medium)] bg-[var(--surface-1)] p-1 text-xs">
       {options.map((item) => (
@@ -71,7 +89,40 @@ const CalendarToggle = ({
           }`}
           onClick={() => onChange(item)}
         >
-          {item === 'jalali' ? 'شمسی' : 'میلادی'}
+          {labels[item]}
+        </button>
+      ))}
+    </div>
+  );
+};
+
+const CalendarToggle = ({
+  value,
+  onChange,
+}: {
+  value: CalendarType;
+  onChange: (v: CalendarType) => void;
+}) => {
+  const options: CalendarType[] = ['jalali', 'gregorian', 'islamic'];
+  const labels: Record<CalendarType, string> = {
+    jalali: 'شمسی',
+    gregorian: 'میلادی',
+    islamic: 'قمری',
+  };
+  return (
+    <div className="inline-flex rounded-full border border-[var(--border-medium)] bg-[var(--surface-1)] p-1 text-xs">
+      {options.map((item) => (
+        <button
+          key={item}
+          type="button"
+          className={`px-3 py-2 rounded-full font-bold transition-all duration-[var(--motion-fast)] ${
+            value === item
+              ? 'bg-[var(--color-primary)] text-[var(--text-inverted)] shadow-[var(--shadow-subtle)]'
+              : 'text-[var(--text-primary)]'
+          }`}
+          onClick={() => onChange(item)}
+        >
+          {labels[item]}
         </button>
       ))}
     </div>
@@ -85,9 +136,8 @@ export default function DateToolsPage() {
   }, []);
 
   // Conversion states
-  const [jalaliInput, setJalaliInput] = useState('1403/01/01');
-  const [gregInput, setGregInput] = useState('2024/03/20');
-  const [convertError, setConvertError] = useState<string | null>(null);
+  const [convertCalendar, setConvertCalendar] = useState<CalendarType>('jalali');
+  const [convertInput, setConvertInput] = useState('1403/01/01');
 
   // Age states
   const [ageDateInput, setAgeDateInput] = useState('1375/06/01');
@@ -109,39 +159,34 @@ export default function DateToolsPage() {
 
   // Holiday lookup
   const [holidayInput, setHolidayInput] = useState('1403/01/01');
+  const [holidayCalendar, setHolidayCalendar] = useState<'jalali' | 'islamic'>('jalali');
 
-  const handleConvert = () => {
-    const jalaliParsed = parseDateInput(jalaliInput);
-    const gregParsed = parseDateInput(gregInput);
-    if (!jalaliParsed.ok) {
-      setConvertError(jalaliParsed.error);
-      return;
+  const convertState = useMemo(() => {
+    const parsed = parseDateInput(convertInput);
+    if (!parsed.ok) {
+      return { outputs: null, error: parsed.error };
     }
-    if (!gregParsed.ok) {
-      setConvertError(gregParsed.error);
-      return;
+    const normalized = normalizeToGregorian(parsed.date, convertCalendar);
+    if (!normalized) {
+      const message =
+        convertCalendar === 'jalali'
+          ? 'تاریخ شمسی معتبر نیست.'
+          : convertCalendar === 'islamic'
+            ? 'تاریخ قمری معتبر نیست.'
+            : 'تاریخ میلادی معتبر نیست.';
+      return { outputs: null, error: message };
     }
-    if (!isValidJalaliDate(jalaliParsed.date)) {
-      setConvertError('تاریخ شمسی معتبر نیست.');
-      return;
-    }
-    if (!isValidGregorianDate(gregParsed.date)) {
-      setConvertError('تاریخ میلادی معتبر نیست.');
-      return;
-    }
-    setGregInput(
-      formatGregorian(
-        jalaliToGregorian(jalaliParsed.date.year, jalaliParsed.date.month, jalaliParsed.date.day),
-      ),
-    );
-    const gToJ = gregorianToJalali(
-      gregParsed.date.year,
-      gregParsed.date.month,
-      gregParsed.date.day,
-    );
-    setJalaliInput(`${gToJ.year}/${pad(gToJ.month)}/${pad(gToJ.day)}`);
-    setConvertError(null);
-  };
+    const jalali = gregorianToJalali(normalized.year, normalized.month, normalized.day);
+    const islamic = gregorianToIslamic(normalized.year, normalized.month, normalized.day);
+    return {
+      outputs: {
+        gregorian: formatDateParts(normalized),
+        jalali: formatDateParts(jalali),
+        islamic: formatDateParts(islamic),
+      },
+      error: null,
+    };
+  }, [convertInput, convertCalendar]);
 
   const ageState = useMemo(() => {
     const dobParsed = parseDateInput(ageDateInput);
@@ -215,11 +260,17 @@ export default function DateToolsPage() {
     if (!parsed.ok) {
       return { holiday: null, error: parsed.error };
     }
-    if (!isValidJalaliDate(parsed.date)) {
-      return { holiday: null, error: 'تاریخ شمسی معتبر نیست.' };
+    if (holidayCalendar === 'jalali') {
+      if (!isValidJalaliDate(parsed.date)) {
+        return { holiday: null, error: 'تاریخ شمسی معتبر نیست.' };
+      }
+      return { holiday: getJalaliHoliday(parsed.date), error: null };
     }
-    return { holiday: getJalaliHoliday(parsed.date), error: null };
-  }, [holidayInput]);
+    if (!isValidIslamicDate(parsed.date)) {
+      return { holiday: null, error: 'تاریخ قمری معتبر نیست.' };
+    }
+    return { holiday: getIslamicHoliday(parsed.date), error: null };
+  }, [holidayInput, holidayCalendar]);
 
   const ageResult = ageState.result;
   const diffResult = diffState.result;
@@ -243,38 +294,50 @@ export default function DateToolsPage() {
         <div className="flex items-center justify-between gap-3 flex-wrap">
           <div>
             <div className="text-sm font-bold text-[var(--text-primary)]">تبدیل تاریخ</div>
-            <div className="text-xs text-[var(--text-muted)]">شمسی ↔ میلادی</div>
+            <div className="text-xs text-[var(--text-muted)]">شمسی ↔ میلادی ↔ قمری</div>
           </div>
-          <Button size="sm" variant="secondary" onClick={handleConvert}>
-            تبدیل دوطرفه
-          </Button>
+          <CalendarToggle value={convertCalendar} onChange={setConvertCalendar} />
         </div>
         <div className="grid gap-4 md:grid-cols-2">
           <Input
-            label="تاریخ شمسی (YYYY/MM/DD)"
-            value={jalaliInput}
-            onChange={(e) => setJalaliInput(e.target.value)}
+            label="تاریخ ورودی (YYYY/MM/DD)"
+            value={convertInput}
+            onChange={(e) => setConvertInput(e.target.value)}
             dir="ltr"
-            placeholder="1403/01/01"
+            placeholder={calendarPlaceholder(convertCalendar)}
           />
-          <div className="space-y-2">
+          <div className="space-y-3">
             <Input
               label="خروجی میلادی"
-              value={gregInput}
-              onChange={(e) => setGregInput(e.target.value)}
+              readOnly
+              value={convertState.outputs?.gregorian ?? ''}
               dir="ltr"
               placeholder="2024/03/20"
             />
-            <div className="text-xs text-[var(--text-muted)]">
-              هر بار روی «تبدیل دوطرفه» بزنید تا هر دو مقدار با هم همگام شوند.
-            </div>
+            <Input
+              label="خروجی شمسی"
+              readOnly
+              value={convertState.outputs?.jalali ?? ''}
+              dir="ltr"
+              placeholder="1403/01/01"
+            />
+            <Input
+              label="خروجی قمری"
+              readOnly
+              value={convertState.outputs?.islamic ?? ''}
+              dir="ltr"
+              placeholder="1445/09/01"
+            />
           </div>
         </div>
-        {convertError && (
+        {convertState.error && (
           <div className="text-sm text-[var(--color-danger)]" role="alert" aria-live="assertive">
-            {convertError}
+            {convertState.error}
           </div>
         )}
+        <div className="text-xs text-[var(--text-muted)]">
+          تاریخ قمری بر اساس تقویم محاسباتی است و ممکن است با رؤیت هلال یک روز اختلاف داشته باشد.
+        </div>
       </Card>
 
       {/* Age */}
@@ -292,7 +355,7 @@ export default function DateToolsPage() {
             value={ageDateInput}
             onChange={(e) => setAgeDateInput(e.target.value)}
             dir="ltr"
-            placeholder={ageCalendar === 'jalali' ? '1375/06/01' : '1996/08/22'}
+            placeholder={calendarPlaceholder(ageCalendar)}
           />
           <div className="space-y-3">
             <label className="flex items-center gap-2 text-sm text-[var(--text-primary)]">
@@ -310,7 +373,7 @@ export default function DateToolsPage() {
                   value={customNowInput}
                   onChange={(e) => setCustomNowInput(e.target.value)}
                   dir="ltr"
-                  placeholder={customNowCal === 'jalali' ? '1403/01/01' : '2024/03/20'}
+                  placeholder={calendarPlaceholder(customNowCal)}
                 />
                 <div className="flex items-end">
                   <CalendarToggle value={customNowCal} onChange={setCustomNowCal} />
@@ -342,7 +405,8 @@ export default function DateToolsPage() {
               <div className="text-xs text-[var(--text-muted)]">تاریخ مرجع</div>
               <div className="text-base font-bold text-[var(--text-primary)]">
                 میلادی: {formatGregorian(ageResult.reference)} <br />
-                شمسی: {formatJalali(ageResult.reference)}
+                شمسی: {formatJalali(ageResult.reference)} <br />
+                قمری: {formatIslamic(ageResult.reference)}
               </div>
             </div>
           </div>
@@ -367,7 +431,7 @@ export default function DateToolsPage() {
               value={startInput}
               onChange={(e) => setStartInput(e.target.value)}
               dir="ltr"
-              placeholder={startCal === 'jalali' ? '1402/12/29' : '2024/03/19'}
+              placeholder={calendarPlaceholder(startCal)}
             />
           </div>
           <div className="space-y-2">
@@ -379,7 +443,7 @@ export default function DateToolsPage() {
               value={endInput}
               onChange={(e) => setEndInput(e.target.value)}
               dir="ltr"
-              placeholder={endCal === 'jalali' ? '1403/01/05' : '2024/03/24'}
+              placeholder={calendarPlaceholder(endCal)}
             />
           </div>
         </div>
@@ -403,12 +467,14 @@ export default function DateToolsPage() {
               </div>
             </div>
             <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4 space-y-2">
-              <div className="text-xs text-[var(--text-muted)]">نمایش دو تقویم</div>
+              <div className="text-xs text-[var(--text-muted)]">نمایش سه تقویم</div>
               <div className="text-[var(--text-primary)] font-medium">
-                شروع: میلادی {formatGregorian(diffResult.s)} | شمسی {formatJalali(diffResult.s)}
+                شروع: میلادی {formatGregorian(diffResult.s)} | شمسی {formatJalali(diffResult.s)} |
+                قمری {formatIslamic(diffResult.s)}
               </div>
               <div className="text-[var(--text-primary)] font-medium">
-                پایان: میلادی {formatGregorian(diffResult.e)} | شمسی {formatJalali(diffResult.e)}
+                پایان: میلادی {formatGregorian(diffResult.e)} | شمسی {formatJalali(diffResult.e)} |
+                قمری {formatIslamic(diffResult.e)}
               </div>
             </div>
           </div>
@@ -432,7 +498,7 @@ export default function DateToolsPage() {
             value={weekdayInput}
             onChange={(e) => setWeekdayInput(e.target.value)}
             dir="ltr"
-            placeholder={weekdayCal === 'jalali' ? '1403/01/01' : '2024/03/20'}
+            placeholder={calendarPlaceholder(weekdayCal)}
           />
           <Input
             label="جابجایی (روز)"
@@ -448,7 +514,7 @@ export default function DateToolsPage() {
           </div>
         )}
         {weekdayResult && (
-          <div className="grid gap-3 md:grid-cols-3 text-sm">
+          <div className="grid gap-3 md:grid-cols-4 text-sm">
             <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4">
               <div className="text-xs text-[var(--text-muted)]">روز هفته</div>
               <div className="text-lg font-black text-[var(--text-primary)]">
@@ -467,6 +533,12 @@ export default function DateToolsPage() {
                 {formatJalali(weekdayResult.shifted)}
               </div>
             </div>
+            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4">
+              <div className="text-xs text-[var(--text-muted)]">تاریخ نهایی (قمری)</div>
+              <div className="text-lg font-black text-[var(--text-primary)]">
+                {formatIslamic(weekdayResult.shifted)}
+              </div>
+            </div>
           </div>
         )}
       </Card>
@@ -475,15 +547,21 @@ export default function DateToolsPage() {
       <Card className="p-5 md:p-6 space-y-4">
         <div>
           <div className="text-sm font-bold text-[var(--text-primary)]">تعطیلات رسمی (آفلاین)</div>
-          <div className="text-xs text-[var(--text-muted)]">بر اساس تعطیلات ثابت تقویم شمسی</div>
+          <div className="text-xs text-[var(--text-muted)]">
+            تعطیلات شمسی ثابت + تعطیلات قمری رسمی
+          </div>
+        </div>
+        <div className="flex items-center justify-between gap-3 flex-wrap">
+          <div className="text-xs text-[var(--text-muted)]">انتخاب نوع تقویم</div>
+          <HolidayCalendarToggle value={holidayCalendar} onChange={setHolidayCalendar} />
         </div>
         <div className="grid gap-4 md:grid-cols-[1fr_auto_1fr] items-end">
           <Input
-            label="تاریخ شمسی"
+            label="تاریخ ورودی"
             value={holidayInput}
             onChange={(e) => setHolidayInput(e.target.value)}
             dir="ltr"
-            placeholder="1403/01/01"
+            placeholder={holidayCalendar === 'jalali' ? '1403/01/01' : '1445/09/10'}
           />
           <div className="text-center text-sm text-[var(--text-muted)]">وضعیت</div>
           <Input
@@ -501,6 +579,11 @@ export default function DateToolsPage() {
         {holidayState.holiday && (
           <div className="text-xs text-[var(--text-muted)]">
             نوع: {holidayState.holiday.type === 'official' ? 'رسمی' : 'فرهنگی'}
+          </div>
+        )}
+        {holidayCalendar === 'islamic' && (
+          <div className="text-xs text-[var(--text-muted)]">
+            تاریخ‌های قمری بر پایه تقویم محاسباتی هستند و ممکن است یک روز اختلاف داشته باشند.
           </div>
         )}
       </Card>

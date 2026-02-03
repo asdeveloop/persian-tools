@@ -15,9 +15,13 @@ import {
   differenceInYmd,
   convertDate,
   gregorianToJalali,
+  gregorianToIslamic,
   isLeapJalali,
+  isLeapIslamic,
+  isValidIslamicDate,
   isValidJalaliDate,
   isValidGregorianDate,
+  islamicToGregorian,
   jalaliToGregorian,
 } from './date-tools.logic';
 
@@ -45,6 +49,10 @@ describe('date tools logic', () => {
     expect(isValidJalaliDate({ year: 1401, month: 12, day: 30 })).toBe(false);
     expect(isValidJalaliDate({ year: 0, month: 1, day: 1 })).toBe(false);
     expect(isValidJalaliDate({ year: 1401, month: 13, day: 1 })).toBe(false);
+    expect(isValidIslamicDate({ year: 1443, month: 12, day: 30 })).toBe(false);
+    expect(isValidIslamicDate({ year: 1442, month: 12, day: 30 })).toBe(true);
+    expect(isValidIslamicDate({ year: 0, month: 1, day: 1 })).toBe(false);
+    expect(isValidIslamicDate({ year: 1444, month: 13, day: 1 })).toBe(false);
   });
 
   it('calculates difference and day shifts accurately', () => {
@@ -77,6 +85,9 @@ describe('date tools logic', () => {
 
     const jalali = normalizeToGregorian({ year: 1403, month: 1, day: 1 }, 'jalali');
     expect(jalali).toEqual({ year: 2024, month: 3, day: 20 });
+
+    const islamic = normalizeToGregorian({ year: 1445, month: 9, day: 10 }, 'islamic');
+    expect(islamic).not.toBeNull();
 
     const invalid = normalizeToGregorian({ year: 1403, month: 13, day: 1 }, 'jalali');
     expect(invalid).toBeNull();
@@ -146,5 +157,15 @@ describe('date tools logic', () => {
       date: { year: 2024, month: 2, day: 30 },
     });
     expect(invalid.ok).toBe(false);
+  });
+
+  it('handles islamic calendar conversions', () => {
+    expect(isLeapIslamic(1442)).toBe(true);
+    expect(isLeapIslamic(1443)).toBe(false);
+
+    const greg = { year: 2024, month: 3, day: 20 };
+    const islamic = gregorianToIslamic(greg.year, greg.month, greg.day);
+    const back = islamicToGregorian(islamic.year, islamic.month, islamic.day);
+    expect(back).toEqual(greg);
   });
 });

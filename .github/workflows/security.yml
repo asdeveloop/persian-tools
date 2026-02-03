@@ -1,4 +1,4 @@
-name: "🔒 Security Scan"
+name: '🔒 Security Scan'
 
 on:
   push:
@@ -13,27 +13,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: "✅ Checkout code"
+      - name: '✅ Checkout code'
         uses: actions/checkout@v4
 
-      - name: "📦 Setup pnpm"
+      - name: '📦 Setup pnpm'
         uses: pnpm/action-setup@v2
         with:
           version: 9.15.0
 
-      - name: "🔧 Setup Node.js"
+      - name: '🔧 Setup Node.js'
         uses: actions/setup-node@v4
         with:
           node-version: 20.x
           cache: 'pnpm'
 
-      - name: "📥 Install dependencies"
+      - name: '📥 Install dependencies'
         run: pnpm install --frozen-lockfile
 
-      - name: "🔍 Run npm audit"
+      - name: '🔍 Run npm audit'
         run: pnpm audit --audit-level=moderate
 
-      - name: "🛡️ Run OWASP Dependency Check"
+      - name: '🛡️ Run OWASP Dependency Check'
         uses: jeremylong/DependencyCheck_Action@main
         with:
           project: 'persian-tools'

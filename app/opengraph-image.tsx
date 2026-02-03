@@ -10,27 +10,24 @@ export const contentType = 'image/png';
 
 export default function OpenGraphImage() {
   return new ImageResponse(
-    (
-      <div
-        style={{
-          width: '100%',
-          height: '100%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          backgroundColor: '#0f172a',
-          backgroundImage:
-            'linear-gradient(135deg, #0f172a 0%, #1e293b 55%, #2563eb 100%)',
-          color: '#f8fafc',
-          fontSize: 64,
-          fontWeight: 700,
-          textAlign: 'center',
-          padding: '60px',
-        }}
-      >
-        {siteName}
-      </div>
-    ),
+    <div
+      style={{
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#0f172a',
+        backgroundImage: 'linear-gradient(135deg, #0f172a 0%, #1e293b 55%, #2563eb 100%)',
+        color: '#f8fafc',
+        fontSize: 64,
+        fontWeight: 700,
+        textAlign: 'center',
+        padding: '60px',
+      }}
+    >
+      {siteName}
+    </div>,
     size,
   );
 }

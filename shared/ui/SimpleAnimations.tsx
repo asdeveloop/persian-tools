@@ -79,11 +79,7 @@ interface PulseElementProps {
 }
 
 export function PulseElement({ children, className = '' }: PulseElementProps) {
-  return (
-    <div className={`animate-pulse-subtle ${className}`}>
-      {children}
-    </div>
-  );
+  return <div className={`animate-pulse-subtle ${className}`}>{children}</div>;
 }
 
 // Component that respects reduced motion

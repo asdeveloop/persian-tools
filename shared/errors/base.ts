@@ -8,14 +8,19 @@ export abstract class BaseError extends Error {
   abstract readonly code: string;
   abstract readonly category: 'validation' | 'processing' | 'network' | 'filesystem' | 'permission';
 
-  constructor(message: string, public override readonly cause?: Error) {
+  constructor(
+    message: string,
+    public override readonly cause?: Error,
+  ) {
     super(message);
     this.name = this.constructor.name;
 
     // Maintains proper stack trace for where our error was thrown
-    const captureStackTrace = (Error as ErrorConstructor & {
-      captureStackTrace?: (target: Error, constructorOpt?: Function) => void;
-    }).captureStackTrace;
+    const captureStackTrace = (
+      Error as ErrorConstructor & {
+        captureStackTrace?: (target: Error, constructorOpt?: Function) => void;
+      }
+    ).captureStackTrace;
     if (typeof captureStackTrace === 'function') {
       captureStackTrace(this, this.constructor);
     }
@@ -79,7 +84,8 @@ export class PermissionError extends BaseError {
 export const createError = {
   validation: (message: string, field?: string) => new ValidationError(message, field),
   processing: (operation: string, cause?: Error) => new ProcessingError(operation, cause),
-  file: (operation: string, filename?: string, cause?: Error) => new FileError(operation, filename, cause),
+  file: (operation: string, filename?: string, cause?: Error) =>
+    new FileError(operation, filename, cause),
   permission: (operation: string) => new PermissionError(operation),
 };
 

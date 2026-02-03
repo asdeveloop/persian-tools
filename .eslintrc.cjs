@@ -1,17 +1,17 @@
 module.exports = {
   root: true,
-  env: { 
-    browser: true, 
+  env: {
+    browser: true,
     es2022: true,
     node: true,
-    jest: true
+    jest: true,
   },
   extends: [
     'eslint:recommended',
     'next/core-web-vitals',
     'plugin:react/recommended',
     'plugin:react-hooks/recommended',
-    'plugin:jsx-a11y/recommended'
+    'plugin:jsx-a11y/recommended',
   ],
   ignorePatterns: ['dist', 'node_modules', 'build', 'coverage'],
   parser: '@typescript-eslint/parser',
@@ -20,9 +20,9 @@ module.exports = {
     ecmaVersion: 'latest',
     sourceType: 'module',
     ecmaFeatures: {
-      jsx: true
+      jsx: true,
     },
-    project: './tsconfig.json'
+    project: './tsconfig.json',
   },
   rules: {
     // React rules
@@ -30,7 +30,7 @@ module.exports = {
     'react/react-in-jsx-scope': 'off',
     'react/prop-types': 'off',
     'react/jsx-uses-react': 'off',
-    
+
     // TypeScript rules
     '@typescript-eslint/no-explicit-any': 'error',
     '@typescript-eslint/no-unused-vars': 'error',
@@ -40,7 +40,7 @@ module.exports = {
     '@typescript-eslint/no-non-null-assertion': 'warn',
     '@typescript-eslint/prefer-nullish-coalescing': 'error',
     '@typescript-eslint/prefer-optional-chain': 'error',
-    
+
     // General rules
     'no-console': 'warn',
     'no-debugger': 'error',
@@ -53,19 +53,19 @@ module.exports = {
     'no-var': 'error',
     'object-shorthand': 'error',
     'prefer-template': 'error',
-    
+
     // Code style
-    'quotes': ['error', 'single', { avoidEscape: true }],
-    'semi': ['error', 'always'],
+    quotes: ['error', 'single', { avoidEscape: true }],
+    semi: ['error', 'always'],
     'comma-dangle': ['error', 'always-multiline'],
-    'indent': ['error', 2, { SwitchCase: 1 }],
+    indent: ['error', 2, { SwitchCase: 1 }],
     'max-len': ['error', { code: 200, ignoreUrls: true, ignoreStrings: true }],
     'no-trailing-spaces': 'error',
     'eol-last': 'error',
-    
+
     // Best practices
-    'eqeqeq': ['error', 'always'],
-    'curly': ['error', 'all'],
+    eqeqeq: ['error', 'always'],
+    curly: ['error', 'all'],
     'brace-style': ['error', '1tbs'],
     'keyword-spacing': 'error',
     'space-infix-ops': 'error',
@@ -73,41 +73,41 @@ module.exports = {
     'spaced-comment': 'error',
     'no-multiple-empty-lines': ['error', { max: 2, maxEOF: 1 }],
     'no-multi-spaces': 'error',
-    
+
     // Performance
     'react-hooks/exhaustive-deps': 'warn',
     'no-loop-func': 'warn',
-    
+
     // Security
-    'no-undef': 'error'
+    'no-undef': 'error',
   },
   settings: {
     react: {
-      version: 'detect'
+      version: 'detect',
     },
     'jsx-a11y': {
       components: {
         Button: 'button',
-        Link: 'a'
-      }
-    }
+        Link: 'a',
+      },
+    },
   },
   overrides: [
     {
       files: ['app/**/*.{ts,tsx}'],
       rules: {
-        'react-refresh/only-export-components': 'off'
-      }
+        'react-refresh/only-export-components': 'off',
+      },
     },
     {
       files: ['**/*.test.{ts,tsx}', '**/*.spec.{ts,tsx}'],
       env: {
-        jest: true
+        jest: true,
       },
       rules: {
         '@typescript-eslint/no-explicit-any': 'off',
-        'jsx-a11y/no-autofocus': 'off'
-      }
-    }
-  ]
+        'jsx-a11y/no-autofocus': 'off',
+      },
+    },
+  ],
 };

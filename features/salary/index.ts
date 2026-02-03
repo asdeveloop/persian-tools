@@ -28,8 +28,10 @@ export function calculateSalary(input: SalaryInput): SalaryOutput {
   const baseAllowance = laws.housingAllowance + laws.foodAllowance;
   const transportAllowance = input.hasTransportation ? laws.transportationAllowance : 0;
   const couponAllowance = input.hasWorkerCoupon ? laws.foodAllowance * 0.5 : 0;
-  const familyAllowance = input.numberOfChildren * laws.childAllowance + (input.isMarried ? laws.childAllowance : 0);
-  const experienceBonus = Math.max(0, input.workExperienceYears) * laws.experienceRatePerYear * input.baseSalary;
+  const familyAllowance =
+    input.numberOfChildren * laws.childAllowance + (input.isMarried ? laws.childAllowance : 0);
+  const experienceBonus =
+    Math.max(0, input.workExperienceYears) * laws.experienceRatePerYear * input.baseSalary;
 
   const overtime = calcOvertime(input.baseSalary, input.overtimeHours, 1.4);
   const nightOvertime = calcOvertime(input.baseSalary, input.nightOvertimeHours, 1.35);
@@ -37,18 +39,19 @@ export function calculateSalary(input: SalaryInput): SalaryOutput {
 
   const missionAllowance = Math.max(0, input.missionDays) * (input.baseSalary / 30) * 0.1;
 
-  const grossSalary = Math.max(0,
+  const grossSalary = Math.max(
+    0,
     baseSalary +
-    baseAllowance +
-    transportAllowance +
-    couponAllowance +
-    familyAllowance +
-    experienceBonus +
-    overtime +
-    nightOvertime +
-    holidayOvertime +
-    missionAllowance +
-    Math.max(0, input.otherBenefits),
+      baseAllowance +
+      transportAllowance +
+      couponAllowance +
+      familyAllowance +
+      experienceBonus +
+      overtime +
+      nightOvertime +
+      holidayOvertime +
+      missionAllowance +
+      Math.max(0, input.otherBenefits),
   );
 
   const insurance = grossSalary * laws.insuranceRate;
@@ -104,15 +107,22 @@ export function calculateMinimumWage(params: {
   const baseSalary = laws.minimumWage;
   const housingAllowance = laws.housingAllowance;
   const foodAllowance = laws.foodAllowance;
-  const familyAllowance = Math.max(0, params.numberOfChildren) * laws.childAllowance + (params.isMarried ? laws.childAllowance : 0);
-  const experienceBonus = Math.max(0, params.workExperienceYears) * laws.experienceRatePerYear * baseSalary;
+  const familyAllowance =
+    Math.max(0, params.numberOfChildren) * laws.childAllowance +
+    (params.isMarried ? laws.childAllowance : 0);
+  const experienceBonus =
+    Math.max(0, params.workExperienceYears) * laws.experienceRatePerYear * baseSalary;
   const zoneBonus = params.isDevelopmentZone ? baseSalary * 0.05 : 0;
 
-  const totalGross = baseSalary + housingAllowance + foodAllowance + familyAllowance + experienceBonus + zoneBonus;
+  const totalGross =
+    baseSalary + housingAllowance + foodAllowance + familyAllowance + experienceBonus + zoneBonus;
   const insuranceAmount = totalGross * laws.insuranceRate;
   const taxableIncome = Math.max(0, totalGross - laws.taxExemption - insuranceAmount);
   const taxAmount = taxableIncome * laws.taxRate;
-  const netSalary = Math.max(0, totalGross - insuranceAmount - taxAmount - Math.max(0, params.otherDeductions));
+  const netSalary = Math.max(
+    0,
+    totalGross - insuranceAmount - taxAmount - Math.max(0, params.otherDeductions),
+  );
 
   return {
     baseSalary,

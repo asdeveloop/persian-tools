@@ -15,9 +15,10 @@ test.describe('Tool flows', () => {
     await page.goto('/date-tools');
     await page.waitForTimeout(300);
 
+    const input = page.getByRole('textbox', { name: 'تاریخ ورودی (YYYY/MM/DD)' });
     const gregOutput = page.getByRole('textbox', { name: 'خروجی میلادی' });
 
-    await page.getByRole('button', { name: 'تبدیل دوطرفه' }).click();
+    await input.fill('1403/01/01');
 
     await expect(gregOutput).toHaveValue(/\d{4}\/\d{2}\/\d{2}/);
   });
