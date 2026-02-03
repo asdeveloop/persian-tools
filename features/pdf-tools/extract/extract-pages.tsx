@@ -6,7 +6,7 @@ import Alert from '@/shared/ui/Alert';
 import { createPdfWorkerClient, type PdfWorkerClient } from '@/features/pdf-tools/workerClient';
 import { parsePageRanges } from '@/features/pdf-tools/utils/pageRanges';
 
-export default function SplitPdfPage() {
+export default function ExtractPagesPage() {
   const [file, setFile] = useState<File | null>(null);
   const [pagesInput, setPagesInput] = useState('1');
   const [error, setError] = useState<string | null>(null);
@@ -67,7 +67,7 @@ export default function SplitPdfPage() {
     setFile(selected);
   };
 
-  const onSplit = async () => {
+  const onExtract = async () => {
     setError(null);
     setProgress(0);
     if (!file) {
@@ -109,22 +109,22 @@ export default function SplitPdfPage() {
     <div className="space-y-6">
       <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-2">تقسیم PDF</h1>
+          <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-2">استخراج صفحات PDF</h1>
           <p className="text-lg text-[var(--text-secondary)]">
-            صفحات دلخواه را از فایل PDF جدا کنید
+            صفحات دلخواه را از فایل PDF استخراج کنید
           </p>
         </div>
 
         <Card className="p-6 space-y-4">
           <div className="flex flex-col gap-3">
             <label
-              htmlFor="split-pdf-file"
+              htmlFor="extract-pages-file"
               className="text-sm font-semibold text-[var(--text-primary)]"
             >
               انتخاب فایل PDF
             </label>
             <input
-              id="split-pdf-file"
+              id="extract-pages-file"
               type="file"
               accept="application/pdf"
               onChange={(e) => onSelectFile(e.target.files)}
@@ -140,13 +140,13 @@ export default function SplitPdfPage() {
 
           <div className="flex flex-col gap-3">
             <label
-              htmlFor="split-pdf-pages"
+              htmlFor="extract-pages-input"
               className="text-sm font-semibold text-[var(--text-primary)]"
             >
               صفحات مورد نظر
             </label>
             <input
-              id="split-pdf-pages"
+              id="extract-pages-input"
               type="text"
               value={pagesInput}
               onChange={(e) => setPagesInput(e.target.value)}
@@ -167,7 +167,7 @@ export default function SplitPdfPage() {
             >
               تغییر فایل
             </Button>
-            <Button type="button" onClick={onSplit} disabled={busy}>
+            <Button type="button" onClick={onExtract} disabled={busy}>
               {busy ? 'در حال استخراج...' : 'استخراج صفحات'}
             </Button>
           </div>
@@ -189,7 +189,7 @@ export default function SplitPdfPage() {
           {downloadUrl && (
             <Alert variant="success">
               فایل آماده است.{' '}
-              <a className="font-semibold underline" href={downloadUrl} download="split.pdf">
+              <a className="font-semibold underline" href={downloadUrl} download="extracted.pdf">
                 دانلود فایل
               </a>
             </Alert>

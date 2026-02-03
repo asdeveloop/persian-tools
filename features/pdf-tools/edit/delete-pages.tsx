@@ -1,12 +1,23 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Button, Card } from '@/components/ui';
 import Alert from '@/shared/ui/Alert';
 import { createPdfWorkerClient, type PdfWorkerClient } from '@/features/pdf-tools/workerClient';
 import { parsePageRanges } from '@/features/pdf-tools/utils/pageRanges';
 
-export default function SplitPdfPage() {
+const buildRemainingPages = (totalPages: number, removePages: number[]) => {
+  const removeSet = new Set(removePages);
+  const result: number[] = [];
+  for (let i = 0; i < totalPages; i += 1) {
+    if (!removeSet.has(i)) {
+      result.push(i);
+    }
+  }
+  return result;
+};
+
+export default function DeletePagesPage() {
   const [file, setFile] = useState<File | null>(null);
   const [pagesInput, setPagesInput] = useState('1');
   const [error, setError] = useState<string | null>(null);
@@ -67,7 +78,7 @@ export default function SplitPdfPage() {
     setFile(selected);
   };
 
-  const onSplit = async () => {
+  const onDelete = async () => {
     setError(null);
     setProgress(0);
     if (!file) {
@@ -82,14 +93,19 @@ export default function SplitPdfPage() {
     setBusy(true);
     try {
       const buffer = await file.arrayBuffer();
-      const pages = parsePageRanges(pagesInput, totalPages);
-      if (pages.length === 0) {
+      const removePages = parsePageRanges(pagesInput, totalPages);
+      if (removePages.length === 0) {
         throw new Error('هیچ صفحه ای انتخاب نشده است.');
+      }
+      const remainingPages = buildRemainingPages(totalPages, removePages);
+      if (remainingPages.length === 0) {
+        throw new Error('بعد از حذف هیچ صفحه ای باقی نمی ماند.');
       }
 
       const worker = getWorker();
-      const result = await worker.request({ type: 'split', file: buffer, pages }, (value) =>
-        setProgress(Math.round(value * 100)),
+      const result = await worker.request(
+        { type: 'split', file: buffer, pages: remainingPages },
+        (value) => setProgress(Math.round(value * 100)),
       );
       const blob = new Blob([result.buffer], { type: 'application/pdf' });
 
@@ -105,26 +121,38 @@ export default function SplitPdfPage() {
     }
   };
 
+  const remainingCount = useMemo(() => {
+    if (!totalPages) {
+      return null;
+    }
+    try {
+      const removePages = parsePageRanges(pagesInput, totalPages);
+      return buildRemainingPages(totalPages, removePages).length;
+    } catch {
+      return null;
+    }
+  }, [pagesInput, totalPages]);
+
   return (
     <div className="space-y-6">
       <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-2">تقسیم PDF</h1>
+          <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-2">حذف صفحات PDF</h1>
           <p className="text-lg text-[var(--text-secondary)]">
-            صفحات دلخواه را از فایل PDF جدا کنید
+            صفحات انتخابی را از فایل PDF حذف کنید
           </p>
         </div>
 
         <Card className="p-6 space-y-4">
           <div className="flex flex-col gap-3">
             <label
-              htmlFor="split-pdf-file"
+              htmlFor="delete-pages-file"
               className="text-sm font-semibold text-[var(--text-primary)]"
             >
               انتخاب فایل PDF
             </label>
             <input
-              id="split-pdf-file"
+              id="delete-pages-file"
               type="file"
               accept="application/pdf"
               onChange={(e) => onSelectFile(e.target.files)}
@@ -140,13 +168,13 @@ export default function SplitPdfPage() {
 
           <div className="flex flex-col gap-3">
             <label
-              htmlFor="split-pdf-pages"
+              htmlFor="delete-pages-input"
               className="text-sm font-semibold text-[var(--text-primary)]"
             >
-              صفحات مورد نظر
+              صفحات مورد نظر برای حذف
             </label>
             <input
-              id="split-pdf-pages"
+              id="delete-pages-input"
               type="text"
               value={pagesInput}
               onChange={(e) => setPagesInput(e.target.value)}
@@ -158,6 +186,12 @@ export default function SplitPdfPage() {
             </div>
           </div>
 
+          {typeof remainingCount === 'number' && (
+            <div className="text-xs text-[var(--text-muted)]">
+              پس از حذف، {remainingCount.toLocaleString('fa-IR')} صفحه باقی می ماند.
+            </div>
+          )}
+
           <div className="flex flex-wrap items-center justify-between gap-4">
             <Button
               type="button"
@@ -167,8 +201,8 @@ export default function SplitPdfPage() {
             >
               تغییر فایل
             </Button>
-            <Button type="button" onClick={onSplit} disabled={busy}>
-              {busy ? 'در حال استخراج...' : 'استخراج صفحات'}
+            <Button type="button" onClick={onDelete} disabled={busy}>
+              {busy ? 'در حال حذف...' : 'حذف صفحات'}
             </Button>
           </div>
 
@@ -189,7 +223,7 @@ export default function SplitPdfPage() {
           {downloadUrl && (
             <Alert variant="success">
               فایل آماده است.{' '}
-              <a className="font-semibold underline" href={downloadUrl} download="split.pdf">
+              <a className="font-semibold underline" href={downloadUrl} download="cleaned.pdf">
                 دانلود فایل
               </a>
             </Alert>

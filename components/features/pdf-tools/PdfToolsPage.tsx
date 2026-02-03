@@ -71,6 +71,14 @@ const pdfTools: PdfToolItem[] = [
     path: '/pdf-tools/split/split-pdf',
     category: 'split',
   },
+  {
+    id: 'delete-pages',
+    title: 'حذف صفحات PDF',
+    description: 'صفحات انتخابی را از فایل PDF حذف کنید',
+    icon: '🧹',
+    path: '/pdf-tools/edit/delete-pages',
+    category: 'split',
+  },
 
   // Security tools
   {
@@ -119,7 +127,6 @@ const pdfTools: PdfToolItem[] = [
     icon: '📑',
     path: '/pdf-tools/extract/extract-pages',
     category: 'extract',
-    status: 'coming-soon',
   },
   {
     id: 'extract-text',

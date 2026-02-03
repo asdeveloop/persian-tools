@@ -43,6 +43,26 @@ test.describe('Tool flows', () => {
     await expect(alert).toBeVisible();
   });
 
+  test('pdf extract pages should show error when no file selected', async ({ page }) => {
+    await page.goto('/pdf-tools/extract/extract-pages');
+
+    await page.getByRole('button', { name: 'استخراج صفحات' }).click();
+    const alert = page
+      .locator('[role="alert"]')
+      .filter({ hasText: 'ابتدا فایل PDF را انتخاب کنید.' });
+    await expect(alert).toBeVisible();
+  });
+
+  test('pdf delete pages should show error when no file selected', async ({ page }) => {
+    await page.goto('/pdf-tools/edit/delete-pages');
+
+    await page.getByRole('button', { name: 'حذف صفحات' }).click();
+    const alert = page
+      .locator('[role="alert"]')
+      .filter({ hasText: 'ابتدا فایل PDF را انتخاب کنید.' });
+    await expect(alert).toBeVisible();
+  });
+
   test('pdf merge should show error when less than two files selected', async ({ page }) => {
     await page.goto('/pdf-tools/merge/merge-pdf');
 
