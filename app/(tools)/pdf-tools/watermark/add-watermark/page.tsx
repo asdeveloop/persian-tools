@@ -1,5 +1,8 @@
-import AddWatermarkPage from '@/features/pdf-tools/watermark/add-watermark';
+import dynamic from 'next/dynamic';
 import { buildMetadata } from '@/lib/seo';
+const AddWatermarkPage = dynamic(() => import('@/features/pdf-tools/watermark/add-watermark'), {
+  ssr: false,
+});
 
 export const metadata = buildMetadata({
   title: 'افزودن واترمارک - جعبه ابزار فارسی',

@@ -17,6 +17,7 @@ import {
   type DateParts,
   getWeekdayName,
 } from '@/features/date-tools/date-tools.logic';
+import { getJalaliHoliday } from '@/features/date-tools/holidays';
 import { toEnglishDigits } from '@/shared/utils/numbers';
 
 type ParseResult = { ok: true; date: DateParts } | { ok: false; error: string };
@@ -105,6 +106,9 @@ export default function DateToolsPage() {
   const [weekdayInput, setWeekdayInput] = useState('2024/03/20');
   const [weekdayCal, setWeekdayCal] = useState<CalendarType>('gregorian');
   const [offsetText, setOffsetText] = useState('0');
+
+  // Holiday lookup
+  const [holidayInput, setHolidayInput] = useState('1403/01/01');
 
   const handleConvert = () => {
     const jalaliParsed = parseDateInput(jalaliInput);
@@ -205,6 +209,17 @@ export default function DateToolsPage() {
     const shifted = addDays(base, offset);
     return { result: { base, shifted }, error: null };
   }, [weekdayInput, weekdayCal, offsetText]);
+
+  const holidayState = useMemo(() => {
+    const parsed = parseDateInput(holidayInput);
+    if (!parsed.ok) {
+      return { holiday: null, error: parsed.error };
+    }
+    if (!isValidJalaliDate(parsed.date)) {
+      return { holiday: null, error: 'تاریخ شمسی معتبر نیست.' };
+    }
+    return { holiday: getJalaliHoliday(parsed.date), error: null };
+  }, [holidayInput]);
 
   const ageResult = ageState.result;
   const diffResult = diffState.result;
@@ -452,6 +467,40 @@ export default function DateToolsPage() {
                 {formatJalali(weekdayResult.shifted)}
               </div>
             </div>
+          </div>
+        )}
+      </Card>
+
+      {/* Holidays */}
+      <Card className="p-5 md:p-6 space-y-4">
+        <div>
+          <div className="text-sm font-bold text-[var(--text-primary)]">تعطیلات رسمی (آفلاین)</div>
+          <div className="text-xs text-[var(--text-muted)]">بر اساس تعطیلات ثابت تقویم شمسی</div>
+        </div>
+        <div className="grid gap-4 md:grid-cols-[1fr_auto_1fr] items-end">
+          <Input
+            label="تاریخ شمسی"
+            value={holidayInput}
+            onChange={(e) => setHolidayInput(e.target.value)}
+            dir="ltr"
+            placeholder="1403/01/01"
+          />
+          <div className="text-center text-sm text-[var(--text-muted)]">وضعیت</div>
+          <Input
+            label="نتیجه"
+            readOnly
+            value={holidayState.holiday ? holidayState.holiday.title : ''}
+            placeholder="تعطیل نیست"
+          />
+        </div>
+        {holidayState.error && (
+          <div className="text-sm text-[var(--color-danger)]" role="alert" aria-live="assertive">
+            {holidayState.error}
+          </div>
+        )}
+        {holidayState.holiday && (
+          <div className="text-xs text-[var(--text-muted)]">
+            نوع: {holidayState.holiday.type === 'official' ? 'رسمی' : 'فرهنگی'}
           </div>
         )}
       </Card>

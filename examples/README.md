@@ -5,6 +5,8 @@
 ```bash
 pnpm build:lib
 node examples/node.ts
+node examples/finance.ts
+node examples/text.ts
 ```
 
 ## Browser (ESM)

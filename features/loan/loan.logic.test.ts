@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { calculateLoan } from './loan.logic';
+import { calculateLoan, calculateLoanResult } from './loan.logic';
 
 describe('loan logic', () => {
   it('calculates installment for regular loan', () => {
@@ -235,5 +235,16 @@ describe('loan logic', () => {
         months: 12,
       }),
     ).toThrow('نوع محاسبه نامعتبر است.');
+  });
+
+  it('returns ToolResult for calculation', () => {
+    const result = calculateLoanResult({
+      calculationType: 'installment',
+      loanType: 'regular',
+      principal: 1_000_000,
+      annualInterestRatePercent: 12,
+      months: 12,
+    });
+    expect(result.ok).toBe(true);
   });
 });

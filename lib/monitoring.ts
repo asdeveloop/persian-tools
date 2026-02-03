@@ -15,6 +15,8 @@ export class AnalyticsClient {
   private static instance: AnalyticsClient;
   private events: EventData[] = [];
   private readonly maxEvents = 100;
+  private readonly endpoint = process.env['NEXT_PUBLIC_ANALYTICS_ENDPOINT'] ?? '/api/analytics';
+  private readonly enabled = Boolean(process.env['NEXT_PUBLIC_ANALYTICS_ID']);
 
   private constructor() {
     if (typeof window !== 'undefined') {
@@ -46,8 +48,30 @@ export class AnalyticsClient {
   }
 
   private flushEvents(): void {
-    if (process.env['NEXT_PUBLIC_ANALYTICS_ID']) {
-      // TODO: send events batch to self-hosted endpoint.
+    if (!this.enabled || this.events.length === 0) {
+      this.events = [];
+      return;
+    }
+
+    const payload = JSON.stringify({
+      id: process.env['NEXT_PUBLIC_ANALYTICS_ID'],
+      events: this.events,
+    });
+
+    if (typeof navigator !== 'undefined' && typeof navigator.sendBeacon === 'function') {
+      const blob = new Blob([payload], { type: 'application/json' });
+      navigator.sendBeacon(this.endpoint, blob);
+      this.events = [];
+      return;
+    }
+
+    if (typeof fetch === 'function') {
+      void fetch(this.endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: payload,
+        keepalive: true,
+      }).catch(() => undefined);
     }
     this.events = [];
   }

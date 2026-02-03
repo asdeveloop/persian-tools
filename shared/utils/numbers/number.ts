@@ -1,4 +1,5 @@
 const faDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'] as const;
+const arDigits = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'] as const;
 const enDigits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'] as const;
 
 const faToEnMap: Record<(typeof faDigits)[number], (typeof enDigits)[number]> = {
@@ -14,7 +15,20 @@ const faToEnMap: Record<(typeof faDigits)[number], (typeof enDigits)[number]> = 
   '۹': '9',
 };
 
-const faDigitRegex = /[۰-۹]/g;
+const arToEnMap: Record<(typeof arDigits)[number], (typeof enDigits)[number]> = {
+  '٠': '0',
+  '١': '1',
+  '٢': '2',
+  '٣': '3',
+  '٤': '4',
+  '٥': '5',
+  '٦': '6',
+  '٧': '7',
+  '٨': '8',
+  '٩': '9',
+};
+
+const faDigitRegex = /[۰-۹٠-٩]/g;
 const rtlMarkersRegex = /[\u200e\u200f\u202a-\u202e]/g;
 
 const faNumberFormatter = new Intl.NumberFormat('fa-IR', { maximumFractionDigits: 2 });
@@ -34,7 +48,12 @@ function normalizeNumericInput(input: string): string {
  */
 export function toEnglishDigits(input: string): string {
   return input
-    .replace(faDigitRegex, (digit) => faToEnMap[digit as keyof typeof faToEnMap])
+    .replace(faDigitRegex, (digit) => {
+      if (digit in faToEnMap) {
+        return faToEnMap[digit as keyof typeof faToEnMap];
+      }
+      return arToEnMap[digit as keyof typeof arToEnMap];
+    })
     .replaceAll('٬', ',')
     .replaceAll('٫', '.');
 }

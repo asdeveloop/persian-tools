@@ -6,6 +6,8 @@ import * as localization from '@/shared/utils/localization';
 describe('shared exports', () => {
   it('re-exports utilities', () => {
     expect(typeof utils.parseLooseNumber).toBe('function');
+    expect(typeof utils.convertDate).toBe('function');
+    expect(typeof utils.calculateCompoundInterest).toBe('function');
     expect(typeof numbers.toEnglishDigits).toBe('function');
     expect(typeof localization.toPersianNumbers).toBe('function');
   });

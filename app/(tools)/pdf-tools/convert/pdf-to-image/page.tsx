@@ -1,5 +1,8 @@
-import PdfToImagePage from '@/features/pdf-tools/convert/pdf-to-image';
+import dynamic from 'next/dynamic';
 import { buildMetadata } from '@/lib/seo';
+const PdfToImagePage = dynamic(() => import('@/features/pdf-tools/convert/pdf-to-image'), {
+  ssr: false,
+});
 
 export const metadata = buildMetadata({
   title: 'تبدیل PDF به عکس - جعبه ابزار فارسی',

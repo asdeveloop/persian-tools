@@ -13,6 +13,7 @@ import {
   normalizeToGregorian,
   differenceInDays,
   differenceInYmd,
+  convertDate,
   gregorianToJalali,
   isLeapJalali,
   isValidJalaliDate,
@@ -126,5 +127,24 @@ describe('date tools logic', () => {
 
   it('throws for jalali out of range', () => {
     expect(() => isLeapJalali(4000)).toThrow('سال شمسی خارج از بازه معتبر است.');
+  });
+
+  it('converts dates with ToolResult', () => {
+    const g = convertDate({
+      from: 'jalali',
+      to: 'gregorian',
+      date: { year: 1403, month: 1, day: 1 },
+    });
+    expect(g.ok).toBe(true);
+    if (g.ok) {
+      expect(g.data).toEqual({ year: 2024, month: 3, day: 20 });
+    }
+
+    const invalid = convertDate({
+      from: 'gregorian',
+      to: 'jalali',
+      date: { year: 2024, month: 2, day: 30 },
+    });
+    expect(invalid.ok).toBe(false);
   });
 });

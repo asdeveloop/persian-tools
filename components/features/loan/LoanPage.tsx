@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { formatMoneyFa, parseLooseNumber } from '@/shared/utils/numbers';
 import { getSessionJson, setSessionJson } from '@/shared/storage/sessionStorage';
-import { calculateLoan } from '@/features/loan/loan.logic';
+import { calculateLoanResult } from '@/features/loan/loan.logic';
 import type { LoanResult, LoanType, CalculationType } from '@/features/loan/loan.types';
 import {
   AnimatedCard,
@@ -66,22 +66,22 @@ export default function LoanPage() {
     const stepMonths = parseLooseNumber(form.stepMonthsText);
     const stepRateIncrease = parseLooseNumber(form.stepRateIncreaseText);
 
-    try {
-      const r = calculateLoan({
-        principal: principal ?? 0,
-        annualInterestRatePercent: annualRate ?? 0,
-        months: Math.trunc(months ?? 0),
-        loanType: form.loanType,
-        calculationType: form.calculationType,
-        ...(monthlyPayment !== null ? { monthlyPayment } : {}),
-        stepMonths: form.loanType === 'stepped' ? Math.trunc(stepMonths ?? 0) : 0,
-        stepRateIncrease: form.loanType === 'stepped' ? (stepRateIncrease ?? 0) : 0,
-      });
-      setResult(r);
-    } catch (e) {
-      const message = e instanceof Error ? e.message : 'خطای نامشخص رخ داد.';
-      setError(message);
+    const result = calculateLoanResult({
+      principal: principal ?? 0,
+      annualInterestRatePercent: annualRate ?? 0,
+      months: Math.trunc(months ?? 0),
+      loanType: form.loanType,
+      calculationType: form.calculationType,
+      ...(monthlyPayment !== null ? { monthlyPayment } : {}),
+      stepMonths: form.loanType === 'stepped' ? Math.trunc(stepMonths ?? 0) : 0,
+      stepRateIncrease: form.loanType === 'stepped' ? (stepRateIncrease ?? 0) : 0,
+    });
+
+    if (!result.ok) {
+      setError(result.error.message);
+      return;
     }
+    setResult(result.data);
   }
 
   const getCalculationTypeLabel = (type: CalculationType) => {

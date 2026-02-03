@@ -1,5 +1,6 @@
-import MergePdfPage from '@/features/pdf-tools/merge/merge-pdf';
+import dynamic from 'next/dynamic';
 import { buildMetadata } from '@/lib/seo';
+const MergePdfPage = dynamic(() => import('@/features/pdf-tools/merge/merge-pdf'), { ssr: false });
 
 export const metadata = buildMetadata({
   title: 'ادغام PDF - جعبه ابزار فارسی',

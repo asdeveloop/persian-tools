@@ -1,5 +1,8 @@
-import CompressPdfPage from '@/features/pdf-tools/compress/compress-pdf';
+import dynamic from 'next/dynamic';
 import { buildMetadata } from '@/lib/seo';
+const CompressPdfPage = dynamic(() => import('@/features/pdf-tools/compress/compress-pdf'), {
+  ssr: false,
+});
 
 export const metadata = buildMetadata({
   title: 'فشرده‌سازی PDF - جعبه ابزار فارسی',

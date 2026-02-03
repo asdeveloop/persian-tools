@@ -12,6 +12,10 @@ describe('number utils', () => {
     expect(toEnglishDigits('۱۲۳٬۴۵۶٫۷۸')).toBe('123,456.78');
   });
 
+  it('converts Arabic-Indic digits to English', () => {
+    expect(toEnglishDigits('١٢٣٬٤٥٦٫٧٨')).toBe('123,456.78');
+  });
+
   it('parses loose Persian numbers with separators', () => {
     expect(parseLooseNumber('۱۲٬۳۴۵٬۶۷۸')).toBe(12345678);
     expect(parseLooseNumber(' ۱۲۳۴۵ ')).toBe(12345);

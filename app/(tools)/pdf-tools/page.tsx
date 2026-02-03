@@ -1,5 +1,8 @@
-import PdfToolsPage from '@/components/features/pdf-tools/PdfToolsPage';
+import dynamic from 'next/dynamic';
 import { buildMetadata } from '@/lib/seo';
+const PdfToolsPage = dynamic(() => import('@/components/features/pdf-tools/PdfToolsPage'), {
+  ssr: false,
+});
 
 export const metadata = buildMetadata({
   title: 'ابزارهای PDF - جعبه ابزار فارسی',

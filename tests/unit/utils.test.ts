@@ -7,6 +7,9 @@ import {
   fixPersianSpacing,
   isPersianText,
   rtlAttributes,
+  normalizePersianChars,
+  stripPersianDiacritics,
+  cleanPersianText,
 } from '@/shared/utils/localization';
 
 describe('Persian Utils', () => {
@@ -106,6 +109,29 @@ describe('Persian Utils', () => {
 
     it('should not duplicate half-space', () => {
       expect(fixPersianSpacing('کتاب\u200Cها')).toBe('کتاب\u200Cها');
+    });
+  });
+
+  describe('normalizePersianChars', () => {
+    it('should normalize Arabic variants of Persian letters', () => {
+      expect(normalizePersianChars('كباب و يار')).toBe('کباب و یار');
+      expect(normalizePersianChars('ۀ و ة')).toBe('ه و ه');
+    });
+
+    it('should remove tatweel', () => {
+      expect(normalizePersianChars('سلامـــ')).toBe('سلام');
+    });
+  });
+
+  describe('stripPersianDiacritics', () => {
+    it('should remove diacritics', () => {
+      expect(stripPersianDiacritics('سَلام')).toBe('سلام');
+    });
+  });
+
+  describe('cleanPersianText', () => {
+    it('should normalize, trim, and fix spacing', () => {
+      expect(cleanPersianText('  كتابها  ')).toBe('کتاب\u200Cها');
     });
   });
 

@@ -1,4 +1,5 @@
 import type { LoanInput, LoanResult, StepDetail } from './loan.types';
+import { fromError, ok, type ToolResult } from '@/shared/utils/result';
 
 const MAX_RATE = 200;
 
@@ -23,7 +24,7 @@ function paymentForRate(principal: number, annualRate: number, months: number): 
   }
 
   const pow = Math.pow(1 + monthlyRate, months);
-  return principal * (monthlyRate * pow) / (pow - 1);
+  return (principal * (monthlyRate * pow)) / (pow - 1);
 }
 
 function solveRateFromPayment(principal: number, months: number, monthlyPayment: number): number {
@@ -48,7 +49,11 @@ function solveRateFromPayment(principal: number, months: number, monthlyPayment:
   return (low + high) / 2;
 }
 
-function solvePrincipalFromPayment(monthlyPayment: number, annualRate: number, months: number): number {
+function solvePrincipalFromPayment(
+  monthlyPayment: number,
+  annualRate: number,
+  months: number,
+): number {
   if (monthlyPayment <= 0) {
     throw new Error('قسط ماهانه باید بیشتر از صفر باشد.');
   }
@@ -62,10 +67,14 @@ function solvePrincipalFromPayment(monthlyPayment: number, annualRate: number, m
   }
 
   const pow = Math.pow(1 + monthlyRate, months);
-  return monthlyPayment * (pow - 1) / (monthlyRate * pow);
+  return (monthlyPayment * (pow - 1)) / (monthlyRate * pow);
 }
 
-function solveMonthsFromPayment(principal: number, annualRate: number, monthlyPayment: number): number {
+function solveMonthsFromPayment(
+  principal: number,
+  annualRate: number,
+  monthlyPayment: number,
+): number {
   if (principal <= 0) {
     throw new Error('مبلغ وام باید بیشتر از صفر باشد.');
   }
@@ -192,4 +201,12 @@ export function calculateLoan(input: LoanInput): LoanResult {
   }
 
   return result;
+}
+
+export function calculateLoanResult(input: LoanInput): ToolResult<LoanResult> {
+  try {
+    return ok(calculateLoan(input));
+  } catch (error) {
+    return fromError(error, 'خطای نامشخص در محاسبه وام.', 'LOAN_CALCULATION_ERROR');
+  }
 }

@@ -1,5 +1,6 @@
-import SplitPdfPage from '@/features/pdf-tools/split/split-pdf';
+import dynamic from 'next/dynamic';
 import { buildMetadata } from '@/lib/seo';
+const SplitPdfPage = dynamic(() => import('@/features/pdf-tools/split/split-pdf'), { ssr: false });
 
 export const metadata = buildMetadata({
   title: 'تقسیم PDF - جعبه ابزار فارسی',

@@ -1,5 +1,8 @@
-import EncryptPdfPage from '@/features/pdf-tools/security/encrypt-pdf';
+import dynamic from 'next/dynamic';
 import { buildMetadata } from '@/lib/seo';
+const EncryptPdfPage = dynamic(() => import('@/features/pdf-tools/security/encrypt-pdf'), {
+  ssr: false,
+});
 
 export const metadata = {
   ...buildMetadata({

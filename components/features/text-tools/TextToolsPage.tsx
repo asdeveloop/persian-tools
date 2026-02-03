@@ -3,13 +3,9 @@
 import { useMemo, useState } from 'react';
 import { Card, Button } from '@/components/ui';
 import Input from '@/shared/ui/Input';
-import {
-  gregorianToJalali,
-  isValidGregorianDate,
-  isValidJalaliDate,
-  jalaliToGregorian,
-} from '@/features/date-tools/date-tools.logic';
+import { convertDate } from '@/features/date-tools/date-tools.logic';
 import { numberToWordsFa, parseLooseNumber, toEnglishDigits } from '@/shared/utils/numbers';
+import { cleanPersianText } from '@/shared/utils/localization';
 
 type CalendarType = 'jalali' | 'gregorian';
 
@@ -58,6 +54,8 @@ export default function TextToolsPage() {
     return { words, characters, charactersNoSpaces };
   }, [textInput]);
 
+  const normalizedText = useMemo(() => cleanPersianText(textInput), [textInput]);
+
   const handleDateConvert = () => {
     const parsed = parseDateInput(calendarInput);
     if (!parsed.ok) {
@@ -66,25 +64,20 @@ export default function TextToolsPage() {
       return;
     }
 
-    if (calendarType === 'jalali') {
-      if (!isValidJalaliDate(parsed.date)) {
-        setCalendarError('تاریخ شمسی معتبر نیست.');
-        setCalendarOutput('');
-        return;
-      }
-      const g = jalaliToGregorian(parsed.date.year, parsed.date.month, parsed.date.day);
-      setCalendarOutput(`${g.year}/${pad(g.month)}/${pad(g.day)}`);
-      setCalendarError(null);
-      return;
-    }
+    const result = convertDate({
+      date: parsed.date,
+      from: calendarType,
+      to: calendarType === 'jalali' ? 'gregorian' : 'jalali',
+    });
 
-    if (!isValidGregorianDate(parsed.date)) {
-      setCalendarError('تاریخ میلادی معتبر نیست.');
+    if (!result.ok) {
+      setCalendarError(result.error.message);
       setCalendarOutput('');
       return;
     }
-    const j = gregorianToJalali(parsed.date.year, parsed.date.month, parsed.date.day);
-    setCalendarOutput(`${j.year}/${pad(j.month)}/${pad(j.day)}`);
+
+    const output = result.data;
+    setCalendarOutput(`${output.year}/${pad(output.month)}/${pad(output.day)}`);
     setCalendarError(null);
   };
 
@@ -223,6 +216,18 @@ export default function TextToolsPage() {
           <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3">
             بدون فاصله: {wordStats.charactersNoSpaces}
           </div>
+        </div>
+      </Card>
+
+      <Card className="p-5 md:p-6 space-y-4">
+        <div>
+          <div className="text-sm font-bold text-[var(--text-primary)]">نرمال‌سازی متن فارسی</div>
+          <div className="text-xs text-[var(--text-muted)]">
+            اصلاح ک/ی عربی، حذف کشیده و فاصله‌گذاری صحیح
+          </div>
+        </div>
+        <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)] whitespace-pre-wrap">
+          {normalizedText || 'متن نرمال‌شده اینجا نمایش داده می‌شود.'}
         </div>
       </Card>
     </div>

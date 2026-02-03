@@ -14,6 +14,7 @@
 
 - `date-tools.logic.ts`: مجموعه توابع محاسباتی با استفاده از تاریخ‌های UTC برای جلوگیری از اثر منطقه زمانی.
 - `date-tools.logic.test.ts`: تست‌های واحد با Vitest برای اطمینان از تبدیل درست، اعتبارسنجی و اختلاف‌ها.
+- `holidays.ts`: تعطیلات ثابت تقویم شمسی (آفلاین) برای نمایش سریع در UI.
 - `components/features/date-tools/DateToolsPage.tsx`: صفحه‌ای با فرم‌های ورودی و کارت‌هایی برای هر ابزار.
 - `app/(tools)/date-tools/page.tsx`: Route فایل با metadata مناسب سئو.
 

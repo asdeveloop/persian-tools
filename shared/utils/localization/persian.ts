@@ -41,6 +41,22 @@ const suffixPattern = new RegExp(
   'g',
 );
 
+const arabicCharMap: Record<string, string> = {
+  ك: 'ک',
+  ي: 'ی',
+  ى: 'ی',
+  ئ: 'ی',
+  ؤ: 'و',
+  ة: 'ه',
+  ۀ: 'ه',
+  أ: 'ا',
+  إ: 'ا',
+  ٱ: 'ا',
+};
+
+const arabicDiacriticsRegex = /[\u064B-\u065F\u0670\u06D6-\u06ED]/g;
+const tatweelRegex = /\u0640/g;
+
 /**
  * Converts English numbers to Persian numbers.
  * Complexity: O(n) where n is input length.
@@ -106,4 +122,30 @@ export function fixPersianSpacing(text: string): string {
     }
     return `${stem}\u200C${suffix}`;
   });
+}
+
+/**
+ * Normalize Arabic variants of Persian characters and remove tatweel.
+ */
+export function normalizePersianChars(text: string): string {
+  return text
+    .replace(/[كيىئؤةۀأإٱ]/g, (char) => arabicCharMap[char] ?? char)
+    .replace(tatweelRegex, '');
+}
+
+/**
+ * Remove Arabic diacritics from Persian text.
+ */
+export function stripPersianDiacritics(text: string): string {
+  return text.replace(arabicDiacriticsRegex, '');
+}
+
+/**
+ * Clean Persian text by normalizing characters, removing diacritics,
+ * trimming, and fixing common spacing.
+ */
+export function cleanPersianText(text: string): string {
+  const normalized = stripPersianDiacritics(normalizePersianChars(text));
+  const collapsed = normalized.replace(/\s+/g, ' ').trim();
+  return fixPersianSpacing(collapsed);
 }

@@ -1,5 +1,6 @@
-import ImageToolsPage from '@/features/image-tools/image-tools';
+import dynamic from 'next/dynamic';
 import { buildMetadata } from '@/lib/seo';
+const ImageToolsPage = dynamic(() => import('@/features/image-tools/image-tools'), { ssr: false });
 
 export const metadata = buildMetadata({
   title: 'ابزارهای تصویر - جعبه ابزار فارسی',

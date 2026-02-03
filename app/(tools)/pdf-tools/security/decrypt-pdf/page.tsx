@@ -1,5 +1,8 @@
-import DecryptPdfPage from '@/features/pdf-tools/security/decrypt-pdf';
+import dynamic from 'next/dynamic';
 import { buildMetadata } from '@/lib/seo';
+const DecryptPdfPage = dynamic(() => import('@/features/pdf-tools/security/decrypt-pdf'), {
+  ssr: false,
+});
 
 export const metadata = buildMetadata({
   title: 'حذف رمز PDF - جعبه ابزار فارسی',

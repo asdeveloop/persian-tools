@@ -1,3 +1,5 @@
+import { fail, ok, type ToolResult } from '@/shared/utils/result';
+
 export type CalendarType = 'jalali' | 'gregorian';
 
 export type DateParts = {
@@ -304,4 +306,28 @@ export function getWeekdayName(date: DateParts): string {
     default:
       return 'شنبه';
   }
+}
+
+export type DateConversionInput = {
+  date: DateParts;
+  from: CalendarType;
+  to: CalendarType;
+};
+
+export function convertDate(input: DateConversionInput): ToolResult<DateParts> {
+  if (input.from === input.to) {
+    return ok(input.date);
+  }
+
+  if (input.from === 'jalali') {
+    if (!isValidJalaliDate(input.date)) {
+      return fail('تاریخ شمسی معتبر نیست.', 'INVALID_JALALI_DATE');
+    }
+    return ok(jalaliToGregorian(input.date.year, input.date.month, input.date.day));
+  }
+
+  if (!isValidGregorianDate(input.date)) {
+    return fail('تاریخ میلادی معتبر نیست.', 'INVALID_GREGORIAN_DATE');
+  }
+  return ok(gregorianToJalali(input.date.year, input.date.month, input.date.day));
 }
