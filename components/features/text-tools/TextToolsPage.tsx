@@ -5,7 +5,7 @@ import { Card, Button } from '@/components/ui';
 import Input from '@/shared/ui/Input';
 import { convertDate } from '@/features/date-tools/date-tools.logic';
 import { numberToWordsFa, parseLooseNumber, toEnglishDigits } from '@/shared/utils/numbers';
-import { cleanPersianText } from '@/shared/utils/localization';
+import { cleanPersianText, slugifyPersian } from '@/shared/utils/localization';
 
 type CalendarType = 'jalali' | 'gregorian';
 
@@ -45,6 +45,7 @@ export default function TextToolsPage() {
   const [numberError, setNumberError] = useState<string | null>(null);
 
   const [textInput, setTextInput] = useState('');
+  const [slugInput, setSlugInput] = useState('سلام دنیا ۱۲۳');
 
   const wordStats = useMemo(() => {
     const trimmed = textInput.trim();
@@ -55,6 +56,7 @@ export default function TextToolsPage() {
   }, [textInput]);
 
   const normalizedText = useMemo(() => cleanPersianText(textInput), [textInput]);
+  const slugText = useMemo(() => slugifyPersian(slugInput), [slugInput]);
 
   const handleDateConvert = () => {
     const parsed = parseDateInput(calendarInput);
@@ -228,6 +230,24 @@ export default function TextToolsPage() {
         </div>
         <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)] whitespace-pre-wrap">
           {normalizedText || 'متن نرمال‌شده اینجا نمایش داده می‌شود.'}
+        </div>
+      </Card>
+
+      <Card className="p-5 md:p-6 space-y-4">
+        <div>
+          <div className="text-sm font-bold text-[var(--text-primary)]">تبدیل به اسلاگ</div>
+          <div className="text-xs text-[var(--text-muted)]">
+            مناسب برای URL و شناسه‌های قابل خواندن
+          </div>
+        </div>
+        <Input
+          label="متن ورودی"
+          value={slugInput}
+          onChange={(e) => setSlugInput(e.target.value)}
+          placeholder="سلام دنیا ۱۲۳"
+        />
+        <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)]">
+          {slugText || 'اسلاگ اینجا نمایش داده می‌شود.'}
         </div>
       </Card>
     </div>

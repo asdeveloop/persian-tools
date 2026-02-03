@@ -10,6 +10,7 @@ import {
   normalizePersianChars,
   stripPersianDiacritics,
   cleanPersianText,
+  slugifyPersian,
 } from '@/shared/utils/localization';
 
 describe('Persian Utils', () => {
@@ -132,6 +133,16 @@ describe('Persian Utils', () => {
   describe('cleanPersianText', () => {
     it('should normalize, trim, and fix spacing', () => {
       expect(cleanPersianText('  كتابها  ')).toBe('کتاب\u200Cها');
+    });
+  });
+
+  describe('slugifyPersian', () => {
+    it('should create slug for persian text', () => {
+      expect(slugifyPersian('سلام دنیا')).toBe('سلام-دنیا');
+    });
+
+    it('should normalize digits and remove symbols', () => {
+      expect(slugifyPersian('  شماره ۱۲۳! ')).toBe('شماره-123');
     });
   });
 

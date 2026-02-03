@@ -2,6 +2,8 @@
  * Utilities for Persian language support including number formatting and RTL helpers.
  */
 
+import { toEnglishDigits } from '@/shared/utils/numbers';
+
 const persianDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'] as const;
 const englishDigits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'] as const;
 
@@ -56,6 +58,7 @@ const arabicCharMap: Record<string, string> = {
 
 const arabicDiacriticsRegex = /[\u064B-\u065F\u0670\u06D6-\u06ED]/g;
 const tatweelRegex = /\u0640/g;
+const zwnjRegex = /\u200C/g;
 
 /**
  * Converts English numbers to Persian numbers.
@@ -148,4 +151,19 @@ export function cleanPersianText(text: string): string {
   const normalized = stripPersianDiacritics(normalizePersianChars(text));
   const collapsed = normalized.replace(/\s+/g, ' ').trim();
   return fixPersianSpacing(collapsed);
+}
+
+/**
+ * Create a URL-friendly slug for Persian text.
+ */
+export function slugifyPersian(text: string): string {
+  const normalized = toEnglishDigits(stripPersianDiacritics(normalizePersianChars(text)))
+    .replace(zwnjRegex, ' ')
+    .toLowerCase();
+  const cleaned = normalized
+    .replace(/[^\u0600-\u06FF0-9a-z\s-]/g, ' ')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-+|-+$/g, '');
+  return cleaned;
 }
