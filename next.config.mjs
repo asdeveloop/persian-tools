@@ -4,7 +4,7 @@ import withBundleAnalyzer from '@next/bundle-analyzer';
 
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
+  swcMinify: false,
   images: {
     domains: ['localhost'],
     formats: ['image/webp', 'image/avif'],
@@ -101,6 +101,21 @@ const nextConfig = {
       path: false,
       os: false,
     };
+    config.module.rules.push({
+      test: /pdf\.worker(\.min)?\.mjs$/,
+      type: 'asset/resource',
+    });
+    if (config.optimization?.minimizer) {
+      config.optimization.minimizer = config.optimization.minimizer.map((minimizer) => {
+        if (minimizer?.constructor?.name === 'TerserPlugin') {
+          minimizer.options = {
+            ...minimizer.options,
+            exclude: /pdf\.worker(\.min)?\.mjs$/,
+          };
+        }
+        return minimizer;
+      });
+    }
     return config;
   },
 };
