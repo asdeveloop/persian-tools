@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.x, 20.x]
+        node-version: [20.x, 22.x]
 
     steps:
       - name: "✅ Checkout code"
@@ -33,7 +33,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: "🎯 Run ESLint"
-        run: pnpm lint
+        run: pnpm lint:ci
 
       - name: "✨ Check formatting with Prettier"
         run: pnpm format:check

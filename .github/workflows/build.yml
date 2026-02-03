@@ -31,11 +31,19 @@ jobs:
       - name: "🏗️ Build project"
         run: pnpm build
 
+      - name: "📦 Build library bundle"
+        run: pnpm build:lib
+
       - name: "📤 Upload build artifacts"
         uses: actions/upload-artifact@v3
         with:
           name: next-build
           path: .next/
+      - name: "📤 Upload library artifacts"
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist
+          path: dist/
 
   lighthouse:
     runs-on: ubuntu-latest
