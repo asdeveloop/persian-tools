@@ -6,6 +6,8 @@ coverage
 .DS_Store
 *.tsbuildinfo
 var/
+docs/api
+docs/api/
 
 # Playwright
 /test-results/
