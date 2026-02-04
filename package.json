@@ -21,6 +21,7 @@
     "format:check": "prettier --check .",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --coverage",
+    "ci:quick": "pnpm lint && pnpm typecheck && pnpm vitest --run",
     "bench": "vitest bench",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:debug": "playwright test --debug",
