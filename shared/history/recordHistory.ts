@@ -5,6 +5,28 @@ export type HistoryPayload = {
   outputUrl?: string;
 };
 
+export type HistoryFilters = {
+  search?: string;
+  tool?: string;
+  dateRange?: 'today' | 'week' | 'month';
+};
+
+export function buildHistoryQuery(filters?: HistoryFilters, limit = 50): string {
+  const params = new URLSearchParams();
+  params.set('limit', String(limit));
+  if (filters?.search?.trim()) {
+    params.set('search', filters.search.trim());
+  }
+  if (filters?.tool?.trim()) {
+    params.set('tool', filters.tool.trim());
+  }
+  if (filters?.dateRange) {
+    params.set('dateRange', filters.dateRange);
+  }
+  const query = params.toString();
+  return query ? `?${query}` : '';
+}
+
 export async function recordHistory(payload: HistoryPayload): Promise<void> {
   if (typeof window === 'undefined') {
     return;

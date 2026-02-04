@@ -1,7 +1,12 @@
 import { NextResponse } from 'next/server';
 import { getUserFromRequest } from '@/lib/server/auth';
 import { getActiveSubscription } from '@/lib/server/subscriptions';
-import { addHistoryEntry, clearHistory, listHistoryEntries } from '@/lib/server/history';
+import {
+  addHistoryEntry,
+  clearHistory,
+  listHistoryEntries,
+  listHistoryEntriesFiltered,
+} from '@/lib/server/history';
 
 export async function GET(request: Request) {
   const user = await getUserFromRequest(request);
@@ -17,8 +22,22 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const limitParam = Number(searchParams.get('limit') ?? '50');
   const limit = Number.isFinite(limitParam) ? Math.min(limitParam, 200) : 50;
+  const search = searchParams.get('search')?.trim() ?? '';
+  const tool = searchParams.get('tool')?.trim() ?? '';
+  const dateRangeParam = searchParams.get('dateRange') ?? undefined;
+  const dateRange =
+    dateRangeParam === 'today' || dateRangeParam === 'week' || dateRangeParam === 'month'
+      ? dateRangeParam
+      : undefined;
 
-  const entries = await listHistoryEntries(user.id, limit);
+  const hasFilters = Boolean(search || tool || dateRange);
+  const entries = hasFilters
+    ? await listHistoryEntriesFiltered(
+        user.id,
+        { search: search || undefined, tool: tool || undefined, dateRange },
+        limit,
+      )
+    : await listHistoryEntries(user.id, limit);
   return NextResponse.json({ ok: true, entries });
 }
 

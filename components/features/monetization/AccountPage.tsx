@@ -4,6 +4,8 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button, Card } from '@/components/ui';
 import Input from '@/shared/ui/Input';
+import { buildHistoryQuery } from '@/shared/history/recordHistory';
+import type { HistoryEntry } from '@/shared/history/types';
 import { SUBSCRIPTION_PLANS, type PlanId } from '@/lib/subscriptionPlans';
 
 type UserInfo = {
@@ -20,12 +22,10 @@ type SubscriptionInfo = {
   expiresAt: number;
 };
 
-type HistoryEntry = {
-  id: string;
+type HistoryFilterState = {
+  search: string;
   tool: string;
-  inputSummary: string;
-  outputSummary: string;
-  createdAt: number;
+  dateRange: 'all' | 'today' | 'week' | 'month';
 };
 
 const formatDate = (value: number) =>
@@ -39,6 +39,11 @@ export default function AccountPage() {
   const [user, setUser] = useState<UserInfo | null>(null);
   const [subscription, setSubscription] = useState<SubscriptionInfo | null>(null);
   const [history, setHistory] = useState<HistoryEntry[]>([]);
+  const [historyFilters, setHistoryFilters] = useState<HistoryFilterState>({
+    search: '',
+    tool: 'all',
+    dateRange: 'all',
+  });
   const [loading, setLoading] = useState(true);
   const [authError, setAuthError] = useState<string | null>(null);
   const [email, setEmail] = useState('');
@@ -70,14 +75,23 @@ export default function AccountPage() {
     if (!subscription) {
       return;
     }
-    const response = await fetch('/api/history', { cache: 'no-store' });
+    const query = buildHistoryQuery(
+      {
+        search: historyFilters.search?.trim() || undefined,
+        tool:
+          historyFilters.tool && historyFilters.tool !== 'all' ? historyFilters.tool : undefined,
+        dateRange: historyFilters.dateRange === 'all' ? undefined : historyFilters.dateRange,
+      },
+      200,
+    );
+    const response = await fetch(`/api/history${query}`, { cache: 'no-store' });
     if (!response.ok) {
       setHistory([]);
       return;
     }
     const data = (await response.json()) as { entries: HistoryEntry[] };
     setHistory(data.entries ?? []);
-  }, [subscription]);
+  }, [subscription, historyFilters]);
 
   useEffect(() => {
     void loadAccount();
@@ -88,6 +102,10 @@ export default function AccountPage() {
   }, [loadHistory]);
 
   const planOptions = useMemo(() => SUBSCRIPTION_PLANS, []);
+  const historyTools = useMemo(() => {
+    const tools = Array.from(new Set(history.map((entry) => entry.tool)));
+    return tools;
+  }, [history]);
 
   const handleRegister = async () => {
     setAuthError(null);
@@ -155,6 +173,10 @@ export default function AccountPage() {
   const handleHistoryClear = async () => {
     await fetch('/api/history', { method: 'DELETE' });
     setHistory([]);
+  };
+
+  const handleFiltersReset = () => {
+    setHistoryFilters({ search: '', tool: 'all', dateRange: 'all' });
   };
 
   if (loading) {
@@ -265,7 +287,60 @@ export default function AccountPage() {
 
       <section className="grid gap-4 md:grid-cols-[1.1fr_0.9fr]">
         <Card className="p-6 space-y-4">
-          <div className="text-lg font-bold">تاریخچه کارها</div>
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="text-lg font-bold">تاریخچه کارها</div>
+            <div className="text-xs text-[var(--text-muted)]">{history.length} مورد</div>
+          </div>
+          <div className="grid gap-3 md:grid-cols-3">
+            <Input
+              label="جستجو"
+              value={historyFilters.search ?? ''}
+              onChange={(event) =>
+                setHistoryFilters((prev) => ({ ...prev, search: event.target.value }))
+              }
+              placeholder="نام ابزار یا خلاصه ورودی/خروجی"
+            />
+            <label className="space-y-2 text-sm text-[var(--text-primary)]">
+              فیلتر ابزار
+              <select
+                className="input w-full px-4 py-3 bg-[var(--surface-1)] border border-[var(--border-light)] rounded-[var(--radius-md)]"
+                value={historyFilters.tool ?? 'all'}
+                onChange={(event) =>
+                  setHistoryFilters((prev) => ({ ...prev, tool: event.target.value }))
+                }
+              >
+                <option value="all">همه ابزارها</option>
+                {historyTools.map((tool) => (
+                  <option key={tool} value={tool}>
+                    {tool}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="space-y-2 text-sm text-[var(--text-primary)]">
+              بازه زمانی
+              <select
+                className="input w-full px-4 py-3 bg-[var(--surface-1)] border border-[var(--border-light)] rounded-[var(--radius-md)]"
+                value={historyFilters.dateRange ?? 'all'}
+                onChange={(event) =>
+                  setHistoryFilters((prev) => ({
+                    ...prev,
+                    dateRange: event.target.value as HistoryFilterState['dateRange'],
+                  }))
+                }
+              >
+                <option value="all">همه زمان‌ها</option>
+                <option value="today">امروز</option>
+                <option value="week">۷ روز اخیر</option>
+                <option value="month">۳۰ روز اخیر</option>
+              </select>
+            </label>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Button type="button" variant="tertiary" onClick={handleFiltersReset}>
+              پاکسازی فیلترها
+            </Button>
+          </div>
           {subscription ? (
             <div className="space-y-3">
               {history.length === 0 && (

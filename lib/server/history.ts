@@ -11,6 +11,12 @@ export type HistoryEntry = {
   createdAt: number;
 };
 
+export type HistoryFilter = {
+  search?: string;
+  tool?: string;
+  dateRange?: 'today' | 'week' | 'month';
+};
+
 type HistoryRow = {
   id: string;
   user_id: string;
@@ -68,6 +74,50 @@ export async function listHistoryEntries(userId: string, limit = 50): Promise<Hi
      ORDER BY created_at DESC
      LIMIT $2`,
     [userId, limit],
+  );
+  return result.rows.map(mapHistory);
+}
+
+export async function listHistoryEntriesFiltered(
+  userId: string,
+  filters: HistoryFilter,
+  limit = 50,
+): Promise<HistoryEntry[]> {
+  const conditions: string[] = ['user_id = $1'];
+  const values: Array<string | number> = [userId];
+
+  if (filters.tool) {
+    values.push(filters.tool);
+    conditions.push(`tool = $${values.length}`);
+  }
+
+  if (filters.search) {
+    values.push(`%${filters.search.toLowerCase()}%`);
+    conditions.push(
+      `(LOWER(tool) LIKE $${values.length} OR LOWER(input_summary) LIKE $${values.length} OR LOWER(output_summary) LIKE $${values.length})`,
+    );
+  }
+
+  if (filters.dateRange) {
+    const now = Date.now();
+    const dayMs = 24 * 60 * 60 * 1000;
+    const rangeMs =
+      filters.dateRange === 'today' ? dayMs : filters.dateRange === 'week' ? 7 * dayMs : 30 * dayMs;
+    values.push(now - rangeMs);
+    conditions.push(`created_at >= $${values.length}`);
+  }
+
+  values.push(limit);
+  const where = conditions.join(' AND ');
+  const limitIndex = values.length;
+
+  const result = await query<HistoryRow>(
+    `SELECT id, user_id, tool, input_summary, output_summary, output_url, created_at
+     FROM history_entries
+     WHERE ${where}
+     ORDER BY created_at DESC
+     LIMIT $${limitIndex}`,
+    values,
   );
   return result.rows.map(mapHistory);
 }
