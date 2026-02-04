@@ -120,7 +120,6 @@ const quickSearches: Array<{ label: string; query: string; category: ToolCategor
   { label: 'فشرده‌سازی', query: 'فشرده', category: 'pdf' },
   { label: 'کد ملی', query: 'کد ملی', category: 'validation' },
   { label: 'اقساط وام', query: 'اقساط', category: 'finance' },
-  { label: 'تبدیل تاریخ', query: 'تبدیل تاریخ', category: 'date' },
 ];
 
 const flows = [
@@ -279,8 +278,6 @@ export default function ToolsDashboardPage() {
 
   return (
     <div className="space-y-10">
-      <PopularTools />
-
       <section className="section-surface p-6 md:p-8 rounded-[var(--radius-lg)] border border-[var(--border-light)]">
         <div className="flex flex-col gap-4">
           <div className="inline-flex items-center gap-2 rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-2 text-xs font-semibold text-[var(--text-muted)]">
@@ -291,10 +288,12 @@ export default function ToolsDashboardPage() {
             همه ابزارها در یک صفحه
           </h1>
           <p className="text-[var(--text-secondary)]">
-            جست‌وجو، فیلتر و مسیرهای پیشنهادی را یکجا ببینید و سریع به ابزار مناسب برسید.
+            جست‌وجو و فیلتر کن، سریع به ابزار مناسب برس.
           </p>
         </div>
       </section>
+
+      <PopularTools title="محبوب‌ها" subtitle="بر اساس استفاده اخیر شما" limit={6} />
 
       <CardPanel>
         <div className="space-y-2">
@@ -306,7 +305,7 @@ export default function ToolsDashboardPage() {
             type="search"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="جستجوی ابزار..."
+            placeholder="جستجوی ابزار (مثلاً ادغام PDF)"
             className="input-field"
             aria-describedby="tools-search-hint"
           />
@@ -347,7 +346,7 @@ export default function ToolsDashboardPage() {
           ))}
         </div>
         <div className="flex flex-wrap items-center justify-between gap-3 text-xs text-[var(--text-muted)]">
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2" role="status" aria-live="polite">
             <span>نمایش {filteredTools.length} ابزار</span>
             {selectedCategory !== 'all' ? (
               <span className="rounded-full border border-[var(--border-light)] bg-[var(--surface-1)]/80 px-2 py-0.5 text-[10px] font-semibold text-[var(--text-secondary)]">
@@ -364,7 +363,7 @@ export default function ToolsDashboardPage() {
               }}
               className="rounded-full border border-[var(--border-light)] bg-[var(--surface-1)]/80 px-3 py-1 font-semibold text-[var(--text-secondary)] transition-all duration-[var(--motion-fast)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)]"
             >
-              پاک‌سازی تاریخچه محبوب‌ها
+              پاک‌سازی محبوب‌ها
             </button>
             {(searchTerm || selectedCategory !== 'all') && (
               <button
@@ -403,7 +402,11 @@ export default function ToolsDashboardPage() {
       </section>
 
       {hasResults ? (
-        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3" aria-busy={isFiltering}>
+        <div
+          className="grid gap-6 md:grid-cols-2 xl:grid-cols-3"
+          aria-busy={isFiltering}
+          aria-live="polite"
+        >
           {isFiltering
             ? Array.from({ length: 6 }).map((_, index) => (
                 <div

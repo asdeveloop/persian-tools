@@ -173,9 +173,10 @@ export default function ReorderPagesPage() {
               value={pagesInput}
               onChange={(e) => setPagesInput(e.target.value)}
               placeholder="مثال: 3,2,1,4"
+              aria-describedby="reorder-pages-help"
               className="input-field"
             />
-            <div className="text-xs text-[var(--text-muted)]">
+            <div id="reorder-pages-help" className="text-xs text-[var(--text-muted)]">
               همه صفحات باید یکبار مشخص شوند. مثال: 1-3,5,4
             </div>
           </div>

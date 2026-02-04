@@ -168,9 +168,13 @@ export default function RotatePagesPage() {
               type="text"
               value={pagesInput}
               onChange={(e) => setPagesInput(e.target.value)}
-              placeholder="مثال: 1-3,5,8"
+              placeholder="مثال: 1-3,5"
+              aria-describedby="rotate-pages-help"
               className="input-field"
             />
+            <div id="rotate-pages-help" className="text-xs text-[var(--text-muted)]">
+              می توانید از بازه استفاده کنید (1-3) یا صفحات جداگانه را با کاما جدا کنید.
+            </div>
           </div>
 
           <div className="flex flex-wrap items-center gap-3">

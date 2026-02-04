@@ -180,10 +180,11 @@ export default function DeletePagesPage() {
               type="text"
               value={pagesInput}
               onChange={(e) => setPagesInput(e.target.value)}
-              placeholder="مثال: 1-3,5,8"
+              placeholder="مثال: 1-3,5"
+              aria-describedby="delete-pages-help"
               className="input-field"
             />
-            <div className="text-xs text-[var(--text-muted)]">
+            <div id="delete-pages-help" className="text-xs text-[var(--text-muted)]">
               می توانید از بازه استفاده کنید (1-3) یا صفحات جداگانه را با کاما جدا کنید.
             </div>
           </div>

@@ -276,9 +276,10 @@ export default function PdfToImagePage() {
                 value={pagesInput}
                 onChange={(e) => setPagesInput(e.target.value)}
                 placeholder="all یا 1-3,5"
+                aria-describedby="pdf-to-image-pages-help"
                 className="input-field"
               />
-              <div className="text-xs text-[var(--text-muted)]">
+              <div id="pdf-to-image-pages-help" className="text-xs text-[var(--text-muted)]">
                 برای همه صفحات مقدار all را وارد کنید.
               </div>
             </div>

@@ -152,10 +152,11 @@ export default function SplitPdfPage() {
               type="text"
               value={pagesInput}
               onChange={(e) => setPagesInput(e.target.value)}
-              placeholder="مثال: 1-3,5,8"
+              placeholder="مثال: 1-3,5"
+              aria-describedby="split-pdf-pages-help"
               className="input-field"
             />
-            <div className="text-xs text-[var(--text-muted)]">
+            <div id="split-pdf-pages-help" className="text-xs text-[var(--text-muted)]">
               می توانید از بازه استفاده کنید (1-3) یا صفحات جداگانه را با کاما جدا کنید.
             </div>
           </div>

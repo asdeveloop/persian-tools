@@ -152,10 +152,11 @@ export default function ExtractPagesPage() {
               type="text"
               value={pagesInput}
               onChange={(e) => setPagesInput(e.target.value)}
-              placeholder="مثال: 1-3,5,8"
+              placeholder="مثال: 1-3,5"
+              aria-describedby="extract-pages-help"
               className="input-field"
             />
-            <div className="text-xs text-[var(--text-muted)]">
+            <div id="extract-pages-help" className="text-xs text-[var(--text-muted)]">
               می توانید از بازه استفاده کنید (1-3) یا صفحات جداگانه را با کاما جدا کنید.
             </div>
           </div>
