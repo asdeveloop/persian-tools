@@ -3,7 +3,6 @@ dist
 .next
 .vite
 coverage
-docs
 .DS_Store
 *.tsbuildinfo
 var/
