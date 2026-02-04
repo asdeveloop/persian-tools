@@ -220,10 +220,14 @@ export default function DeletePagesPage() {
             </div>
           )}
 
-          {error && <Alert variant="danger">{error}</Alert>}
+          {error && (
+            <Alert variant="danger" title="خطا">
+              {error}
+            </Alert>
+          )}
 
           {downloadUrl && (
-            <Alert variant="success">
+            <Alert variant="success" title="موفق">
               فایل آماده است.{' '}
               <a
                 className="font-semibold underline"

@@ -160,10 +160,14 @@ export default function CompressPdfPage() {
             </div>
           )}
 
-          {error && <Alert variant="danger">{error}</Alert>}
+          {error && (
+            <Alert variant="danger" title="خطا">
+              {error}
+            </Alert>
+          )}
 
           {downloadUrl && resultSize !== null && (
-            <Alert variant="success" className="space-y-2">
+            <Alert variant="success" title="موفق" className="space-y-2">
               <div>
                 حجم جدید: {formatBytes(resultSize)} | صرفه جویی: {savedPercent.toFixed(1)}%
               </div>

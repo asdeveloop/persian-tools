@@ -201,10 +201,14 @@ export default function DecryptPdfPage() {
             </Button>
           </div>
 
-          {error && <Alert variant="danger">{error}</Alert>}
+          {error && (
+            <Alert variant="danger" title="خطا">
+              {error}
+            </Alert>
+          )}
 
           {downloadUrl && resultSize !== null && (
-            <Alert variant="success" className="space-y-2">
+            <Alert variant="success" title="موفق" className="space-y-2">
               <div>حجم خروجی: {formatBytes(resultSize)}</div>
               <div>
                 <a

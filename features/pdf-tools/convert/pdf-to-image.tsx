@@ -358,7 +358,11 @@ export default function PdfToImagePage() {
             </Button>
           </div>
 
-          {error && <Alert variant="danger">{error}</Alert>}
+          {error && (
+            <Alert variant="danger" title="خطا">
+              {error}
+            </Alert>
+          )}
         </Card>
 
         {outputs.length > 0 && (
