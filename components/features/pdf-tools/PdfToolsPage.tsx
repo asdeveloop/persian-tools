@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Card } from '@/components/ui';
+import { Card, EmptyState } from '@/components/ui';
 import type { PdfToolItem } from '@/features/pdf-tools/types';
 
 const pdfTools: PdfToolItem[] = [
@@ -206,12 +206,17 @@ export default function PdfToolsPage() {
       <Card className="p-6">
         <div className="flex flex-col sm:flex-row gap-4 items-center">
           <div className="flex-1 relative">
+            <label htmlFor="pdf-search" className="sr-only">
+              جستجوی ابزارهای PDF
+            </label>
             <input
-              type="text"
+              id="pdf-search"
+              type="search"
               placeholder="جستجوی ابزار مورد نظر..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="input-field pr-12"
+              aria-describedby="pdf-search-hint"
             />
             <svg
               className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[var(--text-muted)]"
@@ -226,6 +231,9 @@ export default function PdfToolsPage() {
                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
               />
             </svg>
+            <p id="pdf-search-hint" className="mt-2 text-xs text-[var(--text-muted)]">
+              جستجو بر اساس نام یا توضیحات ابزار انجام می‌شود.
+            </p>
           </div>
         </div>
       </Card>
@@ -235,6 +243,7 @@ export default function PdfToolsPage() {
           <button
             key={category.id}
             onClick={() => setSelectedCategory(category.id)}
+            aria-pressed={selectedCategory === category.id}
             className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-[var(--motion-fast)] ${
               selectedCategory === category.id
                 ? 'bg-[var(--color-primary)] text-[var(--text-inverted)] shadow-[var(--shadow-medium)]'
@@ -247,82 +256,89 @@ export default function PdfToolsPage() {
         ))}
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {filteredTools.map((tool) => {
-          const isComingSoon = tool.status === 'coming-soon';
-          const content = (
-            <div className="block p-6 text-center">
-              <div
-                className={`text-4xl mb-4 transition-transform duration-[var(--motion-fast)] ${isComingSoon ? '' : 'group-hover:scale-110'}`}
-              >
-                {tool.icon}
-              </div>
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <h3
-                  className={`text-lg font-semibold transition-colors duration-[var(--motion-fast)] ${isComingSoon ? 'text-[var(--text-primary)]' : 'text-[var(--text-primary)] group-hover:text-[var(--color-primary)]'}`}
+      {filteredTools.length > 0 ? (
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {filteredTools.map((tool) => {
+            const isComingSoon = tool.status === 'coming-soon';
+            const content = (
+              <div className="block p-6 text-center">
+                <div
+                  className={`text-4xl mb-4 transition-transform duration-[var(--motion-fast)] ${isComingSoon ? '' : 'group-hover:scale-110'}`}
                 >
-                  {tool.title}
-                </h3>
-                {isComingSoon && (
-                  <span className="rounded-full border border-[var(--border-light)] bg-[var(--bg-subtle)] px-2 py-0.5 text-[10px] font-bold text-[var(--text-muted)]">
-                    به‌زودی
-                  </span>
-                )}
-              </div>
-              <p className="text-sm text-[var(--text-muted)] leading-relaxed">{tool.description}</p>
-              <div className="mt-4">
-                <span
-                  className={`inline-flex items-center font-semibold text-sm ${isComingSoon ? 'text-[var(--text-muted)]' : 'text-[var(--color-primary)]'}`}
-                >
-                  {isComingSoon ? 'در حال توسعه' : 'شروع کنید'}
-                  <svg
-                    className="mr-2 h-4 w-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
+                  {tool.icon}
+                </div>
+                <div className="flex items-center justify-center gap-2 mb-2">
+                  <h3
+                    className={`text-lg font-semibold transition-colors duration-[var(--motion-fast)] ${isComingSoon ? 'text-[var(--text-primary)]' : 'text-[var(--text-primary)] group-hover:text-[var(--color-primary)]'}`}
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M7 17l9.2-9.2M17 17V7H7"
-                    />
-                  </svg>
-                </span>
+                    {tool.title}
+                  </h3>
+                  {isComingSoon && (
+                    <span className="rounded-full border border-[var(--border-light)] bg-[var(--bg-subtle)] px-2 py-0.5 text-[10px] font-bold text-[var(--text-muted)]">
+                      به‌زودی
+                    </span>
+                  )}
+                </div>
+                <p className="text-sm text-[var(--text-muted)] leading-relaxed">
+                  {tool.description}
+                </p>
+                <div className="mt-4">
+                  <span
+                    className={`inline-flex items-center font-semibold text-sm ${isComingSoon ? 'text-[var(--text-muted)]' : 'text-[var(--color-primary)]'}`}
+                  >
+                    {isComingSoon ? 'در حال توسعه' : 'شروع کنید'}
+                    <svg
+                      className="mr-2 h-4 w-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M7 17l9.2-9.2M17 17V7H7"
+                      />
+                    </svg>
+                  </span>
+                </div>
               </div>
-            </div>
-          );
+            );
 
-          return (
-            <Card
-              key={tool.id}
-              className={`group transition-all duration-[var(--motion-medium)] ${
-                isComingSoon
-                  ? 'opacity-80'
-                  : 'hover:shadow-[var(--shadow-strong)] hover:-translate-y-1'
-              }`}
-            >
-              {isComingSoon ? (
-                <div aria-disabled="true">{content}</div>
-              ) : (
-                <Link href={tool.path} className="block">
-                  {content}
-                </Link>
-              )}
-            </Card>
-          );
-        })}
-      </div>
-
-      {filteredTools.length === 0 && (
-        <Card className="text-center py-12">
-          <div className="text-6xl mb-4">🔍</div>
-          <h3 className="text-xl font-semibold text-[var(--text-primary)] mb-2">ابزاری یافت نشد</h3>
-          <p className="text-[var(--text-muted)]">
-            متن جستجو را تغییر دهید یا دسته بندی دیگری را انتخاب کنید
-          </p>
-        </Card>
+            return (
+              <Card
+                key={tool.id}
+                className={`group transition-all duration-[var(--motion-medium)] ${
+                  isComingSoon
+                    ? 'opacity-80'
+                    : 'hover:shadow-[var(--shadow-strong)] hover:-translate-y-1'
+                }`}
+              >
+                {isComingSoon ? (
+                  <div aria-disabled="true">{content}</div>
+                ) : (
+                  <Link href={tool.path} className="block">
+                    {content}
+                  </Link>
+                )}
+              </Card>
+            );
+          })}
+        </div>
+      ) : (
+        <EmptyState
+          icon="🔍"
+          title="ابزاری یافت نشد"
+          description="متن جستجو را تغییر دهید یا دسته‌بندی دیگری را انتخاب کنید."
+          action={{
+            label: 'بازنشانی فیلترها',
+            onClick: () => {
+              setSearchTerm('');
+              setSelectedCategory('all');
+            },
+          }}
+        />
       )}
 
       <section className="section-surface p-8">

@@ -11,7 +11,7 @@ type Props = HTMLAttributes<HTMLDivElement> & {
 };
 
 /**
- * Alert component following PROJECT_STANDARDS.md design system
+ * Alert component following docs/project-standards.md design system
  * Supports all status variants and accessibility
  */
 export default function Alert({

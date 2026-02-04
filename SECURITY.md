@@ -1,5 +1,7 @@
 # Security Policy
 
+> Last updated: 2026-02-03
+
 ## Supported Versions
 
 We support the latest `main` branch and the most recent tagged release.

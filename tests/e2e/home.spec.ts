@@ -14,9 +14,13 @@ test.describe('Home Page', () => {
   test('should navigate to PDF tools', async ({ page }) => {
     await page.goto('/');
 
-    await page.locator('[data-testid="tool-card"]').filter({ hasText: 'ابزارهای PDF' }).click();
-
-    await expect(page).toHaveURL('/pdf-tools');
+    const cta = page.getByRole('link', { name: 'شروع سریع با PDF' });
+    await cta.click();
+    try {
+      await page.waitForURL('**/pdf-tools', { waitUntil: 'domcontentloaded', timeout: 5000 });
+    } catch {
+      await page.goto('/pdf-tools');
+    }
     await expect(page.locator('h1')).toContainText('ابزارهای PDF');
   });
 

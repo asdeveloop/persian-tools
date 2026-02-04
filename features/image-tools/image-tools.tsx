@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
-import { Button, Card } from '@/components/ui';
+import { Button, Card, EmptyState } from '@/components/ui';
 import { formatBytesFa, formatPercentFa } from './utils/format';
 import { formatNumberFa, parseLooseNumber } from '@/shared/utils/numbers';
 import ImageDropzone from './components/ImageDropzone';
@@ -72,6 +72,13 @@ const getOutputMimeType = (fileType: string, format: ImageOutputFormat) => {
     return 'image/webp';
   }
   return format;
+};
+
+const calculateSavings = (originalSize: number, compressedSize?: number) => {
+  if (!compressedSize || originalSize <= 0) {
+    return 0;
+  }
+  return Math.max(0, ((originalSize - compressedSize) / originalSize) * 100);
 };
 
 export default function ImageToolsPage() {
@@ -391,127 +398,132 @@ export default function ImageToolsPage() {
           )}
 
           <div className="space-y-4">
-            {items.map((item) => {
-              const outputMimeType = getOutputMimeType(item.file.type, settings.outputFormat);
-              const outputExtension =
-                outputMimeType === 'image/jpeg' ? 'jpg' : outputMimeType.split('/')[1];
-              const savings =
-                item.result?.size && item.originalSize
-                  ? Math.max(0, ((item.originalSize - item.result.size) / item.originalSize) * 100)
-                  : 0;
+            {!hasItems ? (
+              <EmptyState
+                icon="🖼️"
+                title="هنوز تصویری اضافه نشده است"
+                description="برای شروع، تصویرها را از بخش بالا انتخاب کنید یا فایل‌ها را بکشید و رها کنید."
+              />
+            ) : (
+              items.map((item) => {
+                const outputMimeType = getOutputMimeType(item.file.type, settings.outputFormat);
+                const outputExtension =
+                  outputMimeType === 'image/jpeg' ? 'jpg' : outputMimeType.split('/')[1];
+                const savings = calculateSavings(item.originalSize, item.result?.size);
 
-              return (
-                <Card key={item.id} className="p-6 space-y-4">
-                  <div className="flex flex-wrap items-start justify-between gap-4">
-                    <div>
-                      <h3 className="text-lg font-semibold text-[var(--text-primary)]">
-                        {item.file.name}
-                      </h3>
-                      <p className="text-sm text-[var(--text-muted)]">
-                        {formatBytesFa(item.originalSize)} ·{' '}
-                        {item.file.type.replace('image/', '').toUpperCase()}
-                      </p>
+                return (
+                  <Card key={item.id} className="p-6 space-y-4">
+                    <div className="flex flex-wrap items-start justify-between gap-4">
+                      <div>
+                        <h3 className="text-lg font-semibold text-[var(--text-primary)]">
+                          {item.file.name}
+                        </h3>
+                        <p className="text-sm text-[var(--text-muted)]">
+                          {formatBytesFa(item.originalSize)} ·{' '}
+                          {item.file.type.replace('image/', '').toUpperCase()}
+                        </p>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          onClick={() => removeItem(item.id)}
+                          disabled={item.status === 'processing'}
+                        >
+                          حذف
+                        </Button>
+                        <Button
+                          type="button"
+                          onClick={() => compressSelected(item.id)}
+                          disabled={item.status === 'processing'}
+                        >
+                          {item.status === 'processing' ? 'در حال پردازش...' : 'پردازش'}
+                        </Button>
+                      </div>
                     </div>
-                    <div className="flex flex-wrap gap-2">
-                      <Button
-                        type="button"
-                        variant="secondary"
-                        onClick={() => removeItem(item.id)}
-                        disabled={item.status === 'processing'}
-                      >
-                        حذف
-                      </Button>
-                      <Button
-                        type="button"
-                        onClick={() => compressSelected(item.id)}
-                        disabled={item.status === 'processing'}
-                      >
-                        {item.status === 'processing' ? 'در حال پردازش...' : 'پردازش'}
-                      </Button>
-                    </div>
-                  </div>
 
-                  <div className="grid gap-4 md:grid-cols-2">
-                    <div>
-                      <div className="text-xs text-[var(--text-muted)] mb-2">تصویر اصلی</div>
-                      <Image
-                        src={item.originalUrl}
-                        alt={`تصویر اصلی ${item.file.name}`}
-                        width={item.originalDimensions?.width ?? 1200}
-                        height={item.originalDimensions?.height ?? 900}
-                        className="w-full h-auto rounded-[var(--radius-lg)] border border-[var(--border-light)]"
-                        sizes="100vw"
-                        unoptimized
-                      />
-                      {item.originalDimensions && (
-                        <div className="mt-2 text-xs text-[var(--text-muted)]">
-                          ابعاد: {formatNumberFa(item.originalDimensions.width)}×
-                          {formatNumberFa(item.originalDimensions.height)}
-                        </div>
-                      )}
-                    </div>
-                    <div>
-                      <div className="text-xs text-[var(--text-muted)] mb-2">خروجی فشرده</div>
-                      {item.result ? (
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <div>
+                        <div className="text-xs text-[var(--text-muted)] mb-2">تصویر اصلی</div>
                         <Image
-                          src={item.result.url}
-                          alt={`تصویر خروجی ${item.file.name}`}
-                          width={item.result.width ?? 1200}
-                          height={item.result.height ?? 900}
+                          src={item.originalUrl}
+                          alt={`تصویر اصلی ${item.file.name}`}
+                          width={item.originalDimensions?.width ?? 1200}
+                          height={item.originalDimensions?.height ?? 900}
                           className="w-full h-auto rounded-[var(--radius-lg)] border border-[var(--border-light)]"
                           sizes="100vw"
                           unoptimized
                         />
-                      ) : (
-                        <div className="flex items-center justify-center h-48 rounded-[var(--radius-lg)] border border-dashed border-[var(--border-light)] text-sm text-[var(--text-muted)]">
-                          هنوز خروجی تولید نشده است
-                        </div>
-                      )}
-                      {item.result && (
-                        <div className="mt-2 text-xs text-[var(--text-muted)]">
-                          {formatBytesFa(item.result.size)} · صرفه‌جویی {formatPercentFa(savings)}
-                          <span className="mx-2">|</span>
-                          ابعاد: {formatNumberFa(item.result.width)}×
-                          {formatNumberFa(item.result.height)}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  {item.status === 'processing' && (
-                    <div className="space-y-2">
-                      <div className="h-2 w-full overflow-hidden rounded-full bg-[var(--bg-subtle)]">
-                        <div
-                          className="h-full bg-[var(--color-primary)] transition-all duration-200"
-                          style={{ width: `${item.progress}%` }}
-                        />
+                        {item.originalDimensions && (
+                          <div className="mt-2 text-xs text-[var(--text-muted)]">
+                            ابعاد: {formatNumberFa(item.originalDimensions.width)}×
+                            {formatNumberFa(item.originalDimensions.height)}
+                          </div>
+                        )}
                       </div>
-                      <div className="text-xs text-[var(--text-muted)]">
-                        {formatPercentFa(item.progress, 0)}
+                      <div>
+                        <div className="text-xs text-[var(--text-muted)] mb-2">خروجی فشرده</div>
+                        {item.result ? (
+                          <Image
+                            src={item.result.url}
+                            alt={`تصویر خروجی ${item.file.name}`}
+                            width={item.result.width ?? 1200}
+                            height={item.result.height ?? 900}
+                            className="w-full h-auto rounded-[var(--radius-lg)] border border-[var(--border-light)]"
+                            sizes="100vw"
+                            unoptimized
+                          />
+                        ) : (
+                          <div className="flex items-center justify-center h-48 rounded-[var(--radius-lg)] border border-dashed border-[var(--border-light)] text-sm text-[var(--text-muted)]">
+                            هنوز خروجی تولید نشده است
+                          </div>
+                        )}
+                        {item.result && (
+                          <div className="mt-2 text-xs text-[var(--text-muted)]">
+                            {formatBytesFa(item.result.size)} · صرفه‌جویی {formatPercentFa(savings)}
+                            <span className="mx-2">|</span>
+                            ابعاد: {formatNumberFa(item.result.width)}×
+                            {formatNumberFa(item.result.height)}
+                          </div>
+                        )}
                       </div>
                     </div>
-                  )}
 
-                  {item.error && <Alert variant="danger">{item.error}</Alert>}
-
-                  <div className="flex flex-wrap items-center justify-between gap-4 text-sm text-[var(--text-muted)]">
-                    <div>
-                      فرمت خروجی: {outputMimeType.replace('image/', '').toUpperCase()} · کیفیت{' '}
-                      {formatPercentFa(settings.quality * 100, 0)}
-                    </div>
-                    {item.result && (
-                      <a
-                        className="font-semibold underline"
-                        href={item.result.url}
-                        download={`compressed-${item.file.name.replace(/\s+/g, '-')}.${outputExtension}`}
-                      >
-                        دانلود فایل
-                      </a>
+                    {item.status === 'processing' && (
+                      <div className="space-y-2">
+                        <div className="h-2 w-full overflow-hidden rounded-full bg-[var(--bg-subtle)]">
+                          <div
+                            className="h-full bg-[var(--color-primary)] transition-all duration-200"
+                            style={{ width: `${item.progress}%` }}
+                          />
+                        </div>
+                        <div className="text-xs text-[var(--text-muted)]">
+                          {formatPercentFa(item.progress, 0)}
+                        </div>
+                      </div>
                     )}
-                  </div>
-                </Card>
-              );
-            })}
+
+                    {item.error && <Alert variant="danger">{item.error}</Alert>}
+
+                    <div className="flex flex-wrap items-center justify-between gap-4 text-sm text-[var(--text-muted)]">
+                      <div>
+                        فرمت خروجی: {outputMimeType.replace('image/', '').toUpperCase()} · کیفیت{' '}
+                        {formatPercentFa(settings.quality * 100, 0)}
+                      </div>
+                      {item.result && (
+                        <a
+                          className="font-semibold underline"
+                          href={item.result.url}
+                          download={`compressed-${item.file.name.replace(/\s+/g, '-')}.${outputExtension}`}
+                        >
+                          دانلود فایل
+                        </a>
+                      )}
+                    </div>
+                  </Card>
+                );
+              })
+            )}
           </div>
         </div>
 

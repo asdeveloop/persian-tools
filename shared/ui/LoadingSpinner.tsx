@@ -6,7 +6,7 @@ type Props = HTMLAttributes<HTMLDivElement> & {
 };
 
 /**
- * Loading spinner component following PROJECT_STANDARDS.md motion guidelines
+ * Loading spinner component following docs/project-standards.md motion guidelines
  * Supports reduced motion preference
  */
 export default function LoadingSpinner({ size = 'md', className = '', ...props }: Props) {

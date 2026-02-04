@@ -3,6 +3,7 @@ export * from './Button';
 export * from './ButtonLink';
 export * from './Card';
 export * from './Container';
+export { default as EmptyState } from './EmptyState';
 export * from './Footer';
 export * from './Input';
 export * from './LoadingSpinner';

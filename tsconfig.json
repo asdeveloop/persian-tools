@@ -10,7 +10,7 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "preserve",
-    /* Strict Type Checking - PROJECT_STANDARDS.md Requirement */
+    /* Strict Type Checking - docs/project-standards.md Requirement */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,

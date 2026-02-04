@@ -38,7 +38,7 @@ export function isValidNationalId(input: string): boolean {
     return false;
   }
   const digits = normalized.split('').map((d) => Number(d));
-  const check = digits[9] ?? 0;
+  const check = digits[9] as number;
   const sum = digits.slice(0, 9).reduce((acc, digit, index) => acc + digit * (10 - index), 0);
   const remainder = sum % 11;
   const expected = remainder < 2 ? remainder : 11 - remainder;
@@ -132,6 +132,6 @@ export function isValidIranianPlate(input: string): boolean {
   if (!match) {
     return false;
   }
-  const letter = match[2] ?? '';
+  const letter = match[2] as string;
   return plateLetters.has(letter);
 }

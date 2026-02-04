@@ -3,6 +3,7 @@
 import type { ReactNode } from 'react';
 import { useMemo, useState } from 'react';
 import ToolCard from '@/shared/ui/ToolCard';
+import { EmptyState } from '@/components/ui';
 import {
   IconPdf,
   IconImage,
@@ -150,6 +151,8 @@ export default function ToolsDashboardPage() {
     });
   }, [searchTerm, selectedCategory]);
 
+  const hasResults = filteredTools.length > 0;
+
   return (
     <div className="space-y-10">
       <section className="section-surface p-6 md:p-8 rounded-[var(--radius-lg)] border border-[var(--border-light)]">
@@ -168,19 +171,30 @@ export default function ToolsDashboardPage() {
       </section>
 
       <CardPanel>
-        <input
-          type="text"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="جستجوی ابزار..."
-          className="input-field"
-        />
+        <div className="space-y-2">
+          <label htmlFor="tools-search" className="sr-only">
+            جستجوی ابزارها
+          </label>
+          <input
+            id="tools-search"
+            type="search"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="جستجوی ابزار..."
+            className="input-field"
+            aria-describedby="tools-search-hint"
+          />
+          <p id="tools-search-hint" className="text-xs text-[var(--text-muted)]">
+            می‌توانید بر اساس عنوان یا توضیح ابزار جست‌وجو کنید.
+          </p>
+        </div>
         <div className="flex flex-wrap gap-2">
           {categories.map((category) => (
             <button
               key={category.id}
               type="button"
               onClick={() => setSelectedCategory(category.id)}
+              aria-pressed={selectedCategory === category.id}
               className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-[var(--motion-fast)] ${
                 selectedCategory === category.id
                   ? 'bg-[var(--color-primary)] text-[var(--text-inverted)] shadow-[var(--shadow-medium)]'
@@ -193,19 +207,34 @@ export default function ToolsDashboardPage() {
         </div>
       </CardPanel>
 
-      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-        {filteredTools.map((tool) => (
-          <ToolCard
-            key={tool.id}
-            href={tool.path}
-            title={tool.title}
-            description={tool.description}
-            icon={tool.icon}
-            {...(tool.meta ? { meta: tool.meta } : {})}
-            {...(tool.iconWrapClassName ? { iconWrapClassName: tool.iconWrapClassName } : {})}
-          />
-        ))}
-      </div>
+      {hasResults ? (
+        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+          {filteredTools.map((tool) => (
+            <ToolCard
+              key={tool.id}
+              href={tool.path}
+              title={tool.title}
+              description={tool.description}
+              icon={tool.icon}
+              {...(tool.meta ? { meta: tool.meta } : {})}
+              {...(tool.iconWrapClassName ? { iconWrapClassName: tool.iconWrapClassName } : {})}
+            />
+          ))}
+        </div>
+      ) : (
+        <EmptyState
+          icon="🔎"
+          title="ابزاری پیدا نشد"
+          description="عبارت جستجو یا دسته‌بندی را تغییر دهید تا ابزارهای بیشتری نمایش داده شود."
+          action={{
+            label: 'بازنشانی فیلترها',
+            onClick: () => {
+              setSearchTerm('');
+              setSelectedCategory('all');
+            },
+          }}
+        />
+      )}
 
       <section className="space-y-4">
         <h2 className="text-xl font-black text-[var(--text-primary)]">مسیرهای پیشنهادی</h2>

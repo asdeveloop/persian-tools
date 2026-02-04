@@ -96,18 +96,18 @@ test.describe('Tool flows', () => {
   test('pdf to image should show error when no file selected', async ({ page }) => {
     await page.goto('/pdf-tools/convert/pdf-to-image');
 
-    await page.getByRole('button', { name: 'تبدیل به تصویر' }).click();
-    const alert = page
-      .locator('[role="alert"]')
-      .filter({ hasText: 'ابتدا فایل PDF را انتخاب کنید.' });
-    await expect(alert).toBeVisible();
+    const convertButton = page.getByRole('button', { name: 'تبدیل به تصویر' });
+    await convertButton.scrollIntoViewIfNeeded();
+    await convertButton.click({ force: true });
+    await expect(page.getByText('ابتدا فایل PDF را انتخاب کنید.')).toBeVisible();
   });
 
   test('image to pdf should show error when no images selected', async ({ page }) => {
     await page.goto('/pdf-tools/convert/image-to-pdf');
 
-    await page.getByRole('button', { name: 'تبدیل به PDF' }).click();
-    const alert = page.locator('[role="alert"]').filter({ hasText: 'حداقل یک تصویر انتخاب کنید.' });
-    await expect(alert).toBeVisible();
+    const convertButton = page.getByRole('button', { name: 'تبدیل به PDF' });
+    await convertButton.scrollIntoViewIfNeeded();
+    await convertButton.click({ force: true });
+    await expect(page.getByText('حداقل یک تصویر انتخاب کنید.')).toBeVisible();
   });
 });

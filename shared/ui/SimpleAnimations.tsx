@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { useReducedMotion } from './useReducedMotion';
 
-// CSS-based animation components following PROJECT_STANDARDS.md
+// CSS-based animation components following docs/project-standards.md
 // These use CSS transitions instead of external animation libraries
 
 interface AnimatedCardProps {

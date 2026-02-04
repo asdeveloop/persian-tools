@@ -119,8 +119,20 @@ describe('Persian Utils', () => {
       expect(normalizePersianChars('ۀ و ة')).toBe('ه و ه');
     });
 
+    it('should map all supported Arabic variants', () => {
+      expect(normalizePersianChars('ك ي ى ئ ؤ ة ۀ أ إ ٱ')).toBe('ک ی ی ی و ه ه ا ا ا');
+    });
+
     it('should remove tatweel', () => {
       expect(normalizePersianChars('سلامـــ')).toBe('سلام');
+    });
+
+    it('should keep unsupported Arabic characters unchanged', () => {
+      expect(normalizePersianChars('ء')).toBe('ء');
+    });
+
+    it('should keep already-normal characters unchanged', () => {
+      expect(normalizePersianChars('سلام')).toBe('سلام');
     });
   });
 

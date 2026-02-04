@@ -1,6 +1,6 @@
 /**
  * Persian Tools Design System Tokens
- * Based on PROJECT_STANDARDS.md requirements
+ * Based on docs/project-standards.md requirements
  */
 
 export const tokens = {

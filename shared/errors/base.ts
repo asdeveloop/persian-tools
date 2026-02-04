@@ -1,6 +1,6 @@
 /**
  * Base error types for the application
- * Follows PROJECT_STANDARDS.md error handling requirements
+ * Follows docs/project-standards.md error handling requirements
  */
 
 // Base error class with error codes

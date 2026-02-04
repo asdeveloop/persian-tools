@@ -56,6 +56,7 @@ const arabicCharMap: Record<string, string> = {
   ٱ: 'ا',
 };
 
+const arabicCharRegex = /[كيىئؤةۀأإٱء]/g;
 const arabicDiacriticsRegex = /[\u064B-\u065F\u0670\u06D6-\u06ED]/g;
 const tatweelRegex = /\u0640/g;
 const zwnjRegex = /\u200C/g;
@@ -132,7 +133,7 @@ export function fixPersianSpacing(text: string): string {
  */
 export function normalizePersianChars(text: string): string {
   return text
-    .replace(/[كيىئؤةۀأإٱ]/g, (char) => arabicCharMap[char] ?? char)
+    .replace(arabicCharRegex, (char) => arabicCharMap[char] ?? char)
     .replace(tatweelRegex, '');
 }
 
