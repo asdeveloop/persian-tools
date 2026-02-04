@@ -97,7 +97,6 @@ export default function HomePage() {
     { label: 'ادغام PDF', query: 'ادغام', category: 'pdf' },
     { label: 'فشرده‌سازی', query: 'فشرده', category: 'pdf' },
     { label: 'تبدیل تصویر', query: 'تبدیل', category: 'image' },
-    { label: 'کد ملی', query: 'کد ملی', category: 'validation' },
   ];
 
   return (
@@ -134,7 +133,7 @@ export default function HomePage() {
                 <span className="text-gradient block">کارها را سریع‌تر می‌کنند</span>
               </h1>
               <p className="text-lg text-[var(--text-secondary)] md:text-xl">
-                ابزارهای PDF، تصویر و محاسبات روزمره را بدون خروج داده از دستگاه انجام دهید.
+                PDF، تصویر و محاسبات روزمره را سریع و امن انجام دهید — همه چیز در مرورگر شما.
               </p>
             </div>
 
@@ -167,7 +166,7 @@ export default function HomePage() {
             </div>
           </div>
           <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)]/80 p-6 shadow-[var(--shadow-strong)]">
-            <div className="text-xs font-semibold text-[var(--text-muted)]">دلایل انتخاب</div>
+            <div className="text-xs font-semibold text-[var(--text-muted)]">چرا Persian Tools</div>
             <div className="mt-5 grid gap-4">
               {[
                 {
@@ -202,7 +201,12 @@ export default function HomePage() {
         </div>
       </section>
 
-      <div className="section-divider" aria-hidden="true"></div>
+      <PopularTools
+        title="ابزارهای محبوب"
+        subtitle="نمایش پویا بر اساس استفاده اخیر"
+        limit={6}
+        gridClassName="grid gap-6 md:grid-cols-2 xl:grid-cols-3"
+      />
 
       <section
         className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]"
@@ -323,9 +327,71 @@ export default function HomePage() {
         </div>
       </section>
 
-      <PopularTools />
-
-      <div className="section-divider" aria-hidden="true"></div>
+      <section className="space-y-6" aria-labelledby="features-heading">
+        <div className="text-center space-y-2">
+          <h2 id="features-heading" className="text-3xl font-black text-[var(--text-primary)]">
+            قابلیت‌های کلیدی
+          </h2>
+          <p className="text-sm text-[var(--text-muted)]">
+            ساده، سریع و دقیق — تمرکز روی مهم‌ترین نیازها
+          </p>
+        </div>
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {[
+            {
+              title: 'مدیریت PDF',
+              desc: 'ادغام، تقسیم، حذف صفحات و فشرده‌سازی در چند ثانیه.',
+              icon: <IconPdf className="h-6 w-6 text-[var(--color-danger)]" />,
+              tone: 'bg-[rgb(var(--color-danger-rgb)/0.12)]',
+            },
+            {
+              title: 'تبدیل و بهینه‌سازی تصویر',
+              desc: 'کاهش حجم و تبدیل سریع به فرمت‌های رایج.',
+              icon: <IconImage className="h-6 w-6 text-[var(--color-info)]" />,
+              tone: 'bg-[rgb(var(--color-info-rgb)/0.12)]',
+            },
+            {
+              title: 'محاسبات مالی',
+              desc: 'اقساط وام، حقوق خالص و برنامه پرداخت.',
+              icon: <IconMoney className="h-6 w-6 text-[var(--color-success)]" />,
+              tone: 'bg-[rgb(var(--color-success-rgb)/0.12)]',
+            },
+            {
+              title: 'تبدیل تاریخ',
+              desc: 'شمسی، میلادی و قمری را بدون خطا تبدیل کنید.',
+              icon: <IconCalendar className="h-6 w-6 text-[var(--color-warning)]" />,
+              tone: 'bg-[rgb(var(--color-warning-rgb)/0.12)]',
+            },
+            {
+              title: 'ابزارهای متنی',
+              desc: 'تبدیل عدد به حروف و شمارش کلمات.',
+              icon: <IconZap className="h-6 w-6 text-[var(--color-info)]" />,
+              tone: 'bg-[rgb(var(--color-info-rgb)/0.12)]',
+            },
+            {
+              title: 'اعتبارسنجی داده‌ها',
+              desc: 'کد ملی، کارت بانکی و شبا را بررسی کنید.',
+              icon: <IconShield className="h-6 w-6 text-[var(--color-success)]" />,
+              tone: 'bg-[rgb(var(--color-success-rgb)/0.12)]',
+            },
+          ].map((item) => (
+            <div
+              key={item.title}
+              className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)]/80 p-5 transition-all duration-[var(--motion-fast)] hover:border-[var(--color-primary)] hover:shadow-[var(--shadow-strong)]"
+            >
+              <div className="flex items-center gap-3">
+                <div
+                  className={`flex h-10 w-10 items-center justify-center rounded-[var(--radius-md)] ${item.tone}`}
+                >
+                  {item.icon}
+                </div>
+                <div className="text-base font-bold text-[var(--text-primary)]">{item.title}</div>
+              </div>
+              <p className="mt-3 text-sm text-[var(--text-muted)]">{item.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
 
       <section className="space-y-8" aria-labelledby="tools-heading">
         <div className="flex flex-col gap-3 text-center">

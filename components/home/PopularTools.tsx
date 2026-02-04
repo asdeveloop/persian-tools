@@ -20,6 +20,13 @@ type DisplayTool = ToolEntry & {
   meta?: string | undefined;
 };
 
+type Props = {
+  title?: string;
+  subtitle?: string;
+  limit?: number;
+  gridClassName?: string;
+};
+
 const toolIndex: DisplayTool[] = [
   {
     id: 'merge-pdf',
@@ -71,11 +78,16 @@ const toolIndex: DisplayTool[] = [
   },
 ];
 
-export default function PopularTools() {
+export default function PopularTools({
+  title = 'محبوب‌ترین ابزارها',
+  subtitle,
+  limit = 4,
+  gridClassName,
+}: Props) {
   const [items, setItems] = useState<DisplayTool[]>([]);
   const [hasUsage, setHasUsage] = useState(false);
 
-  const defaultItems = useMemo(() => toolIndex.slice(0, 4), []);
+  const defaultItems = useMemo(() => toolIndex.slice(0, limit), [limit]);
 
   useEffect(() => {
     const snapshot = getUsageSnapshot();
@@ -86,7 +98,7 @@ export default function PopularTools() {
     const hasAnyUsage = withCounts.some((tool) => tool.count > 0);
     const sorted = [...withCounts].sort((a, b) => b.count - a.count);
 
-    const selected = (hasAnyUsage ? sorted : withCounts).slice(0, 4).map((tool) => ({
+    const selected = (hasAnyUsage ? sorted : withCounts).slice(0, limit).map((tool) => ({
       ...tool,
       meta: hasAnyUsage
         ? tool.count > 0
@@ -105,14 +117,14 @@ export default function PopularTools() {
     <section className="space-y-6" aria-labelledby="popular-tools-heading">
       <div className="flex flex-col gap-2 text-center">
         <h2 id="popular-tools-heading" className="text-3xl font-black text-[var(--text-primary)]">
-          محبوب‌ترین ابزارها
+          {title}
         </h2>
         <p className="text-sm text-[var(--text-muted)]">
-          {hasUsage ? 'بر اساس استفاده اخیر شما' : 'پیشنهادهای آماده برای شروع سریع'}
+          {subtitle ?? (hasUsage ? 'بر اساس استفاده اخیر شما' : 'پیشنهادهای آماده برای شروع سریع')}
         </p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+      <div className={gridClassName ?? 'grid gap-6 md:grid-cols-2 xl:grid-cols-4'}>
         {renderedItems.map((tool) => (
           <ToolCard
             key={tool.id}
