@@ -133,7 +133,7 @@ export default function HomePage() {
                 <span className="text-gradient block">کارها را سریع‌تر می‌کنند</span>
               </h1>
               <p className="text-lg text-[var(--text-secondary)] md:text-xl">
-                PDF، تصویر و محاسبات روزمره را سریع و امن انجام دهید — همه چیز در مرورگر شما.
+                PDF، تصویر و محاسبات روزمره را سریع و امن انجام دهید. همه چیز در مرورگر شماست.
               </p>
             </div>
 
@@ -218,10 +218,10 @@ export default function HomePage() {
 
           <div className="relative z-10">
             <h2 id="quick-start-heading" className="text-2xl font-black text-[var(--text-primary)]">
-              شروع سریع با پرکاربردها
+              مسیرهای سریع
             </h2>
             <p className="mt-2 text-sm text-[var(--text-muted)]">
-              چند مسیر آماده برای کارهای روزمره تا سریع‌تر به نتیجه برسید.
+              مسیرهای آماده برای کارهای روزمره، بدون دردسر.
             </p>
 
             <div className="mt-6 grid gap-4 sm:grid-cols-2">
@@ -244,9 +244,7 @@ export default function HomePage() {
                       <div className="text-xs text-[var(--text-muted)]">{task.description}</div>
                     </div>
                   </div>
-                  <div className="mt-4 text-xs font-semibold text-[var(--color-primary)]">
-                    شروع سریع
-                  </div>
+                  <div className="mt-4 text-xs font-semibold text-[var(--color-primary)]">شروع</div>
                 </Link>
               ))}
             </div>
@@ -257,11 +255,9 @@ export default function HomePage() {
           <div className="absolute -right-12 top-6 h-32 w-32 rounded-full bg-[rgb(var(--color-warning-rgb)/0.15)] blur-3xl"></div>
           <div className="relative z-10 space-y-6">
             <div>
-              <h3 className="text-2xl font-black text-[var(--text-primary)]">
-                پیدا کردن ابزار مناسب
-              </h3>
+              <h3 className="text-2xl font-black text-[var(--text-primary)]">جست‌وجوی ابزار</h3>
               <p className="mt-2 text-sm text-[var(--text-muted)]">
-                عنوان ابزار یا نیازتان را بنویسید و مستقیم وارد داشبورد شوید.
+                نام ابزار یا نیازتان را بنویسید و مستقیم نتیجه بگیرید.
               </p>
             </div>
 
@@ -275,7 +271,7 @@ export default function HomePage() {
                     id="home-tool-query"
                     name="query"
                     type="search"
-                    placeholder="مثلاً ادغام PDF یا کد ملی"
+                    placeholder="مثلاً ادغام PDF"
                     className="input-field"
                   />
                 </div>
@@ -303,7 +299,7 @@ export default function HomePage() {
                 </div>
               </div>
               <button type="submit" className="btn btn-lg btn-primary w-full md:w-auto">
-                برو به داشبورد ابزارها
+                نمایش نتایج
               </button>
             </form>
 
