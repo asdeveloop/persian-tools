@@ -109,7 +109,7 @@ export default function PopularTools({
 
     setItems(selected);
     setHasUsage(hasAnyUsage);
-  }, []);
+  }, [limit]);
 
   const renderedItems = items.length ? items : defaultItems;
 
