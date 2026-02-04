@@ -5,6 +5,8 @@ import type { PDFPageProxy } from 'pdfjs-dist/types/src/display/api';
 import { Button, Card } from '@/components/ui';
 import Alert from '@/shared/ui/Alert';
 import { loadPdfJs, loadPdfLib } from '@/features/pdf-tools/lazy-deps';
+import { recordHistory } from '@/shared/history/recordHistory';
+import RecentHistoryCard from '@/components/features/history/RecentHistoryCard';
 
 function formatBytes(bytes: number): string {
   if (!Number.isFinite(bytes) || bytes <= 0) {
@@ -205,7 +207,18 @@ export default function DecryptPdfPage() {
             <Alert variant="success" className="space-y-2">
               <div>حجم خروجی: {formatBytes(resultSize)}</div>
               <div>
-                <a className="font-semibold underline" href={downloadUrl} download="decrypted.pdf">
+                <a
+                  className="font-semibold underline"
+                  href={downloadUrl}
+                  download="decrypted.pdf"
+                  onClick={() =>
+                    void recordHistory({
+                      tool: 'pdf-decrypt',
+                      inputSummary: `فایل: ${file?.name ?? ''}`,
+                      outputSummary: `دانلود فایل با حجم ${formatBytes(resultSize)}`,
+                    })
+                  }
+                >
                   دانلود فایل
                 </a>
               </div>
@@ -215,6 +228,11 @@ export default function DecryptPdfPage() {
             </Alert>
           )}
         </Card>
+        <RecentHistoryCard
+          title="آخرین عملیات PDF"
+          toolPrefixes={['pdf-']}
+          toolIds={['image-to-pdf']}
+        />
       </div>
     </div>
   );

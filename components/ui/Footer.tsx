@@ -256,6 +256,42 @@ export default function Footer() {
               >
                 داشبورد استفاده
               </Link>
+              <Link
+                href="/account"
+                className="text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
+              >
+                حساب کاربری
+              </Link>
+              <Link
+                href="/support"
+                className="text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
+              >
+                حمایت مالی
+              </Link>
+              <Link
+                href="/ads"
+                className="text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
+              >
+                شفافیت تبلیغات
+              </Link>
+              <Link
+                href="/privacy"
+                className="text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
+              >
+                حریم خصوصی
+              </Link>
+              <Link
+                href="/plans"
+                className="text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
+              >
+                پلن‌های اشتراک
+              </Link>
+              <Link
+                href="/subscription-roadmap"
+                className="text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
+              >
+                نقشه‌راه اشتراک
+              </Link>
             </div>
           </div>
 

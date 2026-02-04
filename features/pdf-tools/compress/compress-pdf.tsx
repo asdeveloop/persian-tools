@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from 'react';
 import { Button, Card } from '@/components/ui';
 import Alert from '@/shared/ui/Alert';
 import { createPdfWorkerClient, type PdfWorkerClient } from '@/features/pdf-tools/workerClient';
+import { recordHistory } from '@/shared/history/recordHistory';
+import RecentHistoryCard from '@/components/features/history/RecentHistoryCard';
 
 function formatBytes(bytes: number): string {
   if (!Number.isFinite(bytes) || bytes <= 0) {
@@ -166,7 +168,18 @@ export default function CompressPdfPage() {
                 حجم جدید: {formatBytes(resultSize)} | صرفه جویی: {savedPercent.toFixed(1)}%
               </div>
               <div>
-                <a className="font-semibold underline" href={downloadUrl} download="compressed.pdf">
+                <a
+                  className="font-semibold underline"
+                  href={downloadUrl}
+                  download="compressed.pdf"
+                  onClick={() =>
+                    void recordHistory({
+                      tool: 'pdf-compress',
+                      inputSummary: `فایل: ${file?.name ?? ''}`,
+                      outputSummary: `دانلود فایل با حجم ${formatBytes(resultSize)}`,
+                    })
+                  }
+                >
                   دانلود فایل
                 </a>
               </div>
@@ -176,6 +189,11 @@ export default function CompressPdfPage() {
             </Alert>
           )}
         </Card>
+        <RecentHistoryCard
+          title="آخرین عملیات PDF"
+          toolPrefixes={['pdf-']}
+          toolIds={['image-to-pdf']}
+        />
       </div>
     </div>
   );

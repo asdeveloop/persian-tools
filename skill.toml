@@ -1,0 +1,55 @@
+# کانفیگ مهارت‌ها برای پروژه Persian Tools
+
+[skills]
+# تعریف مهارت‌ها و تخصص‌های مختلف برای پروژه
+project_architect = "معمار پروژه"
+project_engineer = "مهندس پروژه"
+ui_ux_specialist = "متخصص UI/UX"
+seo_specialist = "متخصص SEO"
+full_stack_web_developer = "متخصص برنامه‌نویسی فول استک وب"
+
+[skills.project_architect]
+description = "طراحی و معماری ساختار کلی پروژه، انتخاب فناوری‌های مناسب و تصمیم‌گیری‌های بلندمدت."
+responsibilities = ["انتخاب فناوری‌ها", "تعریف معماری سیستم", "مدیریت نیازمندی‌ها", "رصد و اصلاح معماری پروژه"]
+required_knowledge = ["معماری نرم‌افزار", "مدیریت پروژه", "طراحی سیستم‌های مقیاس‌پذیر"]
+
+[skills.project_engineer]
+description = "پیاده‌سازی جزئیات فنی پروژه، همکاری با تیم‌های توسعه و انجام پیاده‌سازی‌های اصلی."
+responsibilities = ["برنامه‌ریزی فنی", "مدیریت تیم‌های توسعه", "تضمین کیفیت فنی"]
+required_knowledge = ["مهندسی نرم‌افزار", "مدیریت پروژه", "توسعه وب"]
+
+[skills.ui_ux_specialist]
+description = "طراحی و بهبود تجربه کاربری، طراحی رابط‌های کاربری و تعاملات."
+responsibilities = ["طراحی UI", "ایجاد تجربه کاربری روان", "رعایت استانداردهای دسترسی‌پذیری", "بازخورد و ارزیابی تجربه کاربری"]
+required_knowledge = ["طراحی رابط کاربری", "اصول تجربه کاربری", "ابزارهای طراحی (مثل Figma, Sketch)"]
+
+[skills.seo_specialist]
+description = "بهینه‌سازی موتور جستجو برای بهبود رتبه سایت در نتایج جستجو."
+responsibilities = ["تحلیل و بهبود SEO سایت", "تحقیق کلمات کلیدی", "تجزیه و تحلیل رقبا", "ایجاد و بهینه‌سازی محتوای سایت"]
+required_knowledge = ["SEO on-page and off-page", "تحلیل کلمات کلیدی", "ابزارهای SEO (مثل Google Analytics, SEMrush)"]
+
+[skills.full_stack_web_developer]
+description = "توسعه‌دهنده فول استک برای طراحی، پیاده‌سازی و نگهداری بخش‌های مختلف پروژه."
+responsibilities = ["طراحی رابط کاربری", "توسعه Backend و Frontend", "یکپارچگی APIها", "مدیریت دیتابیس"]
+required_knowledge = ["HTML, CSS, JavaScript", "Node.js, Python, Django, React", "SQL, PostgreSQL", "CI/CD, Git"]
+
+[skills.additional_skills]
+# در صورت نیاز به مهارت‌های اضافی می‌توان اضافه کرد
+mobile_developer = "متخصص توسعه موبایل"
+devops_specialist = "متخصص DevOps"
+cloud_computing_expert = "متخصص محاسبات ابری"
+
+[skills.mobile_developer]
+description = "توسعه اپلیکیشن‌های موبایل برای پلتفرم‌های مختلف."
+responsibilities = ["توسعه اپلیکیشن‌های iOS/Android", "یکپارچگی APIها", "بهینه‌سازی عملکرد موبایل"]
+required_knowledge = ["Swift, Kotlin", "React Native", "Firebase, Xcode, Android Studio"]
+
+[skills.devops_specialist]
+description = "پیاده‌سازی و مدیریت فرآیندهای DevOps برای استقرار خودکار و بهینه‌سازی زیرساخت."
+responsibilities = ["مدیریت CI/CD", "تست خودکار", "مدیریت منابع سرور"]
+required_knowledge = ["Docker, Kubernetes", "AWS, Azure", "CI/CD tools like Jenkins, GitLab CI"]
+
+[skills.cloud_computing_expert]
+description = "طراحی و پیاده‌سازی سیستم‌های مبتنی بر محاسبات ابری."
+responsibilities = ["مدیریت منابع ابری", "پیاده‌سازی معماری ابری مقیاس‌پذیر", "انتقال داده‌ها به ابرا"]
+required_knowledge = ["AWS, GCP, Azure", "Serverless Architecture", "Cloud Security Best Practices"]

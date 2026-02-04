@@ -5,6 +5,8 @@ import { Button, Card } from '@/components/ui';
 import Alert from '@/shared/ui/Alert';
 import { createPdfWorkerClient, type PdfWorkerClient } from '@/features/pdf-tools/workerClient';
 import { parsePageRanges } from '@/features/pdf-tools/utils/pageRanges';
+import { recordHistory } from '@/shared/history/recordHistory';
+import RecentHistoryCard from '@/components/features/history/RecentHistoryCard';
 
 const rotations = [90, 180, 270] as const;
 type RotationValue = (typeof rotations)[number];
@@ -222,12 +224,28 @@ export default function RotatePagesPage() {
           {downloadUrl && (
             <Alert variant="success">
               فایل آماده است.{' '}
-              <a className="font-semibold underline" href={downloadUrl} download="rotated.pdf">
+              <a
+                className="font-semibold underline"
+                href={downloadUrl}
+                download="rotated.pdf"
+                onClick={() =>
+                  void recordHistory({
+                    tool: 'pdf-rotate',
+                    inputSummary: `صفحات: ${pagesInput} | چرخش: ${rotationLabel}`,
+                    outputSummary: 'دانلود فایل چرخش‌یافته',
+                  })
+                }
+              >
                 دانلود فایل
               </a>
             </Alert>
           )}
         </Card>
+        <RecentHistoryCard
+          title="آخرین عملیات PDF"
+          toolPrefixes={['pdf-']}
+          toolIds={['image-to-pdf']}
+        />
       </div>
     </div>
   );

@@ -7,6 +7,8 @@ import { convertDate } from '@/features/date-tools/date-tools.logic';
 import { numberToWordsFa, parseLooseNumber, toEnglishDigits } from '@/shared/utils/numbers';
 import { cleanPersianText, slugifyPersian } from '@/shared/utils/localization';
 import { useToast } from '@/shared/ui/ToastProvider';
+import { recordHistory } from '@/shared/history/recordHistory';
+import RecentHistoryCard from '@/components/features/history/RecentHistoryCard';
 
 type CalendarType = 'jalali' | 'gregorian';
 
@@ -122,6 +124,11 @@ export default function TextToolsPage() {
       await navigator.clipboard.writeText(text);
       showToast(`${label} کپی شد`, 'success');
       recordCopy(label, text);
+      void recordHistory({
+        tool: 'text-tools',
+        inputSummary: label,
+        outputSummary: text,
+      });
     } catch {
       showToast('کپی انجام نشد', 'error');
     }
@@ -328,6 +335,7 @@ export default function TextToolsPage() {
           </button>
         </div>
       </Card>
+      <RecentHistoryCard title="آخرین عملیات متنی" toolIds={['text-tools']} />
     </div>
   );
 }

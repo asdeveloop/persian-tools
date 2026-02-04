@@ -4,6 +4,8 @@ import { useMemo, useState } from 'react';
 import { Card } from '@/components/ui';
 import Input from '@/shared/ui/Input';
 import { useToast } from '@/shared/ui/ToastProvider';
+import { recordHistory } from '@/shared/history/recordHistory';
+import RecentHistoryCard from '@/components/features/history/RecentHistoryCard';
 import {
   addDays,
   compareDateParts,
@@ -298,6 +300,11 @@ export default function DateToolsPage() {
       await navigator.clipboard.writeText(text);
       showToast(`${label} کپی شد`, 'success');
       recordCopy(label, text);
+      void recordHistory({
+        tool: 'date-tools',
+        inputSummary: label,
+        outputSummary: text,
+      });
     } catch {
       showToast('کپی انجام نشد', 'error');
     }
@@ -840,6 +847,7 @@ export default function DateToolsPage() {
           </div>
         )}
       </Card>
+      <RecentHistoryCard title="آخرین عملیات تاریخ" toolIds={['date-tools']} />
     </div>
   );
 }

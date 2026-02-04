@@ -5,6 +5,8 @@ import { Button, Card } from '@/components/ui';
 import Alert from '@/shared/ui/Alert';
 import { createPdfWorkerClient, type PdfWorkerClient } from '@/features/pdf-tools/workerClient';
 import { parsePageOrder } from '@/features/pdf-tools/utils/pageOrder';
+import { recordHistory } from '@/shared/history/recordHistory';
+import RecentHistoryCard from '@/components/features/history/RecentHistoryCard';
 
 const unique = (values: number[]) => new Set(values).size === values.length;
 
@@ -213,12 +215,28 @@ export default function ReorderPagesPage() {
           {downloadUrl && (
             <Alert variant="success">
               فایل آماده است.{' '}
-              <a className="font-semibold underline" href={downloadUrl} download="reordered.pdf">
+              <a
+                className="font-semibold underline"
+                href={downloadUrl}
+                download="reordered.pdf"
+                onClick={() =>
+                  void recordHistory({
+                    tool: 'pdf-reorder',
+                    inputSummary: `ترتیب صفحات: ${pagesInput}`,
+                    outputSummary: 'دانلود فایل مرتب‌شده',
+                  })
+                }
+              >
                 دانلود فایل
               </a>
             </Alert>
           )}
         </Card>
+        <RecentHistoryCard
+          title="آخرین عملیات PDF"
+          toolPrefixes={['pdf-']}
+          toolIds={['image-to-pdf']}
+        />
       </div>
     </div>
   );

@@ -7,7 +7,6 @@ type EventData = {
   event: string;
   timestamp: number;
   path: string;
-  userAgent: string;
   metadata?: Record<string, unknown>;
 };
 
@@ -36,7 +35,6 @@ export class AnalyticsClient {
       event: eventName,
       timestamp: Date.now(),
       path: typeof window !== 'undefined' ? window.location.pathname : '',
-      userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : '',
       ...(metadata ? { metadata } : {}),
     };
 

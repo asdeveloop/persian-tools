@@ -5,6 +5,8 @@ import { Button, Card } from '@/components/ui';
 import Alert from '@/shared/ui/Alert';
 import { createPdfWorkerClient, type PdfWorkerClient } from '@/features/pdf-tools/workerClient';
 import { parsePageRanges } from '@/features/pdf-tools/utils/pageRanges';
+import { recordHistory } from '@/shared/history/recordHistory';
+import RecentHistoryCard from '@/components/features/history/RecentHistoryCard';
 
 export default function SplitPdfPage() {
   const [file, setFile] = useState<File | null>(null);
@@ -189,12 +191,28 @@ export default function SplitPdfPage() {
           {downloadUrl && (
             <Alert variant="success">
               فایل آماده است.{' '}
-              <a className="font-semibold underline" href={downloadUrl} download="split.pdf">
+              <a
+                className="font-semibold underline"
+                href={downloadUrl}
+                download="split.pdf"
+                onClick={() =>
+                  void recordHistory({
+                    tool: 'pdf-split',
+                    inputSummary: `صفحات: ${pagesInput}`,
+                    outputSummary: 'دانلود فایل صفحات جدا شده',
+                  })
+                }
+              >
                 دانلود فایل
               </a>
             </Alert>
           )}
         </Card>
+        <RecentHistoryCard
+          title="آخرین عملیات PDF"
+          toolPrefixes={['pdf-']}
+          toolIds={['image-to-pdf']}
+        />
       </div>
     </div>
   );

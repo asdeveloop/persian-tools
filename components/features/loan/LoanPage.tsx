@@ -14,6 +14,8 @@ import {
 } from '@/shared/ui/AnimatedComponents';
 import { toolCategories } from '@/shared/constants/tokens';
 import { useToast } from '@/shared/ui/ToastProvider';
+import { recordHistory } from '@/shared/history/recordHistory';
+import RecentHistoryCard from '@/components/features/history/RecentHistoryCard';
 
 type LoanFormState = {
   calculationType: CalculationType;
@@ -102,6 +104,11 @@ export default function LoanPage() {
       return;
     }
     setResult(result.data);
+    void recordHistory({
+      tool: 'loan-calculator',
+      inputSummary: `مبلغ: ${formatMoneyFa(result.data.principal)} | مدت: ${result.data.months} ماه`,
+      outputSummary: `قسط ماهانه: ${formatMoneyFa(result.data.monthlyPayment)} تومان`,
+    });
   }
 
   const copyValue = async (value: string, label: string) => {
@@ -925,6 +932,9 @@ export default function LoanPage() {
             </motion.div>
           )}
         </AnimatePresence>
+      </div>
+      <div className="mt-8">
+        <RecentHistoryCard title="آخرین محاسبات وام" toolIds={['loan-calculator']} />
       </div>
       {hasInteracted ? (
         <div className="fixed bottom-4 left-0 right-0 z-40 px-4">
