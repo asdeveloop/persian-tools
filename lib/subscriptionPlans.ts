@@ -52,3 +52,17 @@ export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
 export function getPlanById(planId: PlanId): SubscriptionPlan | undefined {
   return SUBSCRIPTION_PLANS.find((plan) => plan.id === planId);
 }
+
+export function getUpgradePlanId(currentPlanId: PlanId): PlanId | null {
+  const current = getPlanById(currentPlanId);
+  if (!current || current.tier === 'pro') {
+    return null;
+  }
+  const targetId =
+    currentPlanId === 'basic_monthly'
+      ? 'pro_monthly'
+      : currentPlanId === 'basic_yearly'
+        ? 'pro_yearly'
+        : null;
+  return targetId;
+}

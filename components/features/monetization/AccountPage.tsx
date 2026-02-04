@@ -6,7 +6,7 @@ import { Button, Card } from '@/components/ui';
 import Input from '@/shared/ui/Input';
 import { buildHistoryQuery } from '@/shared/history/recordHistory';
 import type { HistoryEntry } from '@/shared/history/types';
-import { SUBSCRIPTION_PLANS, type PlanId } from '@/lib/subscriptionPlans';
+import { SUBSCRIPTION_PLANS, getUpgradePlanId, type PlanId } from '@/lib/subscriptionPlans';
 
 type UserInfo = {
   id: string;
@@ -137,6 +137,10 @@ export default function AccountPage() {
     const tools = Array.from(new Set(history.map((entry) => entry.tool)));
     return tools;
   }, [history]);
+  const upgradePlanId = useMemo(
+    () => (subscription?.status === 'active' ? getUpgradePlanId(subscription.planId) : null),
+    [subscription],
+  );
 
   const handleRegister = async () => {
     setAuthError(null);
@@ -178,6 +182,21 @@ export default function AccountPage() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ planId }),
+    });
+    if (!response.ok) {
+      return;
+    }
+    const data = (await response.json()) as { payUrl?: string };
+    if (data.payUrl) {
+      router.push(data.payUrl);
+    }
+  };
+
+  const handleUpgrade = async (upgradePlanId: PlanId) => {
+    const response = await fetch('/api/subscription/checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ planId: upgradePlanId }),
     });
     if (!response.ok) {
       return;
@@ -351,6 +370,18 @@ export default function AccountPage() {
               <div>پلن: {subscription.planId}</div>
               <div>وضعیت: {subscription.status}</div>
               <div>انقضا: {formatDate(subscription.expiresAt)}</div>
+              {upgradePlanId && (
+                <div className="pt-2">
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => void handleUpgrade(upgradePlanId)}
+                  >
+                    ارتقا با یک کلیک
+                  </Button>
+                </div>
+              )}
             </div>
           ) : (
             <div className="text-sm text-[var(--text-muted)]">اشتراکی فعال نیست.</div>
