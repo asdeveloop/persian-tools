@@ -2,6 +2,7 @@ import Link from 'next/link';
 import ButtonLink from '@/shared/ui/ButtonLink';
 import ToolCard from '@/shared/ui/ToolCard';
 import PopularTools from '@/components/home/PopularTools';
+import TrustStats from '@/components/home/TrustStats';
 import { siteUrl } from '@/lib/seo';
 import { getCategories, getToolsByCategory } from '@/lib/tools-registry';
 import {
@@ -388,6 +389,8 @@ export default function HomePage() {
           ))}
         </div>
       </section>
+
+      <TrustStats />
 
       <section className="space-y-8" aria-labelledby="tools-heading">
         <div className="flex flex-col gap-3 text-center">
