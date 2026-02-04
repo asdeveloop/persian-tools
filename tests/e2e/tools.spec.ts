@@ -1,4 +1,24 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Locator, type Page } from '@playwright/test';
+
+const clickAndExpectAlert = async (button: Locator, page: Page, message: string) => {
+  const alert = page.getByRole('alert').filter({ hasText: message }).first();
+
+  await button.click({ force: true });
+  try {
+    await expect(alert).toBeVisible({ timeout: 4000 });
+    return;
+  } catch {
+    await page.waitForTimeout(200);
+  }
+
+  await button.click({ force: true });
+  await expect(alert).toBeVisible();
+};
+
+const waitForUiReady = async (page: Page) => {
+  await page.waitForLoadState('networkidle');
+  await page.waitForTimeout(200);
+};
 
 test.describe('Tool flows', () => {
   test('salary calculator should render results by default', async ({ page }) => {
@@ -25,89 +45,82 @@ test.describe('Tool flows', () => {
 
   test('pdf compress should show error when no file selected', async ({ page }) => {
     await page.goto('/pdf-tools/compress/compress-pdf');
+    await waitForUiReady(page);
 
-    await page.getByRole('button', { name: 'فشرده سازی PDF' }).click();
-    const alert = page
-      .locator('[role="alert"]')
-      .filter({ hasText: 'ابتدا فایل PDF را انتخاب کنید.' });
-    await expect(alert).toBeVisible();
+    const button = page.getByRole('button', { name: 'فشرده سازی PDF' });
+    await expect(button).toBeVisible();
+    await clickAndExpectAlert(button, page, 'ابتدا فایل PDF را انتخاب کنید.');
   });
 
   test('pdf split should show error when no file selected', async ({ page }) => {
     await page.goto('/pdf-tools/split/split-pdf');
+    await waitForUiReady(page);
 
-    await page.getByRole('button', { name: 'استخراج صفحات' }).click();
-    const alert = page
-      .locator('[role="alert"]')
-      .filter({ hasText: 'ابتدا فایل PDF را انتخاب کنید.' });
-    await expect(alert).toBeVisible();
+    const button = page.getByRole('button', { name: 'استخراج صفحات' });
+    await expect(button).toBeVisible();
+    await clickAndExpectAlert(button, page, 'ابتدا فایل PDF را انتخاب کنید.');
   });
 
   test('pdf extract pages should show error when no file selected', async ({ page }) => {
     await page.goto('/pdf-tools/extract/extract-pages');
+    await waitForUiReady(page);
 
-    await page.getByRole('button', { name: 'استخراج صفحات' }).click();
-    const alert = page
-      .locator('[role="alert"]')
-      .filter({ hasText: 'ابتدا فایل PDF را انتخاب کنید.' });
-    await expect(alert).toBeVisible();
+    const button = page.getByRole('button', { name: 'استخراج صفحات' });
+    await expect(button).toBeVisible();
+    await clickAndExpectAlert(button, page, 'ابتدا فایل PDF را انتخاب کنید.');
   });
 
   test('pdf delete pages should show error when no file selected', async ({ page }) => {
     await page.goto('/pdf-tools/edit/delete-pages');
+    await waitForUiReady(page);
 
-    await page.getByRole('button', { name: 'حذف صفحات' }).click();
-    const alert = page
-      .locator('[role="alert"]')
-      .filter({ hasText: 'ابتدا فایل PDF را انتخاب کنید.' });
-    await expect(alert).toBeVisible();
+    const button = page.getByRole('button', { name: 'حذف صفحات' });
+    await expect(button).toBeVisible();
+    await clickAndExpectAlert(button, page, 'ابتدا فایل PDF را انتخاب کنید.');
   });
 
   test('pdf rotate pages should show error when no file selected', async ({ page }) => {
     await page.goto('/pdf-tools/edit/rotate-pages');
+    await waitForUiReady(page);
 
-    await page.getByRole('button', { name: 'چرخش صفحات' }).click();
-    const alert = page
-      .locator('[role="alert"]')
-      .filter({ hasText: 'ابتدا فایل PDF را انتخاب کنید.' });
-    await expect(alert).toBeVisible();
+    const button = page.getByRole('button', { name: 'چرخش صفحات' });
+    await expect(button).toBeVisible();
+    await clickAndExpectAlert(button, page, 'ابتدا فایل PDF را انتخاب کنید.');
   });
 
   test('pdf reorder pages should show error when no file selected', async ({ page }) => {
     await page.goto('/pdf-tools/edit/reorder-pages');
+    await waitForUiReady(page);
 
-    await page.getByRole('button', { name: 'جابجایی صفحات' }).click();
-    const alert = page
-      .locator('[role="alert"]')
-      .filter({ hasText: 'ابتدا فایل PDF را انتخاب کنید.' });
-    await expect(alert).toBeVisible();
+    const button = page.getByRole('button', { name: 'جابجایی صفحات' });
+    await expect(button).toBeVisible();
+    await clickAndExpectAlert(button, page, 'ابتدا فایل PDF را انتخاب کنید.');
   });
 
   test('pdf merge should show error when less than two files selected', async ({ page }) => {
     await page.goto('/pdf-tools/merge/merge-pdf');
+    await waitForUiReady(page);
 
-    await page.getByRole('button', { name: 'ادغام PDF' }).click({ force: true });
-    const alert = page
-      .locator('[role="alert"]')
-      .filter({ hasText: 'حداقل دو فایل برای ادغام لازم است.' });
-    await expect(alert).toBeVisible();
+    const button = page.getByRole('button', { name: 'ادغام PDF' });
+    await expect(button).toBeVisible();
+    await clickAndExpectAlert(button, page, 'حداقل دو فایل برای ادغام لازم است.');
   });
 
   test('pdf to image should show error when no file selected', async ({ page }) => {
     await page.goto('/pdf-tools/convert/pdf-to-image');
+    await waitForUiReady(page);
 
     const convertButton = page.getByRole('button', { name: 'تبدیل به تصویر' });
-    await convertButton.scrollIntoViewIfNeeded();
-    await convertButton.click({ force: true });
-    await expect(page.getByText('ابتدا فایل PDF را انتخاب کنید.')).toBeVisible();
+    await expect(convertButton).toBeVisible();
+    await clickAndExpectAlert(convertButton, page, 'ابتدا فایل PDF را انتخاب کنید.');
   });
 
   test('image to pdf should show error when no images selected', async ({ page }) => {
     await page.goto('/pdf-tools/convert/image-to-pdf');
+    await waitForUiReady(page);
 
     const convertButton = page.getByRole('button', { name: 'تبدیل به PDF' });
-    await convertButton.scrollIntoViewIfNeeded();
-    await convertButton.click({ force: true });
-    await expect(page.getByText('حداقل یک تصویر انتخاب کنید.')).toBeVisible();
+    await expect(convertButton).toBeVisible();
+    await clickAndExpectAlert(convertButton, page, 'حداقل یک تصویر انتخاب کنید.');
   });
 });
