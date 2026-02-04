@@ -51,3 +51,14 @@ CREATE TABLE IF NOT EXISTS history_entries (
 );
 
 CREATE INDEX IF NOT EXISTS history_user_created_idx ON history_entries (user_id, created_at DESC);
+
+CREATE TABLE IF NOT EXISTS history_share_links (
+  token uuid PRIMARY KEY,
+  entry_id uuid NOT NULL REFERENCES history_entries(id) ON DELETE CASCADE,
+  user_id uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  created_at bigint NOT NULL,
+  expires_at bigint NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS history_share_entry_idx ON history_share_links (entry_id);
+CREATE INDEX IF NOT EXISTS history_share_expires_idx ON history_share_links (expires_at);

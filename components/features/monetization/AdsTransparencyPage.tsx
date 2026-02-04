@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Button, Card } from '@/components/ui';
 import { IconShield, IconZap, IconHeart } from '@/shared/ui/icons';
 import { analytics } from '@/lib/monitoring';
+import { useSubscriptionStatus } from '@/shared/monetization/useSubscriptionStatus';
 import {
   clearAdsConsent,
   getAdsConsent,
@@ -19,12 +20,16 @@ const formatDate = (value: number) =>
 
 export default function AdsTransparencyPage() {
   const [consent, setConsent] = useState<AdsConsentState | null>(null);
+  const { subscription, loading: subscriptionLoading } = useSubscriptionStatus();
 
   useEffect(() => {
     setConsent(getAdsConsent());
   }, []);
 
   const statusText = useMemo(() => {
+    if (subscription?.status === 'active') {
+      return 'اشتراک فعال است و تبلیغات برای شما غیرفعال شده‌اند.';
+    }
     if (!consent) {
       return 'در حال خواندن تنظیمات…';
     }
@@ -35,7 +40,7 @@ export default function AdsTransparencyPage() {
       return 'تبلیغات زمینه‌ای با رضایت شما فعال است.';
     }
     return 'تبلیغات هدفمند با رضایت جداگانه فعال است.';
-  }, [consent]);
+  }, [consent, subscription]);
 
   const updateConsent = (patch: Partial<AdsConsentState>) => {
     const next = updateAdsConsent(patch);
@@ -52,6 +57,7 @@ export default function AdsTransparencyPage() {
     analytics.trackEvent('ads_consent_reset');
   };
 
+  const adsSuppressed = subscription?.status === 'active';
   const contextualEnabled = consent?.contextualAds ?? false;
   const targetedEnabled = consent?.targetedAds ?? false;
   const canToggleTargeted = contextualEnabled;
@@ -118,10 +124,22 @@ export default function AdsTransparencyPage() {
       <section className="space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h2 className="text-xl font-black text-[var(--text-primary)]">تنظیمات رضایت</h2>
-          <Button type="button" variant="tertiary" size="sm" onClick={resetConsent}>
+          <Button
+            type="button"
+            variant="tertiary"
+            size="sm"
+            onClick={resetConsent}
+            disabled={adsSuppressed}
+          >
             بازنشانی تنظیمات
           </Button>
         </div>
+
+        {adsSuppressed && (
+          <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[rgb(var(--color-success-rgb)/0.12)] px-4 py-3 text-sm text-[var(--color-success)]">
+            اشتراک فعال شما باعث شده تبلیغات نمایش داده نشود و تنظیمات تبلیغاتی غیرفعال است.
+          </div>
+        )}
 
         <div className="grid gap-4 md:grid-cols-2">
           <Card className="p-5 md:p-6 space-y-4">
@@ -140,6 +158,7 @@ export default function AdsTransparencyPage() {
                 size="sm"
                 variant={contextualEnabled ? 'primary' : 'secondary'}
                 onClick={() => updateConsent({ contextualAds: !contextualEnabled })}
+                disabled={adsSuppressed}
               >
                 {contextualEnabled ? 'غیرفعال‌سازی' : 'فعال‌سازی'}
               </Button>
@@ -162,12 +181,12 @@ export default function AdsTransparencyPage() {
                 size="sm"
                 variant={targetedEnabled ? 'primary' : 'secondary'}
                 onClick={() => updateConsent({ targetedAds: !targetedEnabled })}
-                disabled={!canToggleTargeted}
+                disabled={!canToggleTargeted || adsSuppressed}
               >
                 {targetedEnabled ? 'غیرفعال‌سازی' : 'فعال‌سازی'}
               </Button>
             </div>
-            {!canToggleTargeted && (
+            {!canToggleTargeted && !adsSuppressed && (
               <p className="text-xs text-[var(--text-muted)]">
                 برای فعال‌سازی تبلیغات هدفمند، ابتدا تبلیغات زمینه‌ای را فعال کنید.
               </p>
@@ -184,6 +203,16 @@ export default function AdsTransparencyPage() {
           </div>
           <div>
             وضعیت ذخیره‌سازی: <span className="font-semibold text-[var(--text-primary)]">محلی</span>
+          </div>
+          <div>
+            وضعیت اشتراک:{' '}
+            <span className="font-semibold text-[var(--text-primary)]">
+              {subscriptionLoading
+                ? 'در حال بررسی'
+                : subscription?.status === 'active'
+                  ? 'فعال'
+                  : 'غیرفعال'}
+            </span>
           </div>
         </Card>
       </section>

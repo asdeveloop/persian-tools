@@ -78,6 +78,23 @@ export async function listHistoryEntries(userId: string, limit = 50): Promise<Hi
   return result.rows.map(mapHistory);
 }
 
+export async function getHistoryEntryById(
+  userId: string,
+  entryId: string,
+): Promise<HistoryEntry | null> {
+  const result = await query<HistoryRow>(
+    `SELECT id, user_id, tool, input_summary, output_summary, output_url, created_at
+     FROM history_entries
+     WHERE user_id = $1 AND id = $2
+     LIMIT 1`,
+    [userId, entryId],
+  );
+  if (result.rows.length === 0) {
+    return null;
+  }
+  return mapHistory(result.rows[0]);
+}
+
 export async function listHistoryEntriesFiltered(
   userId: string,
   filters: HistoryFilter,

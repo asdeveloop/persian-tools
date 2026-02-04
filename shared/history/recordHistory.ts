@@ -27,6 +27,20 @@ export function buildHistoryQuery(filters?: HistoryFilters, limit = 50): string 
   return query ? `?${query}` : '';
 }
 
+export function normalizeHistoryOutputUrl(outputUrl?: string): string | undefined {
+  if (!outputUrl) {
+    return undefined;
+  }
+  const trimmed = outputUrl.trim();
+  if (!trimmed) {
+    return undefined;
+  }
+  if (trimmed.startsWith('blob:') || trimmed.startsWith('data:')) {
+    return undefined;
+  }
+  return trimmed;
+}
+
 export async function recordHistory(payload: HistoryPayload): Promise<void> {
   if (typeof window === 'undefined') {
     return;
@@ -35,7 +49,10 @@ export async function recordHistory(payload: HistoryPayload): Promise<void> {
     await fetch('/api/history', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
+      body: JSON.stringify({
+        ...payload,
+        outputUrl: normalizeHistoryOutputUrl(payload.outputUrl),
+      }),
     });
   } catch {
     // silent fail to avoid impacting UX

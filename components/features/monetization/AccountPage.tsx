@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button, Card } from '@/components/ui';
 import Input from '@/shared/ui/Input';
@@ -28,6 +28,15 @@ type HistoryFilterState = {
   dateRange: 'all' | 'today' | 'week' | 'month';
 };
 
+type ShareLinkState = {
+  url: string;
+  expiresAt: number;
+  loading?: boolean;
+  error?: string;
+};
+
+const SEARCH_DEBOUNCE_MS = 400;
+
 const formatDate = (value: number) =>
   new Intl.DateTimeFormat('fa-IR', {
     dateStyle: 'medium',
@@ -44,6 +53,9 @@ export default function AccountPage() {
     tool: 'all',
     dateRange: 'all',
   });
+  const [searchInput, setSearchInput] = useState('');
+  const [shareLinks, setShareLinks] = useState<Record<string, ShareLinkState>>({});
+  const searchDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [loading, setLoading] = useState(true);
   const [authError, setAuthError] = useState<string | null>(null);
   const [email, setEmail] = useState('');
@@ -52,6 +64,7 @@ export default function AccountPage() {
   const [historyTool, setHistoryTool] = useState('pdf-merge');
   const [historyInput, setHistoryInput] = useState('3 فایل PDF');
   const [historyOutput, setHistoryOutput] = useState('merge.pdf');
+  const [historyOutputUrl, setHistoryOutputUrl] = useState('');
 
   const loadAccount = useCallback(async () => {
     setLoading(true);
@@ -100,6 +113,24 @@ export default function AccountPage() {
   useEffect(() => {
     void loadHistory();
   }, [loadHistory]);
+
+  useEffect(() => {
+    if (searchDebounceRef.current) {
+      clearTimeout(searchDebounceRef.current);
+    }
+    searchDebounceRef.current = setTimeout(() => {
+      setHistoryFilters((prev) => ({
+        ...prev,
+        search: searchInput,
+      }));
+    }, SEARCH_DEBOUNCE_MS);
+
+    return () => {
+      if (searchDebounceRef.current) {
+        clearTimeout(searchDebounceRef.current);
+      }
+    };
+  }, [searchInput]);
 
   const planOptions = useMemo(() => SUBSCRIPTION_PLANS, []);
   const historyTools = useMemo(() => {
@@ -165,6 +196,7 @@ export default function AccountPage() {
         tool: historyTool,
         inputSummary: historyInput,
         outputSummary: historyOutput,
+        outputUrl: historyOutputUrl.trim() || undefined,
       }),
     });
     await loadHistory();
@@ -177,6 +209,71 @@ export default function AccountPage() {
 
   const handleFiltersReset = () => {
     setHistoryFilters({ search: '', tool: 'all', dateRange: 'all' });
+    setSearchInput('');
+  };
+
+  const handleShareLink = async (entryId: string) => {
+    setShareLinks((prev) => ({
+      ...prev,
+      [entryId]: {
+        ...(prev[entryId] ?? { url: '', expiresAt: 0 }),
+        loading: true,
+        error: undefined,
+      },
+    }));
+
+    const response = await fetch('/api/history/share', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ entryId, expiresInHours: 24 }),
+    });
+
+    if (!response.ok) {
+      setShareLinks((prev) => ({
+        ...prev,
+        [entryId]: {
+          url: '',
+          expiresAt: 0,
+          loading: false,
+          error: 'ساخت لینک امن ناموفق بود.',
+        },
+      }));
+      return;
+    }
+
+    const data = (await response.json()) as { shareUrl: string; expiresAt: number };
+    const absoluteUrl =
+      typeof window !== 'undefined'
+        ? new URL(data.shareUrl, window.location.origin).toString()
+        : data.shareUrl;
+
+    setShareLinks((prev) => ({
+      ...prev,
+      [entryId]: {
+        url: absoluteUrl,
+        expiresAt: data.expiresAt,
+        loading: false,
+      },
+    }));
+  };
+
+  const handleCopyShareLink = async (entryId: string) => {
+    const link = shareLinks[entryId];
+    if (!link?.url) {
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(link.url);
+      setShareLinks((prev) => ({
+        ...prev,
+        [entryId]: { ...link, error: undefined },
+      }));
+    } catch {
+      setShareLinks((prev) => ({
+        ...prev,
+        [entryId]: { ...link, error: 'کپی لینک انجام نشد.' },
+      }));
+    }
   };
 
   if (loading) {
@@ -294,10 +391,8 @@ export default function AccountPage() {
           <div className="grid gap-3 md:grid-cols-3">
             <Input
               label="جستجو"
-              value={historyFilters.search ?? ''}
-              onChange={(event) =>
-                setHistoryFilters((prev) => ({ ...prev, search: event.target.value }))
-              }
+              value={searchInput}
+              onChange={(event) => setSearchInput(event.target.value)}
               placeholder="نام ابزار یا خلاصه ورودی/خروجی"
             />
             <label className="space-y-2 text-sm text-[var(--text-primary)]">
@@ -358,6 +453,46 @@ export default function AccountPage() {
                   <div className="text-xs text-[var(--text-muted)]">
                     {formatDate(entry.createdAt)}
                   </div>
+                  {entry.outputUrl && (
+                    <div className="mt-3 space-y-2 rounded-[var(--radius-md)] border border-dashed border-[var(--border-light)] bg-[var(--surface-2)] px-3 py-2">
+                      <div className="flex flex-wrap items-center gap-2 text-xs">
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="secondary"
+                          onClick={() => void handleShareLink(entry.id)}
+                          disabled={shareLinks[entry.id]?.loading}
+                        >
+                          {shareLinks[entry.id]?.loading ? 'در حال ساخت لینک...' : 'ساخت لینک امن'}
+                        </Button>
+                        {shareLinks[entry.id]?.url && (
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="tertiary"
+                            onClick={() => void handleCopyShareLink(entry.id)}
+                          >
+                            کپی لینک
+                          </Button>
+                        )}
+                      </div>
+                      {shareLinks[entry.id]?.url && (
+                        <div className="text-xs text-[var(--text-muted)] break-all">
+                          {shareLinks[entry.id]?.url}
+                        </div>
+                      )}
+                      {shareLinks[entry.id]?.expiresAt ? (
+                        <div className="text-xs text-[var(--text-muted)]">
+                          انقضا: {formatDate(shareLinks[entry.id]?.expiresAt ?? 0)}
+                        </div>
+                      ) : null}
+                      {shareLinks[entry.id]?.error && (
+                        <div className="text-xs text-[var(--color-danger)]">
+                          {shareLinks[entry.id]?.error}
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -384,6 +519,12 @@ export default function AccountPage() {
             label="خلاصه خروجی"
             value={historyOutput}
             onChange={(e) => setHistoryOutput(e.target.value)}
+          />
+          <Input
+            label="لینک خروجی (اختیاری)"
+            value={historyOutputUrl}
+            onChange={(e) => setHistoryOutputUrl(e.target.value)}
+            placeholder="/api/files/sample.pdf"
           />
           <Button type="button" onClick={handleHistorySample}>
             ثبت نمونه

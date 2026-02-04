@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { buildHistoryQuery } from '@/shared/history/recordHistory';
+import { buildHistoryQuery, normalizeHistoryOutputUrl } from '@/shared/history/recordHistory';
 
 describe('History Query Builder', () => {
   it('should include limit by default', () => {
@@ -19,5 +19,24 @@ describe('History Query Builder', () => {
   it('should ignore empty filters', () => {
     const query = buildHistoryQuery({ search: '   ', tool: '' }, 10);
     expect(query).toBe('?limit=10');
+  });
+});
+
+describe('History Output Url', () => {
+  it('should return undefined for empty values', () => {
+    expect(normalizeHistoryOutputUrl()).toBeUndefined();
+    expect(normalizeHistoryOutputUrl('   ')).toBeUndefined();
+  });
+
+  it('should drop blob and data urls', () => {
+    expect(normalizeHistoryOutputUrl('blob:123')).toBeUndefined();
+    expect(normalizeHistoryOutputUrl('data:application/pdf;base64,abc')).toBeUndefined();
+  });
+
+  it('should keep relative or absolute urls', () => {
+    expect(normalizeHistoryOutputUrl('/api/files/123')).toBe('/api/files/123');
+    expect(normalizeHistoryOutputUrl('https://persian-tools.ir/file.pdf')).toBe(
+      'https://persian-tools.ir/file.pdf',
+    );
   });
 });

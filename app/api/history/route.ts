@@ -8,6 +8,20 @@ import {
   listHistoryEntriesFiltered,
 } from '@/lib/server/history';
 
+function normalizeOutputUrl(outputUrl?: string): string | undefined {
+  if (!outputUrl) {
+    return undefined;
+  }
+  const trimmed = outputUrl.trim();
+  if (!trimmed) {
+    return undefined;
+  }
+  if (trimmed.startsWith('blob:') || trimmed.startsWith('data:')) {
+    return undefined;
+  }
+  return trimmed;
+}
+
 export async function GET(request: Request) {
   const user = await getUserFromRequest(request);
   if (!user) {
@@ -73,11 +87,13 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: 'INVALID_INPUT' }, { status: 422 });
   }
 
+  const outputUrl = normalizeOutputUrl(body.outputUrl);
+
   const entry = await addHistoryEntry(user.id, {
     tool: body.tool,
     inputSummary: body.inputSummary,
     outputSummary: body.outputSummary,
-    outputUrl: body.outputUrl,
+    outputUrl,
   });
 
   return NextResponse.json({ ok: true, entry });
