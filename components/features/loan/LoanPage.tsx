@@ -13,6 +13,7 @@ import {
   FadeIn,
 } from '@/shared/ui/AnimatedComponents';
 import { toolCategories } from '@/shared/constants/tokens';
+import { useToast } from '@/shared/ui/ToastProvider';
 
 type LoanFormState = {
   calculationType: CalculationType;
@@ -28,6 +29,7 @@ type LoanFormState = {
 const sessionKey = 'loan.form.v3';
 
 export default function LoanPage() {
+  const { showToast, recordCopy } = useToast();
   const financialActiveStyle = {
     backgroundColor: toolCategories.financial.primary,
     borderColor: toolCategories.financial.primary,
@@ -50,10 +52,28 @@ export default function LoanPage() {
   const [form, setForm] = useState<LoanFormState>(initial);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<LoanResult | null>(null);
+  const [showAdvanced, setShowAdvanced] = useState(false);
+  const [hasInteracted, setHasInteracted] = useState(false);
+  const initialRef = useMemo(() => JSON.stringify(initial), [initial]);
 
   useEffect(() => {
     setSessionJson(sessionKey, form);
   }, [form]);
+
+  useEffect(() => {
+    if (hasInteracted) {
+      return;
+    }
+    if (JSON.stringify(form) !== initialRef) {
+      setHasInteracted(true);
+    }
+  }, [form, hasInteracted, initialRef]);
+
+  useEffect(() => {
+    if (form.loanType === 'stepped') {
+      setShowAdvanced(true);
+    }
+  }, [form.loanType]);
 
   function onCalculate() {
     setError(null);
@@ -83,6 +103,20 @@ export default function LoanPage() {
     }
     setResult(result.data);
   }
+
+  const copyValue = async (value: string, label: string) => {
+    const text = value.trim();
+    if (!text) {
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(text);
+      showToast(`${label} کپی شد`, 'success');
+      recordCopy(label, text);
+    } catch {
+      showToast('کپی انجام نشد', 'error');
+    }
+  };
 
   const getCalculationTypeLabel = (type: CalculationType) => {
     switch (type) {
@@ -145,7 +179,17 @@ export default function LoanPage() {
   };
 
   const getInputFields = () => {
-    const fields = [];
+    const fields: Array<{
+      id: string;
+      label: string;
+      value: string;
+      onChange: (value: string) => void;
+      placeholder?: string;
+      required?: boolean;
+      max?: string;
+      note?: string;
+      advanced?: boolean;
+    }> = [];
 
     switch (form.calculationType) {
       case 'installment':
@@ -282,6 +326,7 @@ export default function LoanPage() {
           placeholder: getPlaceholder('stepMonths'),
           required: true,
           note: 'تعداد ماه‌های هر مرحله از اقساط پلکانی',
+          advanced: true,
         },
         {
           id: 'stepRateIncrease',
@@ -291,6 +336,7 @@ export default function LoanPage() {
           placeholder: getPlaceholder('stepRateIncrease'),
           required: true,
           note: 'افزایش نرخ سود در هر مرحله',
+          advanced: true,
         },
       );
     }
@@ -488,40 +534,90 @@ export default function LoanPage() {
               </h2>
               <StaggerContainer staggerDelay={0.05}>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {getInputFields().map((field) => (
-                    <StaggerItem key={field.id}>
-                      <div className="space-y-3">
-                        <label
-                          htmlFor={field.id}
-                          className="block text-sm font-bold text-[var(--text-primary)]"
-                        >
-                          {field.label}
-                          {field.required && (
-                            <span className="text-[var(--color-danger)] mr-1">*</span>
+                  {getInputFields()
+                    .filter((field) => !field.advanced)
+                    .map((field) => (
+                      <StaggerItem key={field.id}>
+                        <div className="space-y-3">
+                          <label
+                            htmlFor={field.id}
+                            className="block text-sm font-bold text-[var(--text-primary)]"
+                          >
+                            {field.label}
+                            {field.required && (
+                              <span className="text-[var(--color-danger)] mr-1">*</span>
+                            )}
+                          </label>
+                          <motion.input
+                            id={field.id}
+                            type="text"
+                            inputMode="numeric"
+                            className="input-field"
+                            value={field.value}
+                            onChange={(e) => field.onChange(e.target.value)}
+                            placeholder={field.placeholder}
+                            max={field.max}
+                            whileFocus={{ scale: 1.02 }}
+                            transition={{ duration: 0.2 }}
+                          />
+                          {field.note && (
+                            <p className="text-xs text-[var(--text-muted)] bg-[var(--bg-subtle)] px-3 py-2 rounded-[var(--radius-md)]">
+                              {field.note}
+                            </p>
                           )}
-                        </label>
-                        <motion.input
-                          id={field.id}
-                          type="text"
-                          inputMode="numeric"
-                          className="input-field"
-                          value={field.value}
-                          onChange={(e) => field.onChange(e.target.value)}
-                          placeholder={field.placeholder}
-                          max={field.max}
-                          whileFocus={{ scale: 1.02 }}
-                          transition={{ duration: 0.2 }}
-                        />
-                        {field.note && (
-                          <p className="text-xs text-[var(--text-muted)] bg-[var(--bg-subtle)] px-3 py-2 rounded-[var(--radius-md)]">
-                            {field.note}
-                          </p>
-                        )}
-                      </div>
-                    </StaggerItem>
-                  ))}
+                        </div>
+                      </StaggerItem>
+                    ))}
                 </div>
               </StaggerContainer>
+
+              {getInputFields().some((field) => field.advanced) ? (
+                <div className="mt-8">
+                  <button
+                    type="button"
+                    className="text-sm font-semibold text-[var(--color-primary)]"
+                    onClick={() => setShowAdvanced((prev) => !prev)}
+                  >
+                    تنظیمات بیشتر (اختیاری)
+                  </button>
+                  {showAdvanced ? (
+                    <div className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {getInputFields()
+                        .filter((field) => field.advanced)
+                        .map((field) => (
+                          <div key={field.id} className="space-y-3">
+                            <label
+                              htmlFor={field.id}
+                              className="block text-sm font-bold text-[var(--text-primary)]"
+                            >
+                              {field.label}
+                              {field.required && (
+                                <span className="text-[var(--color-danger)] mr-1">*</span>
+                              )}
+                            </label>
+                            <motion.input
+                              id={field.id}
+                              type="text"
+                              inputMode="numeric"
+                              className="input-field"
+                              value={field.value}
+                              onChange={(e) => field.onChange(e.target.value)}
+                              placeholder={field.placeholder}
+                              max={field.max}
+                              whileFocus={{ scale: 1.02 }}
+                              transition={{ duration: 0.2 }}
+                            />
+                            {field.note && (
+                              <p className="text-xs text-[var(--text-muted)] bg-[var(--bg-subtle)] px-3 py-2 rounded-[var(--radius-md)]">
+                                {field.note}
+                              </p>
+                            )}
+                          </div>
+                        ))}
+                    </div>
+                  ) : null}
+                </div>
+              ) : null}
 
               <div className="mt-8 flex items-center justify-between">
                 <motion.button
@@ -558,6 +654,10 @@ export default function LoanPage() {
                     </motion.div>
                   )}
                 </AnimatePresence>
+              </div>
+              <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-[rgb(var(--color-success-rgb)/0.3)] bg-[rgb(var(--color-success-rgb)/0.12)] px-4 py-2 text-xs font-semibold text-[var(--color-success)]">
+                <span aria-hidden="true">🔒</span>
+                محاسبات کاملاً در مرورگر شما انجام می‌شود و هیچ داده‌ای ارسال نمی‌شود.
               </div>
             </AnimatedCard>
           </div>
@@ -620,6 +720,18 @@ export default function LoanPage() {
                           <div className="text-3xl font-black text-[var(--text-primary)]">
                             {formatMoneyFa(result.monthlyPayment)} تومان
                           </div>
+                          <button
+                            type="button"
+                            className="mt-3 text-xs font-semibold text-[var(--color-info)]"
+                            onClick={() =>
+                              copyValue(
+                                `${formatMoneyFa(result.monthlyPayment)} تومان`,
+                                'قسط ماهانه',
+                              )
+                            }
+                          >
+                            Copy
+                          </button>
                         </motion.div>
                       </StaggerItem>
 
@@ -648,6 +760,15 @@ export default function LoanPage() {
                           <div className="text-3xl font-black text-[var(--text-primary)]">
                             {formatMoneyFa(result.totalPayment)} تومان
                           </div>
+                          <button
+                            type="button"
+                            className="mt-3 text-xs font-semibold text-[var(--color-success)]"
+                            onClick={() =>
+                              copyValue(`${formatMoneyFa(result.totalPayment)} تومان`, 'مبلغ کل')
+                            }
+                          >
+                            Copy
+                          </button>
                         </motion.div>
                       </StaggerItem>
 
@@ -676,6 +797,15 @@ export default function LoanPage() {
                           <div className="text-3xl font-black text-[var(--text-primary)]">
                             {formatMoneyFa(result.totalInterest)} تومان
                           </div>
+                          <button
+                            type="button"
+                            className="mt-3 text-xs font-semibold text-[var(--color-warning)]"
+                            onClick={() =>
+                              copyValue(`${formatMoneyFa(result.totalInterest)} تومان`, 'سود کل')
+                            }
+                          >
+                            Copy
+                          </button>
                         </motion.div>
                       </StaggerItem>
                     </div>
@@ -709,6 +839,15 @@ export default function LoanPage() {
                         <div className="text-2xl font-black text-[var(--text-primary)]">
                           {result.effectiveRate.toFixed(2)}%
                         </div>
+                        <button
+                          type="button"
+                          className="mt-3 text-xs font-semibold text-[var(--color-primary)]"
+                          onClick={() =>
+                            copyValue(`${result.effectiveRate?.toFixed(2)}%`, 'نرخ موثر سالانه')
+                          }
+                        >
+                          Copy
+                        </button>
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -787,6 +926,20 @@ export default function LoanPage() {
           )}
         </AnimatePresence>
       </div>
+      {hasInteracted ? (
+        <div className="fixed bottom-4 left-0 right-0 z-40 px-4">
+          <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)]/90 px-4 py-3 shadow-[var(--shadow-strong)] backdrop-blur">
+            <div className="text-xs text-[var(--text-muted)]">
+              {form.principalText
+                ? `محاسبه وام برای ${form.principalText} تومان`
+                : 'برای شروع، مبلغ وام را وارد کنید'}
+            </div>
+            <button type="button" className="btn btn-primary btn-md" onClick={onCalculate}>
+              محاسبه سریع
+            </button>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

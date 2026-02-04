@@ -1,8 +1,12 @@
+import Link from 'next/link';
 import ButtonLink from '@/shared/ui/ButtonLink';
 import ToolCard from '@/shared/ui/ToolCard';
+import PopularTools from '@/components/home/PopularTools';
+import RecentTools from '@/components/home/RecentTools';
 import {
   IconCalculator,
   IconCalendar,
+  IconChevronDown,
   IconImage,
   IconMoney,
   IconPdf,
@@ -11,6 +15,44 @@ import {
 } from '@/shared/ui/icons';
 
 export default function HomePage() {
+  const quickTasks = [
+    {
+      title: 'ادغام PDF',
+      description: 'چند فایل را در یک خروجی منسجم ترکیب کنید.',
+      href: '/pdf-tools/merge/merge-pdf',
+      icon: <IconPdf className="h-5 w-5 text-[var(--color-danger)]" />,
+      tone: 'bg-[rgb(var(--color-danger-rgb)/0.12)]',
+    },
+    {
+      title: 'فشرده‌سازی تصویر',
+      description: 'حجم کمتر با کیفیت قابل کنترل.',
+      href: '/image-tools',
+      icon: <IconImage className="h-5 w-5 text-[var(--color-info)]" />,
+      tone: 'bg-[rgb(var(--color-info-rgb)/0.12)]',
+    },
+    {
+      title: 'محاسبه اقساط وام',
+      description: 'اقساط ماهانه و سود کل را ببینید.',
+      href: '/loan',
+      icon: <IconCalculator className="h-5 w-5 text-[var(--color-primary)]" />,
+      tone: 'bg-[rgb(var(--color-primary-rgb)/0.12)]',
+    },
+    {
+      title: 'اعتبارسنجی سریع',
+      description: 'کد ملی، موبایل و کارت بانکی را بررسی کنید.',
+      href: '/validation-tools',
+      icon: <IconShield className="h-5 w-5 text-[var(--color-success)]" />,
+      tone: 'bg-[rgb(var(--color-success-rgb)/0.12)]',
+    },
+  ];
+
+  const quickSearches = [
+    { label: 'ادغام PDF', query: 'ادغام', category: 'pdf' },
+    { label: 'فشرده‌سازی', query: 'فشرده', category: 'pdf' },
+    { label: 'تبدیل تصویر', query: 'تبدیل', category: 'image' },
+    { label: 'کد ملی', query: 'کد ملی', category: 'validation' },
+  ];
+
   return (
     <div className="space-y-16">
       <section
@@ -50,13 +92,13 @@ export default function HomePage() {
               <ButtonLink href="/pdf-tools" size="lg" className="px-6">
                 شروع سریع با PDF
               </ButtonLink>
-              <ButtonLink href="/image-tools" variant="secondary" size="lg" className="px-6">
+              <ButtonLink href="/image-tools" variant="tertiary" size="lg" className="px-6">
                 ابزارهای تصویر
               </ButtonLink>
               <ButtonLink href="/loan" variant="tertiary" size="lg" className="px-6">
                 محاسبه‌گر وام
               </ButtonLink>
-              <ButtonLink href="/tools" variant="secondary" size="lg" className="px-6">
+              <ButtonLink href="/tools" variant="tertiary" size="lg" className="px-6">
                 همه ابزارها
               </ButtonLink>
             </div>
@@ -125,6 +167,137 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      <div className="section-divider" aria-hidden="true"></div>
+
+      <section
+        className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]"
+        aria-labelledby="quick-start-heading"
+      >
+        <div className="relative overflow-hidden section-surface p-8">
+          <div className="absolute -left-20 top-10 h-44 w-44 rounded-full bg-[rgb(var(--color-primary-rgb)/0.08)] blur-3xl"></div>
+          <div className="absolute -right-16 bottom-8 h-40 w-40 rounded-full bg-[rgb(var(--color-success-rgb)/0.1)] blur-3xl"></div>
+
+          <div className="relative z-10">
+            <h2 id="quick-start-heading" className="text-2xl font-black text-[var(--text-primary)]">
+              شروع سریع با پرکاربردها
+            </h2>
+            <p className="mt-2 text-sm text-[var(--text-muted)]">
+              چند مسیر آماده برای کارهای روزمره تا سریع‌تر به نتیجه برسید.
+            </p>
+
+            <div className="mt-6 grid gap-4 sm:grid-cols-2">
+              {quickTasks.map((task) => (
+                <Link
+                  key={task.title}
+                  href={task.href}
+                  className="group rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)]/85 p-4 transition-all duration-[var(--motion-fast)] hover:border-[var(--color-primary)] hover:shadow-[var(--shadow-strong)]"
+                >
+                  <div className="flex items-center gap-3">
+                    <div
+                      className={`flex h-10 w-10 items-center justify-center rounded-[var(--radius-md)] ${task.tone}`}
+                    >
+                      {task.icon}
+                    </div>
+                    <div>
+                      <div className="text-sm font-bold text-[var(--text-primary)]">
+                        {task.title}
+                      </div>
+                      <div className="text-xs text-[var(--text-muted)]">{task.description}</div>
+                    </div>
+                  </div>
+                  <div className="mt-4 text-xs font-semibold text-[var(--color-primary)]">
+                    شروع سریع
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="relative overflow-hidden section-surface p-8">
+          <div className="absolute -right-12 top-6 h-32 w-32 rounded-full bg-[rgb(var(--color-warning-rgb)/0.15)] blur-3xl"></div>
+          <div className="relative z-10 space-y-6">
+            <div>
+              <h3 className="text-2xl font-black text-[var(--text-primary)]">
+                پیدا کردن ابزار مناسب
+              </h3>
+              <p className="mt-2 text-sm text-[var(--text-muted)]">
+                عنوان ابزار یا نیازتان را بنویسید و مستقیم وارد داشبورد شوید.
+              </p>
+            </div>
+
+            <form action="/tools" method="get" className="space-y-4">
+              <div className="grid gap-3 md:grid-cols-[1.1fr_0.9fr]">
+                <div className="space-y-2">
+                  <label htmlFor="home-tool-query" className="text-xs font-semibold">
+                    جست‌وجو
+                  </label>
+                  <input
+                    id="home-tool-query"
+                    name="query"
+                    type="search"
+                    placeholder="مثلاً ادغام PDF یا کد ملی"
+                    className="input-field"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label htmlFor="home-tool-category" className="text-xs font-semibold">
+                    دسته‌بندی
+                  </label>
+                  <div className="relative">
+                    <select
+                      id="home-tool-category"
+                      name="category"
+                      defaultValue="all"
+                      className="input-field appearance-none pr-10"
+                    >
+                      <option value="all">همه ابزارها</option>
+                      <option value="pdf">PDF</option>
+                      <option value="image">تصویر</option>
+                      <option value="date">تاریخ</option>
+                      <option value="text">متن</option>
+                      <option value="validation">اعتبارسنجی</option>
+                      <option value="finance">محاسبات مالی</option>
+                    </select>
+                    <IconChevronDown className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--text-muted)]" />
+                  </div>
+                </div>
+              </div>
+              <button type="submit" className="btn btn-lg btn-primary w-full md:w-auto">
+                برو به داشبورد ابزارها
+              </button>
+            </form>
+
+            <div className="space-y-3">
+              <div className="text-xs font-semibold text-[var(--text-muted)]">
+                جست‌وجوهای پیشنهادی
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {quickSearches.map((item) => (
+                  <Link
+                    key={item.label}
+                    href={`/tools?query=${encodeURIComponent(item.query)}&category=${item.category}`}
+                    className="rounded-full border border-[var(--border-light)] bg-[var(--surface-1)]/80 px-3 py-1 text-xs font-semibold text-[var(--text-secondary)] transition-all duration-[var(--motion-fast)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)]"
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div className="section-divider" aria-hidden="true"></div>
+
+      <PopularTools />
+
+      <div className="section-divider" aria-hidden="true"></div>
+
+      <RecentTools />
+
+      <div className="section-divider" aria-hidden="true"></div>
 
       <section className="space-y-8" aria-labelledby="tools-heading">
         <div className="flex flex-col gap-3 text-center">
@@ -268,7 +441,7 @@ export default function HomePage() {
           <ButtonLink href="/pdf-tools" size="lg" className="px-8">
             شروع با PDF
           </ButtonLink>
-          <ButtonLink href="/image-tools" variant="secondary" size="lg" className="px-8">
+          <ButtonLink href="/image-tools" variant="tertiary" size="lg" className="px-8">
             ابزارهای تصویر
           </ButtonLink>
         </div>

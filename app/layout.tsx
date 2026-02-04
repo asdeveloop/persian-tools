@@ -4,6 +4,7 @@ import { defaultOgImage, siteDescription, siteName, siteUrl } from '@/lib/seo';
 import MotionProvider from '@/components/ui/MotionProvider';
 import ServiceWorkerRegistration from '@/components/ui/ServiceWorkerRegistration';
 import UsageTracker from '@/components/ui/UsageTracker';
+import ToastProvider from '@/shared/ui/ToastProvider';
 import './globals.css';
 
 const googleVerification = process.env['NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION'];
@@ -113,9 +114,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       </head>
       <body className="min-h-screen bg-[var(--bg-primary)]">
         <MotionProvider>
-          <ServiceWorkerRegistration />
-          <UsageTracker />
-          {children}
+          <ToastProvider>
+            <ServiceWorkerRegistration />
+            <UsageTracker />
+            {children}
+          </ToastProvider>
         </MotionProvider>
       </body>
     </html>

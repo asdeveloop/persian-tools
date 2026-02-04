@@ -7,6 +7,7 @@ type Props = InputHTMLAttributes<HTMLInputElement> & {
   helperText?: string;
   startIcon?: ReactNode;
   endIcon?: ReactNode;
+  endAction?: ReactNode;
 };
 
 export default function Input({
@@ -15,6 +16,7 @@ export default function Input({
   helperText,
   startIcon,
   endIcon,
+  endAction,
   className,
   id,
   ...rest
@@ -54,7 +56,7 @@ export default function Input({
             ${baseClasses}
             ${errorClasses}
             ${startIcon ? 'ps-10' : ''}
-            ${endIcon ? 'pe-10' : ''}
+            ${(endIcon ?? endAction) ? 'pe-10' : ''}
             ${className ?? ''}
           `.trim()}
           aria-invalid={error ? true : undefined}
@@ -66,6 +68,10 @@ export default function Input({
           <div className="absolute inset-y-0 end-0 flex items-center pe-3 pointer-events-none">
             {endIcon}
           </div>
+        )}
+
+        {endAction && (
+          <div className="absolute inset-y-0 end-0 flex items-center pe-2">{endAction}</div>
         )}
       </div>
 

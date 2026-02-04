@@ -1,9 +1,12 @@
 'use client';
 
 import type { ReactNode } from 'react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import ToolCard from '@/shared/ui/ToolCard';
 import { EmptyState } from '@/components/ui';
+import PopularTools from '@/components/home/PopularTools';
+import { clearUsage } from '@/shared/analytics/localUsage';
 import {
   IconPdf,
   IconImage,
@@ -110,6 +113,16 @@ const categories: Array<{ id: ToolCategory; label: string }> = [
   { id: 'finance', label: 'محاسبات مالی' },
 ];
 
+const SEARCH_DEBOUNCE_MS = 300;
+
+const quickSearches: Array<{ label: string; query: string; category: ToolCategory }> = [
+  { label: 'ادغام PDF', query: 'ادغام', category: 'pdf' },
+  { label: 'فشرده‌سازی', query: 'فشرده', category: 'pdf' },
+  { label: 'کد ملی', query: 'کد ملی', category: 'validation' },
+  { label: 'اقساط وام', query: 'اقساط', category: 'finance' },
+  { label: 'تبدیل تاریخ', query: 'تبدیل تاریخ', category: 'date' },
+];
+
 const flows = [
   {
     title: 'PDF → استخراج صفحات',
@@ -134,8 +147,119 @@ const flows = [
 ];
 
 export default function ToolsDashboardPage() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [selectedCategory, setSelectedCategory] = useState<ToolCategory>('all');
   const [searchTerm, setSearchTerm] = useState('');
+  const [usageClearedAt, setUsageClearedAt] = useState<number | null>(null);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [isFiltering, setIsFiltering] = useState(false);
+  const hasHydratedRef = useRef(false);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const confirmButtonRef = useRef<HTMLButtonElement | null>(null);
+  const cancelButtonRef = useRef<HTMLButtonElement | null>(null);
+  const prevStateRef = useRef<{ searchTerm: string; category: ToolCategory }>({
+    searchTerm: '',
+    category: 'all',
+  });
+
+  useEffect(() => {
+    const queryParam = searchParams.get('query');
+    const categoryParam = searchParams.get('category') as ToolCategory | null;
+    if (queryParam !== null) {
+      setSearchTerm(queryParam);
+    } else {
+      setSearchTerm('');
+    }
+    if (categoryParam && categories.some((category) => category.id === categoryParam)) {
+      setSelectedCategory(categoryParam);
+    } else {
+      setSelectedCategory('all');
+    }
+    hasHydratedRef.current = true;
+  }, [searchParams]);
+
+  useEffect(() => {
+    if (!hasHydratedRef.current) {
+      return;
+    }
+    const prev = prevStateRef.current;
+    const searchChanged = prev.searchTerm !== searchTerm;
+    const delay = searchChanged ? SEARCH_DEBOUNCE_MS : 0;
+
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+    }
+
+    setIsFiltering(true);
+    debounceRef.current = setTimeout(() => {
+      const params = new URLSearchParams(searchParams.toString());
+      const trimmedSearch = searchTerm.trim();
+      if (trimmedSearch) {
+        params.set('query', trimmedSearch);
+      } else {
+        params.delete('query');
+      }
+      if (selectedCategory !== 'all') {
+        params.set('category', selectedCategory);
+      } else {
+        params.delete('category');
+      }
+      const nextQuery = params.toString();
+      const currentQuery = searchParams.toString();
+      if (nextQuery !== currentQuery) {
+        router.replace(`${pathname}${nextQuery ? `?${nextQuery}` : ''}`, { scroll: false });
+      }
+      prevStateRef.current = { searchTerm, category: selectedCategory };
+      setIsFiltering(false);
+    }, delay);
+
+    return () => {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+      }
+    };
+  }, [pathname, router, searchParams, searchTerm, selectedCategory]);
+
+  useEffect(() => {
+    if (!isConfirmOpen) {
+      return;
+    }
+    const previousActive = document.activeElement as HTMLElement | null;
+    confirmButtonRef.current?.focus();
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        setIsConfirmOpen(false);
+        return;
+      }
+      if (event.key === 'Tab') {
+        const focusables = [confirmButtonRef.current, cancelButtonRef.current].filter(
+          Boolean,
+        ) as HTMLElement[];
+        if (focusables.length === 0) {
+          return;
+        }
+        const currentIndex = focusables.indexOf(document.activeElement as HTMLElement);
+        if (event.shiftKey) {
+          const nextIndex = currentIndex <= 0 ? focusables.length - 1 : currentIndex - 1;
+          focusables[nextIndex]?.focus();
+        } else {
+          const nextIndex = currentIndex === focusables.length - 1 ? 0 : currentIndex + 1;
+          focusables[nextIndex]?.focus();
+        }
+        event.preventDefault();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      previousActive?.focus();
+    };
+  }, [isConfirmOpen]);
 
   const filteredTools = useMemo(() => {
     const term = searchTerm.trim();
@@ -155,6 +279,8 @@ export default function ToolsDashboardPage() {
 
   return (
     <div className="space-y-10">
+      <PopularTools />
+
       <section className="section-surface p-6 md:p-8 rounded-[var(--radius-lg)] border border-[var(--border-light)]">
         <div className="flex flex-col gap-4">
           <div className="inline-flex items-center gap-2 rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-2 text-xs font-semibold text-[var(--text-muted)]">
@@ -189,6 +315,21 @@ export default function ToolsDashboardPage() {
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
+          {quickSearches.map((item) => (
+            <button
+              key={item.label}
+              type="button"
+              onClick={() => {
+                setSearchTerm(item.query);
+                setSelectedCategory(item.category);
+              }}
+              className="rounded-full border border-[var(--border-light)] bg-[var(--surface-1)]/80 px-3 py-1 text-xs font-semibold text-[var(--text-secondary)] transition-all duration-[var(--motion-fast)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)]"
+            >
+              {item.label}
+            </button>
+          ))}
+        </div>
+        <div className="flex flex-wrap gap-2">
           {categories.map((category) => (
             <button
               key={category.id}
@@ -205,36 +346,42 @@ export default function ToolsDashboardPage() {
             </button>
           ))}
         </div>
-      </CardPanel>
-
-      {hasResults ? (
-        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {filteredTools.map((tool) => (
-            <ToolCard
-              key={tool.id}
-              href={tool.path}
-              title={tool.title}
-              description={tool.description}
-              icon={tool.icon}
-              {...(tool.meta ? { meta: tool.meta } : {})}
-              {...(tool.iconWrapClassName ? { iconWrapClassName: tool.iconWrapClassName } : {})}
-            />
-          ))}
+        <div className="flex flex-wrap items-center justify-between gap-3 text-xs text-[var(--text-muted)]">
+          <div className="flex flex-wrap items-center gap-2">
+            <span>نمایش {filteredTools.length} ابزار</span>
+            {selectedCategory !== 'all' ? (
+              <span className="rounded-full border border-[var(--border-light)] bg-[var(--surface-1)]/80 px-2 py-0.5 text-[10px] font-semibold text-[var(--text-secondary)]">
+                {categories.find((item) => item.id === selectedCategory)?.label}
+              </span>
+            ) : null}
+          </div>
+          <div className="flex flex-wrap items-center gap-3">
+            {searchTerm ? <span>نتایج برای «{searchTerm}»</span> : <span>همه نتایج</span>}
+            <button
+              type="button"
+              onClick={() => {
+                setIsConfirmOpen(true);
+              }}
+              className="rounded-full border border-[var(--border-light)] bg-[var(--surface-1)]/80 px-3 py-1 font-semibold text-[var(--text-secondary)] transition-all duration-[var(--motion-fast)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)]"
+            >
+              پاک‌سازی تاریخچه محبوب‌ها
+            </button>
+            {(searchTerm || selectedCategory !== 'all') && (
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchTerm('');
+                  setSelectedCategory('all');
+                }}
+                className="rounded-full border border-[var(--border-light)] bg-[var(--surface-1)]/80 px-3 py-1 font-semibold text-[var(--text-secondary)] transition-all duration-[var(--motion-fast)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)]"
+              >
+                پاک‌سازی فیلترها
+              </button>
+            )}
+            {usageClearedAt ? <span className="text-[var(--color-success)]">پاک شد</span> : null}
+          </div>
         </div>
-      ) : (
-        <EmptyState
-          icon="🔎"
-          title="ابزاری پیدا نشد"
-          description="عبارت جستجو یا دسته‌بندی را تغییر دهید تا ابزارهای بیشتری نمایش داده شود."
-          action={{
-            label: 'بازنشانی فیلترها',
-            onClick: () => {
-              setSearchTerm('');
-              setSelectedCategory('all');
-            },
-          }}
-        />
-      )}
+      </CardPanel>
 
       <section className="space-y-4">
         <h2 className="text-xl font-black text-[var(--text-primary)]">مسیرهای پیشنهادی</h2>
@@ -254,13 +401,103 @@ export default function ToolsDashboardPage() {
           ))}
         </div>
       </section>
+
+      {hasResults ? (
+        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3" aria-busy={isFiltering}>
+          {isFiltering
+            ? Array.from({ length: 6 }).map((_, index) => (
+                <div
+                  key={`skeleton-${index}`}
+                  className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)]/85 p-6 shadow-[var(--shadow-medium)] animate-pulse"
+                >
+                  <div className="h-12 w-12 rounded-[var(--radius-md)] bg-[var(--bg-subtle)]"></div>
+                  <div className="mt-4 h-4 w-3/5 rounded bg-[var(--bg-subtle)]"></div>
+                  <div className="mt-3 h-3 w-full rounded bg-[var(--bg-subtle)]"></div>
+                  <div className="mt-2 h-3 w-4/5 rounded bg-[var(--bg-subtle)]"></div>
+                  <div className="mt-6 h-3 w-20 rounded bg-[var(--bg-subtle)]"></div>
+                </div>
+              ))
+            : filteredTools.map((tool) => (
+                <ToolCard
+                  key={tool.id}
+                  href={tool.path}
+                  title={tool.title}
+                  description={tool.description}
+                  icon={tool.icon}
+                  {...(tool.meta ? { meta: tool.meta } : {})}
+                  {...(tool.iconWrapClassName ? { iconWrapClassName: tool.iconWrapClassName } : {})}
+                />
+              ))}
+        </div>
+      ) : (
+        <EmptyState
+          icon="🔎"
+          title="ابزاری پیدا نشد"
+          description="عبارت جستجو یا دسته‌بندی را تغییر دهید تا ابزارهای بیشتری نمایش داده شود."
+          action={{
+            label: 'بازنشانی فیلترها',
+            onClick: () => {
+              setSearchTerm('');
+              setSelectedCategory('all');
+            },
+          }}
+        />
+      )}
+
+      {isConfirmOpen ? (
+        <div
+          className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 px-4"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="confirm-clear-title"
+        >
+          <button
+            type="button"
+            aria-label="بستن پنجره"
+            className="absolute inset-0"
+            onClick={() => setIsConfirmOpen(false)}
+          />
+          <div className="relative z-10 w-full max-w-sm rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6 shadow-[var(--shadow-strong)]">
+            <h3 id="confirm-clear-title" className="text-lg font-black text-[var(--text-primary)]">
+              پاک‌سازی تاریخچه محبوب‌ها؟
+            </h3>
+            <p className="mt-2 text-sm text-[var(--text-muted)]">
+              این کار داده‌های استفادهٔ محلی را پاک می‌کند و پیشنهادهای محبوب‌ها دوباره از نو ساخته
+              می‌شوند.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <button
+                type="button"
+                className="btn btn-primary btn-md"
+                ref={confirmButtonRef}
+                onClick={() => {
+                  clearUsage();
+                  setUsageClearedAt(Date.now());
+                  setTimeout(() => setUsageClearedAt(null), 2500);
+                  setIsConfirmOpen(false);
+                }}
+              >
+                بله، پاک کن
+              </button>
+              <button
+                type="button"
+                className="btn btn-secondary btn-md"
+                ref={cancelButtonRef}
+                onClick={() => setIsConfirmOpen(false)}
+              >
+                انصراف
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
 
 function CardPanel({ children }: { children: ReactNode }) {
   return (
-    <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)]/90 p-5 space-y-4">
+    <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)]/92 p-5 space-y-4 shadow-[var(--shadow-medium)] backdrop-blur">
       {children}
     </div>
   );

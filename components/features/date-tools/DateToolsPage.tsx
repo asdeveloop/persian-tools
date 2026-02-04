@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react';
 import { Card } from '@/components/ui';
 import Input from '@/shared/ui/Input';
+import { useToast } from '@/shared/ui/ToastProvider';
 import {
   addDays,
   compareDateParts,
@@ -42,6 +43,17 @@ const calendarPlaceholder = (calendar: CalendarType) => {
     return '2024/03/20';
   }
   return '1445/09/01';
+};
+
+const formatDateInput = (value: string) => {
+  const digits = toEnglishDigits(value).replace(/\D/g, '').slice(0, 8);
+  if (digits.length <= 4) {
+    return digits;
+  }
+  if (digits.length <= 6) {
+    return `${digits.slice(0, 4)}/${digits.slice(4)}`;
+  }
+  return `${digits.slice(0, 4)}/${digits.slice(4, 6)}/${digits.slice(6)}`;
 };
 
 const parseDateInput = (value: string): ParseResult => {
@@ -130,6 +142,7 @@ const CalendarToggle = ({
 };
 
 export default function DateToolsPage() {
+  const { showToast, recordCopy } = useToast();
   const today = useMemo<DateParts>(() => {
     const d = new Date();
     return { year: d.getFullYear(), month: d.getMonth() + 1, day: d.getDate() };
@@ -276,6 +289,20 @@ export default function DateToolsPage() {
   const diffResult = diffState.result;
   const weekdayResult = weekdayState.result;
 
+  const copyValue = async (value: string, label: string) => {
+    const text = value.trim();
+    if (!text) {
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(text);
+      showToast(`${label} کپی شد`, 'success');
+      recordCopy(label, text);
+    } catch {
+      showToast('کپی انجام نشد', 'error');
+    }
+  };
+
   return (
     <div className="space-y-6">
       <header className="space-y-3">
@@ -302,8 +329,9 @@ export default function DateToolsPage() {
           <Input
             label="تاریخ ورودی (YYYY/MM/DD)"
             value={convertInput}
-            onChange={(e) => setConvertInput(e.target.value)}
+            onChange={(e) => setConvertInput(formatDateInput(e.target.value))}
             dir="ltr"
+            inputMode="numeric"
             placeholder={calendarPlaceholder(convertCalendar)}
           />
           <div className="space-y-3">
@@ -313,6 +341,15 @@ export default function DateToolsPage() {
               value={convertState.outputs?.gregorian ?? ''}
               dir="ltr"
               placeholder="2024/03/20"
+              endAction={
+                <button
+                  type="button"
+                  className="text-xs font-semibold text-[var(--text-muted)]"
+                  onClick={() => copyValue(convertState.outputs?.gregorian ?? '', 'تبدیل میلادی')}
+                >
+                  Copy
+                </button>
+              }
             />
             <Input
               label="خروجی شمسی"
@@ -320,6 +357,15 @@ export default function DateToolsPage() {
               value={convertState.outputs?.jalali ?? ''}
               dir="ltr"
               placeholder="1403/01/01"
+              endAction={
+                <button
+                  type="button"
+                  className="text-xs font-semibold text-[var(--text-muted)]"
+                  onClick={() => copyValue(convertState.outputs?.jalali ?? '', 'تبدیل شمسی')}
+                >
+                  Copy
+                </button>
+              }
             />
             <Input
               label="خروجی قمری"
@@ -327,6 +373,15 @@ export default function DateToolsPage() {
               value={convertState.outputs?.islamic ?? ''}
               dir="ltr"
               placeholder="1445/09/01"
+              endAction={
+                <button
+                  type="button"
+                  className="text-xs font-semibold text-[var(--text-muted)]"
+                  onClick={() => copyValue(convertState.outputs?.islamic ?? '', 'تبدیل قمری')}
+                >
+                  Copy
+                </button>
+              }
             />
           </div>
         </div>
@@ -337,6 +392,20 @@ export default function DateToolsPage() {
         )}
         <div className="text-xs text-[var(--text-muted)]">
           تاریخ قمری بر اساس تقویم محاسباتی است و ممکن است با رؤیت هلال یک روز اختلاف داشته باشد.
+        </div>
+        <div className="text-xs text-[var(--text-muted)]">
+          <button
+            type="button"
+            className="font-semibold text-[var(--color-primary)]"
+            onClick={() =>
+              copyValue(
+                `میلادی: ${convertState.outputs?.gregorian ?? ''}\nشمسی: ${convertState.outputs?.jalali ?? ''}\nقمری: ${convertState.outputs?.islamic ?? ''}`,
+                'کپی همه تبدیل تاریخ',
+              )
+            }
+          >
+            Copy All
+          </button>
         </div>
       </Card>
 
@@ -353,8 +422,9 @@ export default function DateToolsPage() {
           <Input
             label="تاریخ تولد"
             value={ageDateInput}
-            onChange={(e) => setAgeDateInput(e.target.value)}
+            onChange={(e) => setAgeDateInput(formatDateInput(e.target.value))}
             dir="ltr"
+            inputMode="numeric"
             placeholder={calendarPlaceholder(ageCalendar)}
           />
           <div className="space-y-3">
@@ -371,8 +441,9 @@ export default function DateToolsPage() {
                 <Input
                   label="تاریخ مرجع"
                   value={customNowInput}
-                  onChange={(e) => setCustomNowInput(e.target.value)}
+                  onChange={(e) => setCustomNowInput(formatDateInput(e.target.value))}
                   dir="ltr"
+                  inputMode="numeric"
                   placeholder={calendarPlaceholder(customNowCal)}
                 />
                 <div className="flex items-end">
@@ -394,12 +465,33 @@ export default function DateToolsPage() {
               <div className="text-lg font-black text-[var(--text-primary)]">
                 {ageResult.ymd.years} سال و {ageResult.ymd.months} ماه و {ageResult.ymd.days} روز
               </div>
+              <button
+                type="button"
+                className="mt-2 text-xs font-semibold text-[var(--color-primary)]"
+                onClick={() =>
+                  copyValue(
+                    `${ageResult.ymd.years} سال و ${ageResult.ymd.months} ماه و ${ageResult.ymd.days} روز`,
+                    'سن دقیق',
+                  )
+                }
+              >
+                Copy
+              </button>
             </div>
             <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4">
               <div className="text-xs text-[var(--text-muted)]">کل روزها</div>
               <div className="text-lg font-black text-[var(--text-primary)]">
                 {ageResult.days.toLocaleString('fa-IR')} روز
               </div>
+              <button
+                type="button"
+                className="mt-2 text-xs font-semibold text-[var(--color-primary)]"
+                onClick={() =>
+                  copyValue(`${ageResult.days.toLocaleString('fa-IR')} روز`, 'کل روزها')
+                }
+              >
+                Copy
+              </button>
             </div>
             <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4">
               <div className="text-xs text-[var(--text-muted)]">تاریخ مرجع</div>
@@ -408,7 +500,43 @@ export default function DateToolsPage() {
                 شمسی: {formatJalali(ageResult.reference)} <br />
                 قمری: {formatIslamic(ageResult.reference)}
               </div>
+              <button
+                type="button"
+                className="mt-2 text-xs font-semibold text-[var(--color-primary)]"
+                onClick={() =>
+                  copyValue(
+                    `میلادی: ${formatGregorian(ageResult.reference)} | شمسی: ${formatJalali(
+                      ageResult.reference,
+                    )} | قمری: ${formatIslamic(ageResult.reference)}`,
+                    'تاریخ مرجع',
+                  )
+                }
+              >
+                Copy
+              </button>
             </div>
+          </div>
+        )}
+        {ageResult && (
+          <div className="text-xs text-[var(--text-muted)]">
+            <button
+              type="button"
+              className="font-semibold text-[var(--color-primary)]"
+              onClick={() =>
+                copyValue(
+                  `سن دقیق: ${ageResult.ymd.years} سال و ${ageResult.ymd.months} ماه و ${ageResult.ymd.days} روز\nکل روزها: ${ageResult.days.toLocaleString(
+                    'fa-IR',
+                  )} روز\nتاریخ مرجع: میلادی ${formatGregorian(
+                    ageResult.reference,
+                  )} | شمسی ${formatJalali(ageResult.reference)} | قمری ${formatIslamic(
+                    ageResult.reference,
+                  )}`,
+                  'کپی همه محاسبه سن',
+                )
+              }
+            >
+              Copy All
+            </button>
           </div>
         )}
       </Card>
@@ -429,8 +557,9 @@ export default function DateToolsPage() {
             </div>
             <Input
               value={startInput}
-              onChange={(e) => setStartInput(e.target.value)}
+              onChange={(e) => setStartInput(formatDateInput(e.target.value))}
               dir="ltr"
+              inputMode="numeric"
               placeholder={calendarPlaceholder(startCal)}
             />
           </div>
@@ -441,8 +570,9 @@ export default function DateToolsPage() {
             </div>
             <Input
               value={endInput}
-              onChange={(e) => setEndInput(e.target.value)}
+              onChange={(e) => setEndInput(formatDateInput(e.target.value))}
               dir="ltr"
+              inputMode="numeric"
               placeholder={calendarPlaceholder(endCal)}
             />
           </div>
@@ -459,12 +589,33 @@ export default function DateToolsPage() {
               <div className="text-lg font-black text-[var(--text-primary)]">
                 {diffResult.days.toLocaleString('fa-IR')} روز
               </div>
+              <button
+                type="button"
+                className="mt-2 text-xs font-semibold text-[var(--color-primary)]"
+                onClick={() =>
+                  copyValue(`${diffResult.days.toLocaleString('fa-IR')} روز`, 'تعداد روز')
+                }
+              >
+                Copy
+              </button>
             </div>
             <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4">
               <div className="text-xs text-[var(--text-muted)]">بر حسب سال/ماه/روز</div>
               <div className="text-lg font-black text-[var(--text-primary)]">
                 {diffResult.ymd.years} سال، {diffResult.ymd.months} ماه، {diffResult.ymd.days} روز
               </div>
+              <button
+                type="button"
+                className="mt-2 text-xs font-semibold text-[var(--color-primary)]"
+                onClick={() =>
+                  copyValue(
+                    `${diffResult.ymd.years} سال، ${diffResult.ymd.months} ماه، ${diffResult.ymd.days} روز`,
+                    'فاصله تاریخ‌ها',
+                  )
+                }
+              >
+                Copy
+              </button>
             </div>
             <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4 space-y-2">
               <div className="text-xs text-[var(--text-muted)]">نمایش سه تقویم</div>
@@ -476,7 +627,47 @@ export default function DateToolsPage() {
                 پایان: میلادی {formatGregorian(diffResult.e)} | شمسی {formatJalali(diffResult.e)} |
                 قمری {formatIslamic(diffResult.e)}
               </div>
+              <button
+                type="button"
+                className="text-xs font-semibold text-[var(--color-primary)]"
+                onClick={() =>
+                  copyValue(
+                    `شروع: ${formatGregorian(diffResult.s)} | ${formatJalali(
+                      diffResult.s,
+                    )} | ${formatIslamic(diffResult.s)} ؛ پایان: ${formatGregorian(
+                      diffResult.e,
+                    )} | ${formatJalali(diffResult.e)} | ${formatIslamic(diffResult.e)}`,
+                    'سه تقویم',
+                  )
+                }
+              >
+                Copy
+              </button>
             </div>
+          </div>
+        )}
+        {diffResult && (
+          <div className="text-xs text-[var(--text-muted)]">
+            <button
+              type="button"
+              className="font-semibold text-[var(--color-primary)]"
+              onClick={() =>
+                copyValue(
+                  `فاصله دو تاریخ:\nتعداد روز: ${diffResult.days.toLocaleString(
+                    'fa-IR',
+                  )}\nبر حسب سال/ماه/روز: ${diffResult.ymd.years} سال، ${diffResult.ymd.months} ماه، ${diffResult.ymd.days} روز\nشروع: میلادی ${formatGregorian(
+                    diffResult.s,
+                  )} | شمسی ${formatJalali(diffResult.s)} | قمری ${formatIslamic(
+                    diffResult.s,
+                  )}\nپایان: میلادی ${formatGregorian(diffResult.e)} | شمسی ${formatJalali(
+                    diffResult.e,
+                  )} | قمری ${formatIslamic(diffResult.e)}`,
+                  'کپی همه فاصله تاریخ',
+                )
+              }
+            >
+              Copy All
+            </button>
           </div>
         )}
       </Card>
@@ -496,8 +687,9 @@ export default function DateToolsPage() {
           <Input
             label="تاریخ مبنا"
             value={weekdayInput}
-            onChange={(e) => setWeekdayInput(e.target.value)}
+            onChange={(e) => setWeekdayInput(formatDateInput(e.target.value))}
             dir="ltr"
+            inputMode="numeric"
             placeholder={calendarPlaceholder(weekdayCal)}
           />
           <Input
@@ -505,6 +697,7 @@ export default function DateToolsPage() {
             value={offsetText}
             onChange={(e) => setOffsetText(e.target.value)}
             dir="ltr"
+            inputMode="numeric"
             placeholder="0"
           />
         </div>
@@ -520,25 +713,75 @@ export default function DateToolsPage() {
               <div className="text-lg font-black text-[var(--text-primary)]">
                 {getWeekdayName(weekdayResult.shifted)}
               </div>
+              <button
+                type="button"
+                className="mt-2 text-xs font-semibold text-[var(--color-primary)]"
+                onClick={() => copyValue(getWeekdayName(weekdayResult.shifted), 'روز هفته')}
+              >
+                Copy
+              </button>
             </div>
             <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4">
               <div className="text-xs text-[var(--text-muted)]">تاریخ نهایی (میلادی)</div>
               <div className="text-lg font-black text-[var(--text-primary)]">
                 {formatGregorian(weekdayResult.shifted)}
               </div>
+              <button
+                type="button"
+                className="mt-2 text-xs font-semibold text-[var(--color-primary)]"
+                onClick={() =>
+                  copyValue(formatGregorian(weekdayResult.shifted), 'تاریخ نهایی میلادی')
+                }
+              >
+                Copy
+              </button>
             </div>
             <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4">
               <div className="text-xs text-[var(--text-muted)]">تاریخ نهایی (شمسی)</div>
               <div className="text-lg font-black text-[var(--text-primary)]">
                 {formatJalali(weekdayResult.shifted)}
               </div>
+              <button
+                type="button"
+                className="mt-2 text-xs font-semibold text-[var(--color-primary)]"
+                onClick={() => copyValue(formatJalali(weekdayResult.shifted), 'تاریخ نهایی شمسی')}
+              >
+                Copy
+              </button>
             </div>
             <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4">
               <div className="text-xs text-[var(--text-muted)]">تاریخ نهایی (قمری)</div>
               <div className="text-lg font-black text-[var(--text-primary)]">
                 {formatIslamic(weekdayResult.shifted)}
               </div>
+              <button
+                type="button"
+                className="mt-2 text-xs font-semibold text-[var(--color-primary)]"
+                onClick={() => copyValue(formatIslamic(weekdayResult.shifted), 'تاریخ نهایی قمری')}
+              >
+                Copy
+              </button>
             </div>
+          </div>
+        )}
+        {weekdayResult && (
+          <div className="text-xs text-[var(--text-muted)]">
+            <button
+              type="button"
+              className="font-semibold text-[var(--color-primary)]"
+              onClick={() =>
+                copyValue(
+                  `روز هفته: ${getWeekdayName(
+                    weekdayResult.shifted,
+                  )}\nمیلادی: ${formatGregorian(weekdayResult.shifted)}\nشمسی: ${formatJalali(
+                    weekdayResult.shifted,
+                  )}\nقمری: ${formatIslamic(weekdayResult.shifted)}`,
+                  'کپی همه روز هفته',
+                )
+              }
+            >
+              Copy All
+            </button>
           </div>
         )}
       </Card>
@@ -559,8 +802,9 @@ export default function DateToolsPage() {
           <Input
             label="تاریخ ورودی"
             value={holidayInput}
-            onChange={(e) => setHolidayInput(e.target.value)}
+            onChange={(e) => setHolidayInput(formatDateInput(e.target.value))}
             dir="ltr"
+            inputMode="numeric"
             placeholder={holidayCalendar === 'jalali' ? '1403/01/01' : '1445/09/10'}
           />
           <div className="text-center text-sm text-[var(--text-muted)]">وضعیت</div>
@@ -569,6 +813,15 @@ export default function DateToolsPage() {
             readOnly
             value={holidayState.holiday ? holidayState.holiday.title : ''}
             placeholder="تعطیل نیست"
+            endAction={
+              <button
+                type="button"
+                className="text-xs font-semibold text-[var(--text-muted)]"
+                onClick={() => copyValue(holidayState.holiday?.title ?? '', 'تعطیلات رسمی')}
+              >
+                Copy
+              </button>
+            }
           />
         </div>
         {holidayState.error && (

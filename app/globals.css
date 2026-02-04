@@ -232,6 +232,13 @@ body {
   direction: rtl;
 }
 
+.ltr-num {
+  direction: ltr;
+  text-align: left;
+  unicode-bidi: plaintext;
+  font-variant-numeric: tabular-nums;
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
@@ -359,6 +366,17 @@ body {
 
 .section-surface {
   @apply rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] shadow-[var(--shadow-medium)] backdrop-blur;
+}
+
+.section-divider {
+  height: 1px;
+  width: 100%;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgb(var(--color-primary-rgb) / 0.25),
+    transparent
+  );
 }
 
 .noise-bg {

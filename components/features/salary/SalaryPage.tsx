@@ -14,6 +14,7 @@ import type { SalaryInput, SalaryOutput, MinimumWageOutput } from '@/features/sa
 import { AnimatedCard, FadeIn } from '@/shared/ui/AnimatedComponents';
 import Button from '@/shared/ui/Button';
 import { tokens, toolCategories } from '@/shared/constants/tokens';
+import { useToast } from '@/shared/ui/ToastProvider';
 
 type CalculationMode = 'gross-to-net' | 'net-to-gross' | 'minimum-wage';
 
@@ -39,6 +40,7 @@ type SalaryFormState = {
 const sessionKey = 'salary.form.v2';
 
 export default function SalaryPage() {
+  const { showToast, recordCopy } = useToast();
   const financialActiveStyle = {
     backgroundColor: toolCategories.financial.primary,
     borderColor: toolCategories.financial.primary,
@@ -71,10 +73,45 @@ export default function SalaryPage() {
   const [result, setResult] = useState<SalaryOutput | null>(null);
   const [minimumWageResult, setMinimumWageResult] = useState<MinimumWageOutput | null>(null);
   const [showDetails, setShowDetails] = useState(false);
+  const [showAdvanced, setShowAdvanced] = useState(false);
+  const [hasInteracted, setHasInteracted] = useState(false);
+  const initialRef = useMemo(() => JSON.stringify(initial), [initial]);
+
+  const advancedSummary = [
+    form.isMarried ? 'متاهل' : null,
+    form.hasWorkerCoupon ? 'بن کارگری' : null,
+    form.hasTransportation ? 'حمل‌ونقل' : null,
+    form.isDevelopmentZone ? 'منطقه توسعه‌یافته' : null,
+    form.otherBenefitsText && form.otherBenefitsText !== '0' ? 'مزایای دیگر' : null,
+    form.otherDeductionsText && form.otherDeductionsText !== '0' ? 'کسورات دیگر' : null,
+  ].filter(Boolean);
+
+  const copyValue = async (value: string, label: string) => {
+    const text = value.trim();
+    if (!text) {
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(text);
+      showToast(`${label} کپی شد`, 'success');
+      recordCopy(label, text);
+    } catch {
+      showToast('کپی انجام نشد', 'error');
+    }
+  };
 
   useEffect(() => {
     setSessionJson(sessionKey, form);
   }, [form]);
+
+  useEffect(() => {
+    if (hasInteracted) {
+      return;
+    }
+    if (JSON.stringify(form) !== initialRef) {
+      setHasInteracted(true);
+    }
+  }, [form, hasInteracted, initialRef]);
 
   const onCalculate = useCallback(() => {
     setError(null);
@@ -405,78 +442,107 @@ export default function SalaryPage() {
                 </div>
               </div>
 
-              <div className="grid gap-4 md:grid-cols-2">
-                <label className="flex items-center gap-2 text-sm text-[var(--text-primary)]">
-                  <input
-                    type="checkbox"
-                    checked={form.isMarried}
-                    onChange={(e) => setForm((s) => ({ ...s, isMarried: e.target.checked }))}
-                  />
-                  متاهل هستم
-                </label>
-                <label className="flex items-center gap-2 text-sm text-[var(--text-primary)]">
-                  <input
-                    type="checkbox"
-                    checked={form.hasWorkerCoupon}
-                    onChange={(e) => setForm((s) => ({ ...s, hasWorkerCoupon: e.target.checked }))}
-                  />
-                  بن کارگری
-                </label>
-                <label className="flex items-center gap-2 text-sm text-[var(--text-primary)]">
-                  <input
-                    type="checkbox"
-                    checked={form.hasTransportation}
-                    onChange={(e) =>
-                      setForm((s) => ({ ...s, hasTransportation: e.target.checked }))
-                    }
-                  />
-                  کمک هزینه حمل و نقل
-                </label>
-                <label className="flex items-center gap-2 text-sm text-[var(--text-primary)]">
-                  <input
-                    type="checkbox"
-                    checked={form.isDevelopmentZone}
-                    onChange={(e) =>
-                      setForm((s) => ({ ...s, isDevelopmentZone: e.target.checked }))
-                    }
-                  />
-                  منطقه توسعه یافته
-                </label>
-              </div>
+              <div className="mt-2">
+                <button
+                  type="button"
+                  className="text-sm font-semibold text-[var(--color-primary)]"
+                  onClick={() => setShowAdvanced((prev) => !prev)}
+                >
+                  تنظیمات بیشتر (اختیاری)
+                </button>
+                {!showAdvanced && advancedSummary.length ? (
+                  <div className="mt-3 flex flex-wrap gap-2 text-xs">
+                    {advancedSummary.map((item) => (
+                      <span
+                        key={item}
+                        className="rounded-full border border-[var(--border-light)] bg-[var(--surface-1)]/80 px-2 py-1 font-semibold text-[var(--text-secondary)]"
+                      >
+                        {item}
+                      </span>
+                    ))}
+                  </div>
+                ) : null}
+                {showAdvanced ? (
+                  <div className="mt-4 space-y-6">
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <label className="flex items-center gap-2 text-sm text-[var(--text-primary)]">
+                        <input
+                          type="checkbox"
+                          checked={form.isMarried}
+                          onChange={(e) => setForm((s) => ({ ...s, isMarried: e.target.checked }))}
+                        />
+                        متاهل هستم
+                      </label>
+                      <label className="flex items-center gap-2 text-sm text-[var(--text-primary)]">
+                        <input
+                          type="checkbox"
+                          checked={form.hasWorkerCoupon}
+                          onChange={(e) =>
+                            setForm((s) => ({ ...s, hasWorkerCoupon: e.target.checked }))
+                          }
+                        />
+                        بن کارگری
+                      </label>
+                      <label className="flex items-center gap-2 text-sm text-[var(--text-primary)]">
+                        <input
+                          type="checkbox"
+                          checked={form.hasTransportation}
+                          onChange={(e) =>
+                            setForm((s) => ({ ...s, hasTransportation: e.target.checked }))
+                          }
+                        />
+                        کمک هزینه حمل و نقل
+                      </label>
+                      <label className="flex items-center gap-2 text-sm text-[var(--text-primary)]">
+                        <input
+                          type="checkbox"
+                          checked={form.isDevelopmentZone}
+                          onChange={(e) =>
+                            setForm((s) => ({ ...s, isDevelopmentZone: e.target.checked }))
+                          }
+                        />
+                        منطقه توسعه یافته
+                      </label>
+                    </div>
 
-              <div className="grid gap-4 md:grid-cols-2">
-                <div className="flex flex-col gap-2">
-                  <label
-                    htmlFor="salary-other-benefits"
-                    className="text-sm font-semibold text-[var(--text-primary)]"
-                  >
-                    سایر مزایا (تومان)
-                  </label>
-                  <input
-                    id="salary-other-benefits"
-                    type="text"
-                    value={form.otherBenefitsText}
-                    onChange={(e) => setForm((s) => ({ ...s, otherBenefitsText: e.target.value }))}
-                    className="input-field"
-                  />
-                </div>
-                <div className="flex flex-col gap-2">
-                  <label
-                    htmlFor="salary-other-deductions"
-                    className="text-sm font-semibold text-[var(--text-primary)]"
-                  >
-                    سایر کسورات (تومان)
-                  </label>
-                  <input
-                    id="salary-other-deductions"
-                    type="text"
-                    value={form.otherDeductionsText}
-                    onChange={(e) =>
-                      setForm((s) => ({ ...s, otherDeductionsText: e.target.value }))
-                    }
-                    className="input-field"
-                  />
-                </div>
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <div className="flex flex-col gap-2">
+                        <label
+                          htmlFor="salary-other-benefits"
+                          className="text-sm font-semibold text-[var(--text-primary)]"
+                        >
+                          سایر مزایا (تومان)
+                        </label>
+                        <input
+                          id="salary-other-benefits"
+                          type="text"
+                          value={form.otherBenefitsText}
+                          onChange={(e) =>
+                            setForm((s) => ({ ...s, otherBenefitsText: e.target.value }))
+                          }
+                          className="input-field"
+                        />
+                      </div>
+                      <div className="flex flex-col gap-2">
+                        <label
+                          htmlFor="salary-other-deductions"
+                          className="text-sm font-semibold text-[var(--text-primary)]"
+                        >
+                          سایر کسورات (تومان)
+                        </label>
+                        <input
+                          id="salary-other-deductions"
+                          type="text"
+                          value={form.otherDeductionsText}
+                          onChange={(e) =>
+                            setForm((s) => ({ ...s, otherDeductionsText: e.target.value }))
+                          }
+                          className="input-field"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ) : null}
               </div>
 
               <div className="flex flex-wrap items-center justify-between gap-4">
@@ -486,6 +552,10 @@ export default function SalaryPage() {
                 <Button type="button" onClick={onCalculate}>
                   محاسبه مجدد
                 </Button>
+              </div>
+              <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-[rgb(var(--color-success-rgb)/0.3)] bg-[rgb(var(--color-success-rgb)/0.12)] px-4 py-2 text-xs font-semibold text-[var(--color-success)]">
+                <span aria-hidden="true">🔒</span>
+                محاسبات کاملاً در مرورگر شما انجام می‌شود و هیچ داده‌ای ارسال نمی‌شود.
               </div>
             </AnimatedCard>
           </div>
@@ -558,6 +628,16 @@ export default function SalaryPage() {
                       >
                         {formatMoneyFa(result.grossSalary)} تومان
                       </div>
+                      <button
+                        type="button"
+                        className="mt-3 text-xs font-semibold"
+                        style={{ color: tokens.color.primaryScale[700] }}
+                        onClick={() =>
+                          copyValue(`${formatMoneyFa(result.grossSalary)} تومان`, 'حقوق ناخالص')
+                        }
+                      >
+                        Copy
+                      </button>
                     </motion.div>
 
                     <motion.div
@@ -583,6 +663,19 @@ export default function SalaryPage() {
                       >
                         {formatMoneyFa(result.summary.totalDeductions)} تومان
                       </div>
+                      <button
+                        type="button"
+                        className="mt-3 text-xs font-semibold"
+                        style={{ color: tokens.color.status.error }}
+                        onClick={() =>
+                          copyValue(
+                            `${formatMoneyFa(result.summary.totalDeductions)} تومان`,
+                            'مجموع کسورات',
+                          )
+                        }
+                      >
+                        Copy
+                      </button>
                     </motion.div>
 
                     <motion.div
@@ -608,6 +701,16 @@ export default function SalaryPage() {
                       >
                         {formatMoneyFa(result.netSalary)} تومان
                       </div>
+                      <button
+                        type="button"
+                        className="mt-3 text-xs font-semibold"
+                        style={{ color: tokens.color.status.success }}
+                        onClick={() =>
+                          copyValue(`${formatMoneyFa(result.netSalary)} تومان`, 'حقوق خالص')
+                        }
+                      >
+                        Copy
+                      </button>
                     </motion.div>
                   </div>
                 </AnimatedCard>
@@ -703,6 +806,34 @@ export default function SalaryPage() {
                           </span>
                         </div>
                       </div>
+                      <button
+                        type="button"
+                        className="mt-3 text-xs font-semibold text-[var(--color-primary)]"
+                        onClick={() =>
+                          copyValue(
+                            `حقوق پایه: ${formatMoneyFa(
+                              minimumWageResult.baseSalary,
+                            )}\nکمک هزینه مسکن: ${formatMoneyFa(
+                              minimumWageResult.housingAllowance,
+                            )}\nکمک هزینه غذا: ${formatMoneyFa(
+                              minimumWageResult.foodAllowance,
+                            )}\nحق اولاد: ${formatMoneyFa(
+                              minimumWageResult.familyAllowance,
+                            )}\nپاداش سابقه: ${formatMoneyFa(
+                              minimumWageResult.experienceBonus,
+                            )}\nمجموع حقوق ناخالص: ${formatMoneyFa(
+                              minimumWageResult.totalGross,
+                            )}\nبیمه: ${formatMoneyFa(
+                              minimumWageResult.insuranceAmount,
+                            )}\nمالیات: ${formatMoneyFa(
+                              minimumWageResult.taxAmount,
+                            )}\nحقوق خالص: ${formatMoneyFa(minimumWageResult.netSalary)}`,
+                            'کپی همه حداقل دستمزد',
+                          )
+                        }
+                      >
+                        Copy All
+                      </button>
                     </div>
 
                     <div>
@@ -754,6 +885,22 @@ export default function SalaryPage() {
           )}
         </AnimatePresence>
       </div>
+      {hasInteracted ? (
+        <div className="fixed bottom-4 left-0 right-0 z-40 px-4">
+          <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)]/90 px-4 py-3 shadow-[var(--shadow-strong)] backdrop-blur">
+            <div className="text-xs text-[var(--text-muted)]">
+              {form.mode === 'gross-to-net' && form.baseSalaryText
+                ? `محاسبه حقوق خالص برای ${form.baseSalaryText} تومان`
+                : form.mode === 'net-to-gross' && form.netSalaryText
+                  ? `محاسبه حقوق پایه برای ${form.netSalaryText} تومان`
+                  : 'برای شروع، مقدار حقوق را وارد کنید'}
+            </div>
+            <Button type="button" onClick={onCalculate}>
+              محاسبه سریع
+            </Button>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

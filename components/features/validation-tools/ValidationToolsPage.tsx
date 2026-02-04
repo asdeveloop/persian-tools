@@ -1,8 +1,9 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { Card } from '@/components/ui';
 import Input from '@/shared/ui/Input';
+import { useToast } from '@/shared/ui/ToastProvider';
 import {
   isValidCardNumber,
   isValidIranianMobile,
@@ -26,12 +27,95 @@ const ResultBadge = ({ ok, text }: { ok: boolean; text: string }) => (
 );
 
 export default function ValidationToolsPage() {
+  const { showToast, recordCopy } = useToast();
+  const nationalIdRef = useRef<HTMLInputElement | null>(null);
+  const mobileRef = useRef<HTMLInputElement | null>(null);
+  const cardRef = useRef<HTMLInputElement | null>(null);
+  const shebaRef = useRef<HTMLInputElement | null>(null);
+  const postalRef = useRef<HTMLInputElement | null>(null);
+  const plateRef = useRef<HTMLInputElement | null>(null);
   const [nationalId, setNationalId] = useState('');
   const [mobile, setMobile] = useState('');
   const [cardNumber, setCardNumber] = useState('');
   const [sheba, setSheba] = useState('');
   const [postalCode, setPostalCode] = useState('');
   const [plate, setPlate] = useState('');
+  const [showNationalId, setShowNationalId] = useState(true);
+  const [showCard, setShowCard] = useState(true);
+  const [showSheba, setShowSheba] = useState(true);
+  const [copiedField, setCopiedField] = useState<string | null>(null);
+
+  const copyText = async (value: string, field: string) => {
+    const text = value.trim();
+    if (!text) {
+      return;
+    }
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text);
+      } else {
+        const temp = document.createElement('textarea');
+        temp.value = text;
+        temp.style.position = 'fixed';
+        temp.style.opacity = '0';
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand('copy');
+        document.body.removeChild(temp);
+      }
+      setCopiedField(field);
+      showToast('با موفقیت کپی شد', 'success');
+      recordCopy(field, text);
+      setTimeout(() => setCopiedField((current) => (current === field ? null : current)), 2000);
+    } catch {
+      setCopiedField(null);
+      showToast('کپی انجام نشد', 'error');
+    }
+  };
+
+  const digitsOnly = (value: string) => value.replace(/\D+/g, '');
+  const formatNationalId = (value: string) => {
+    const digits = digitsOnly(value).slice(0, 10);
+    if (digits.length <= 3) {
+      return digits;
+    }
+    if (digits.length <= 6) {
+      return `${digits.slice(0, 3)}-${digits.slice(3)}`;
+    }
+    return `${digits.slice(0, 3)}-${digits.slice(3, 6)}-${digits.slice(6)}`;
+  };
+  const formatCardNumber = (value: string) => {
+    const digits = digitsOnly(value).slice(0, 16);
+    return digits.replace(/(.{4})/g, '$1-').replace(/-$/, '');
+  };
+  const formatSheba = (value: string) => {
+    const cleaned = value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+    const normalized = cleaned.startsWith('IR') ? cleaned : `IR${cleaned.replace(/^IR/i, '')}`;
+    const trimmed = normalized.slice(0, 26);
+    const prefix = trimmed.slice(0, 4);
+    const rest = trimmed
+      .slice(4)
+      .replace(/(.{4})/g, '$1 ')
+      .trim();
+    return rest ? `${prefix} ${rest}` : prefix;
+  };
+  const formatMobile = (value: string) => {
+    const digits = digitsOnly(value).slice(0, 11);
+    if (digits.length <= 4) {
+      return digits;
+    }
+    if (digits.length <= 7) {
+      return `${digits.slice(0, 4)} ${digits.slice(4)}`;
+    }
+    return `${digits.slice(0, 4)} ${digits.slice(4, 7)} ${digits.slice(7)}`;
+  };
+  const formatPostal = (value: string) => {
+    const digits = digitsOnly(value).slice(0, 10);
+    if (digits.length <= 5) {
+      return digits;
+    }
+    return `${digits.slice(0, 5)}-${digits.slice(5)}`;
+  };
 
   const nationalOk = useMemo(
     () => (nationalId ? isValidNationalId(nationalId) : false),
@@ -46,6 +130,15 @@ export default function ValidationToolsPage() {
     [postalCode],
   );
   const plateOk = useMemo(() => (plate ? isValidIranianPlate(plate) : false), [plate]);
+
+  const getCardTone = (value: string, ok: boolean) => {
+    if (!value) {
+      return '';
+    }
+    return ok
+      ? 'bg-[rgb(var(--color-success-rgb)/0.08)] border-[rgb(var(--color-success-rgb)/0.3)]'
+      : 'bg-[rgb(var(--color-danger-rgb)/0.08)] border-[rgb(var(--color-danger-rgb)/0.3)]';
+  };
 
   return (
     <div className="space-y-6">
@@ -63,82 +156,201 @@ export default function ValidationToolsPage() {
       </header>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <Card className="p-5 md:p-6 space-y-4">
+        <Card className={`p-5 md:p-6 space-y-4 ${getCardTone(nationalId, nationalOk)}`}>
           <div className="flex items-center justify-between">
             <div className="text-sm font-bold text-[var(--text-primary)]">کد ملی</div>
             {nationalId && <ResultBadge ok={nationalOk} text={nationalOk ? 'معتبر' : 'نامعتبر'} />}
           </div>
           <Input
             label="کد ملی ۱۰ رقمی"
-            value={nationalId}
-            onChange={(e) => setNationalId(e.target.value)}
+            type={showNationalId ? 'text' : 'password'}
+            value={showNationalId ? formatNationalId(nationalId) : digitsOnly(nationalId)}
+            onChange={(e) => setNationalId(digitsOnly(e.target.value))}
             dir="ltr"
             placeholder="0010350829"
+            inputMode="numeric"
+            ref={nationalIdRef}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter') {
+                event.preventDefault();
+                mobileRef.current?.focus();
+              }
+            }}
+            endAction={
+              <button
+                type="button"
+                className="text-xs font-semibold text-[var(--text-muted)]"
+                onClick={() => setShowNationalId((prev) => !prev)}
+              >
+                {showNationalId ? 'مخفی' : 'نمایش'}
+              </button>
+            }
           />
+          <div className="flex items-center justify-between text-xs text-[var(--text-muted)]">
+            <span>فرمت استاندارد: ۱۲۳-۴۵۶-۷۸۹۰</span>
+            <button
+              type="button"
+              className="font-semibold text-[var(--color-primary)]"
+              onClick={() => copyText(digitsOnly(nationalId), 'nationalId')}
+            >
+              {copiedField === 'nationalId' ? 'کپی شد' : 'کپی مقدار'}
+            </button>
+          </div>
         </Card>
 
-        <Card className="p-5 md:p-6 space-y-4">
+        <Card className={`p-5 md:p-6 space-y-4 ${getCardTone(mobile, mobileOk)}`}>
           <div className="flex items-center justify-between">
             <div className="text-sm font-bold text-[var(--text-primary)]">شماره موبایل</div>
             {mobile && <ResultBadge ok={mobileOk} text={mobileOk ? 'معتبر' : 'نامعتبر'} />}
           </div>
           <Input
             label="موبایل ایران"
-            value={mobile}
-            onChange={(e) => setMobile(e.target.value)}
+            value={formatMobile(mobile)}
+            onChange={(e) => setMobile(digitsOnly(e.target.value))}
             dir="ltr"
             placeholder="09123456789 یا +989123456789"
+            inputMode="numeric"
+            ref={mobileRef}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter') {
+                event.preventDefault();
+                cardRef.current?.focus();
+              }
+            }}
           />
           {mobileNormalized && (
-            <div className="text-xs text-[var(--text-muted)]">
-              نرمال‌شده: <span dir="ltr">{mobileNormalized}</span>
+            <div className="flex items-center justify-between text-xs text-[var(--text-muted)]">
+              <span>
+                نرمال‌شده: <span dir="ltr">{mobileNormalized}</span>
+              </span>
+              <button
+                type="button"
+                className="font-semibold text-[var(--color-primary)]"
+                onClick={() => copyText(mobileNormalized, 'mobile')}
+              >
+                {copiedField === 'mobile' ? 'کپی شد' : 'کپی مقدار'}
+              </button>
             </div>
           )}
         </Card>
 
-        <Card className="p-5 md:p-6 space-y-4">
+        <Card className={`p-5 md:p-6 space-y-4 ${getCardTone(cardNumber, cardOk)}`}>
           <div className="flex items-center justify-between">
             <div className="text-sm font-bold text-[var(--text-primary)]">کارت بانکی</div>
             {cardNumber && <ResultBadge ok={cardOk} text={cardOk ? 'معتبر' : 'نامعتبر'} />}
           </div>
           <Input
             label="شماره کارت ۱۶ رقمی"
-            value={cardNumber}
-            onChange={(e) => setCardNumber(e.target.value)}
+            type={showCard ? 'text' : 'password'}
+            value={showCard ? formatCardNumber(cardNumber) : digitsOnly(cardNumber)}
+            onChange={(e) => setCardNumber(digitsOnly(e.target.value))}
             dir="ltr"
             placeholder="6037-9918-9412-3456"
+            inputMode="numeric"
+            ref={cardRef}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter') {
+                event.preventDefault();
+                shebaRef.current?.focus();
+              }
+            }}
+            endAction={
+              <button
+                type="button"
+                className="text-xs font-semibold text-[var(--text-muted)]"
+                onClick={() => setShowCard((prev) => !prev)}
+              >
+                {showCard ? 'مخفی' : 'نمایش'}
+              </button>
+            }
           />
+          <div className="flex items-center justify-between text-xs text-[var(--text-muted)]">
+            <span>فرمت استاندارد: ۶۰۳۷-۹۹۱۸-۹۴۱۲-۳۴۵۶</span>
+            <button
+              type="button"
+              className="font-semibold text-[var(--color-primary)]"
+              onClick={() => copyText(digitsOnly(cardNumber), 'card')}
+            >
+              {copiedField === 'card' ? 'کپی شد' : 'کپی مقدار'}
+            </button>
+          </div>
         </Card>
 
-        <Card className="p-5 md:p-6 space-y-4">
+        <Card className={`p-5 md:p-6 space-y-4 ${getCardTone(sheba, shebaOk)}`}>
           <div className="flex items-center justify-between">
             <div className="text-sm font-bold text-[var(--text-primary)]">شماره شبا</div>
             {sheba && <ResultBadge ok={shebaOk} text={shebaOk ? 'معتبر' : 'نامعتبر'} />}
           </div>
           <Input
             label="شبا (IR)"
-            value={sheba}
-            onChange={(e) => setSheba(e.target.value)}
+            type={showSheba ? 'text' : 'password'}
+            value={showSheba ? formatSheba(sheba) : sheba.replace(/\s+/g, '')}
+            onChange={(e) => setSheba(e.target.value.replace(/\s+/g, ''))}
             dir="ltr"
             placeholder="IR062960000000100324200001"
+            inputMode="numeric"
+            ref={shebaRef}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter') {
+                event.preventDefault();
+                postalRef.current?.focus();
+              }
+            }}
+            endAction={
+              <button
+                type="button"
+                className="text-xs font-semibold text-[var(--text-muted)]"
+                onClick={() => setShowSheba((prev) => !prev)}
+              >
+                {showSheba ? 'مخفی' : 'نمایش'}
+              </button>
+            }
           />
+          <div className="flex items-center justify-between text-xs text-[var(--text-muted)]">
+            <span>فرمت استاندارد: IRxx xxxx xxxx xxxx xxxx xxxx xx</span>
+            <button
+              type="button"
+              className="font-semibold text-[var(--color-primary)]"
+              onClick={() => copyText(sheba.replace(/\s+/g, ''), 'sheba')}
+            >
+              {copiedField === 'sheba' ? 'کپی شد' : 'کپی مقدار'}
+            </button>
+          </div>
         </Card>
 
-        <Card className="p-5 md:p-6 space-y-4">
+        <Card className={`p-5 md:p-6 space-y-4 ${getCardTone(postalCode, postalOk)}`}>
           <div className="flex items-center justify-between">
             <div className="text-sm font-bold text-[var(--text-primary)]">کد پستی</div>
             {postalCode && <ResultBadge ok={postalOk} text={postalOk ? 'معتبر' : 'نامعتبر'} />}
           </div>
           <Input
             label="کدپستی ۱۰ رقمی"
-            value={postalCode}
-            onChange={(e) => setPostalCode(e.target.value)}
+            value={formatPostal(postalCode)}
+            onChange={(e) => setPostalCode(digitsOnly(e.target.value))}
             dir="ltr"
             placeholder="1234567890"
+            inputMode="numeric"
+            ref={postalRef}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter') {
+                event.preventDefault();
+                plateRef.current?.focus();
+              }
+            }}
           />
+          <div className="flex items-center justify-between text-xs text-[var(--text-muted)]">
+            <span>فرمت استاندارد: ۱۲۳۴۵-۶۷۸۹۰</span>
+            <button
+              type="button"
+              className="font-semibold text-[var(--color-primary)]"
+              onClick={() => copyText(digitsOnly(postalCode), 'postal')}
+            >
+              {copiedField === 'postal' ? 'کپی شد' : 'کپی مقدار'}
+            </button>
+          </div>
         </Card>
 
-        <Card className="p-5 md:p-6 space-y-4">
+        <Card className={`p-5 md:p-6 space-y-4 ${getCardTone(plate, plateOk)}`}>
           <div className="flex items-center justify-between">
             <div className="text-sm font-bold text-[var(--text-primary)]">پلاک خودرو</div>
             {plate && <ResultBadge ok={plateOk} text={plateOk ? 'معتبر' : 'نامعتبر'} />}
@@ -149,6 +361,7 @@ export default function ValidationToolsPage() {
             onChange={(e) => setPlate(e.target.value)}
             dir="ltr"
             placeholder="12ب34567"
+            ref={plateRef}
           />
         </Card>
       </div>

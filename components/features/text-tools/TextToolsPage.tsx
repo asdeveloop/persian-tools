@@ -6,6 +6,7 @@ import Input from '@/shared/ui/Input';
 import { convertDate } from '@/features/date-tools/date-tools.logic';
 import { numberToWordsFa, parseLooseNumber, toEnglishDigits } from '@/shared/utils/numbers';
 import { cleanPersianText, slugifyPersian } from '@/shared/utils/localization';
+import { useToast } from '@/shared/ui/ToastProvider';
 
 type CalendarType = 'jalali' | 'gregorian';
 
@@ -35,7 +36,19 @@ const parseDateInput = (value: string): ParseResult => {
   return { ok: true, date: { year, month, day } };
 };
 
+const formatDateInput = (value: string) => {
+  const digits = toEnglishDigits(value).replace(/\D/g, '').slice(0, 8);
+  if (digits.length <= 4) {
+    return digits;
+  }
+  if (digits.length <= 6) {
+    return `${digits.slice(0, 4)}/${digits.slice(4)}`;
+  }
+  return `${digits.slice(0, 4)}/${digits.slice(4, 6)}/${digits.slice(6)}`;
+};
+
 export default function TextToolsPage() {
+  const { showToast, recordCopy } = useToast();
   const [calendarInput, setCalendarInput] = useState('1403/01/01');
   const [calendarType, setCalendarType] = useState<CalendarType>('jalali');
   const [calendarError, setCalendarError] = useState<string | null>(null);
@@ -100,6 +113,20 @@ export default function TextToolsPage() {
     setNumberError(null);
   };
 
+  const copyValue = async (value: string, label: string) => {
+    const text = value.trim();
+    if (!text) {
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(text);
+      showToast(`${label} کپی شد`, 'success');
+      recordCopy(label, text);
+    } catch {
+      showToast('کپی انجام نشد', 'error');
+    }
+  };
+
   return (
     <div className="space-y-6">
       <header className="space-y-3">
@@ -153,13 +180,23 @@ export default function TextToolsPage() {
               calendarType === 'jalali' ? 'تاریخ شمسی (YYYY/MM/DD)' : 'تاریخ میلادی (YYYY/MM/DD)'
             }
             value={calendarInput}
-            onChange={(e) => setCalendarInput(e.target.value)}
+            onChange={(e) => setCalendarInput(formatDateInput(e.target.value))}
             placeholder="1403/01/01"
+            inputMode="numeric"
           />
           <Button type="button" variant="secondary" onClick={handleDateConvert}>
             تبدیل
           </Button>
           <Input label="خروجی" value={calendarOutput} readOnly placeholder="----/--/--" />
+        </div>
+        <div className="text-xs text-[var(--text-muted)]">
+          <button
+            type="button"
+            className="font-semibold text-[var(--color-primary)]"
+            onClick={() => copyValue(calendarOutput, 'خروجی تاریخ')}
+          >
+            Copy
+          </button>
         </div>
         {calendarError && (
           <div className="text-sm text-[var(--color-danger)]" role="alert" aria-live="assertive">
@@ -193,6 +230,15 @@ export default function TextToolsPage() {
         )}
         <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)]">
           {numberWords || 'خروجی اینجا نمایش داده می‌شود.'}
+        </div>
+        <div className="text-xs text-[var(--text-muted)]">
+          <button
+            type="button"
+            className="font-semibold text-[var(--color-primary)]"
+            onClick={() => copyValue(numberWords, 'عدد به حروف')}
+          >
+            Copy
+          </button>
         </div>
       </Card>
 
@@ -231,6 +277,29 @@ export default function TextToolsPage() {
         <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)] whitespace-pre-wrap">
           {normalizedText || 'متن نرمال‌شده اینجا نمایش داده می‌شود.'}
         </div>
+        <div className="text-xs text-[var(--text-muted)]">
+          <button
+            type="button"
+            className="font-semibold text-[var(--color-primary)]"
+            onClick={() => copyValue(normalizedText, 'متن نرمال‌شده')}
+          >
+            Copy
+          </button>
+          {normalizedText ? (
+            <button
+              type="button"
+              className="ms-3 font-semibold text-[var(--color-primary)]"
+              onClick={() =>
+                copyValue(
+                  `متن نرمال‌شده:\n${normalizedText}\n\nاسلاگ:\n${slugText}`,
+                  'کپی همه متن‌ها',
+                )
+              }
+            >
+              Copy All
+            </button>
+          ) : null}
+        </div>
       </Card>
 
       <Card className="p-5 md:p-6 space-y-4">
@@ -248,6 +317,15 @@ export default function TextToolsPage() {
         />
         <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)]">
           {slugText || 'اسلاگ اینجا نمایش داده می‌شود.'}
+        </div>
+        <div className="text-xs text-[var(--text-muted)]">
+          <button
+            type="button"
+            className="font-semibold text-[var(--color-primary)]"
+            onClick={() => copyValue(slugText, 'اسلاگ')}
+          >
+            Copy
+          </button>
         </div>
       </Card>
     </div>
