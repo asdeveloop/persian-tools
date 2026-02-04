@@ -20,3 +20,6 @@ docs/api/
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+
+# Local MCP logs
+.setting/
