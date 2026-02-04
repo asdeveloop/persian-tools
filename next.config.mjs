@@ -9,6 +9,7 @@ const nextConfig = {
     domains: ['localhost'],
     formats: ['image/webp', 'image/avif'],
   },
+  allowedDevOrigins: ['127.0.0.1', 'localhost'],
 
   i18n: {
     locales: ['fa'],
