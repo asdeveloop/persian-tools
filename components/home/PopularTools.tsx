@@ -16,7 +16,11 @@ type ToolEntry = {
   iconWrapClassName: string;
 };
 
-const toolIndex: ToolEntry[] = [
+type DisplayTool = ToolEntry & {
+  meta?: string | undefined;
+};
+
+const toolIndex: DisplayTool[] = [
   {
     id: 'merge-pdf',
     title: 'ادغام PDF',
@@ -66,10 +70,6 @@ const toolIndex: ToolEntry[] = [
     iconWrapClassName: 'bg-[rgb(var(--color-success-rgb)/0.12)]',
   },
 ];
-
-type DisplayTool = ToolEntry & {
-  meta?: string;
-};
 
 export default function PopularTools() {
   const [items, setItems] = useState<DisplayTool[]>([]);

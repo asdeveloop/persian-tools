@@ -1,5 +1,6 @@
 import { randomBytes, randomUUID } from 'node:crypto';
-import { query } from './db';
+import { prisma } from './db';
+import type { Session as PrismaSession } from '@prisma/client';
 
 export type Session = {
   id: string;
@@ -9,23 +10,15 @@ export type Session = {
   expiresAt: number;
 };
 
-type SessionRow = {
-  id: string;
-  token: string;
-  user_id: string;
-  created_at: number | string;
-  expires_at: number | string;
-};
-
 const DEFAULT_TTL_DAYS = Number(process.env['SESSION_TTL_DAYS'] ?? '7');
 
-function mapSession(row: SessionRow): Session {
+function mapSession(session: PrismaSession): Session {
   return {
-    id: row.id,
-    token: row.token,
-    userId: row.user_id,
-    createdAt: Number(row.created_at),
-    expiresAt: Number(row.expires_at),
+    id: session.id,
+    token: session.token,
+    userId: session.userId,
+    createdAt: Number(session.createdAt),
+    expiresAt: Number(session.expiresAt),
   };
 }
 
@@ -36,36 +29,31 @@ function generateToken(): string {
 export async function createSession(userId: string): Promise<Session> {
   const now = Date.now();
   const expiresAt = now + DEFAULT_TTL_DAYS * 24 * 60 * 60 * 1000;
-  const session: Session = {
-    id: randomUUID(),
-    token: generateToken(),
-    userId,
-    createdAt: now,
-    expiresAt,
-  };
-  await query(
-    'INSERT INTO sessions (id, token, user_id, created_at, expires_at) VALUES ($1, $2, $3, $4, $5)',
-    [session.id, session.token, session.userId, session.createdAt, session.expiresAt],
-  );
-  return session;
+  const session = await prisma.session.create({
+    data: {
+      id: randomUUID(),
+      token: generateToken(),
+      userId,
+      createdAt: BigInt(now),
+      expiresAt: BigInt(expiresAt),
+    },
+  });
+  return mapSession(session);
 }
 
 export async function getSessionByToken(token: string): Promise<Session | null> {
-  const result = await query<SessionRow>(
-    'SELECT id, token, user_id, created_at, expires_at FROM sessions WHERE token = $1 LIMIT 1',
-    [token],
-  );
-  if (result.rowCount === 0) {
+  const session = await prisma.session.findUnique({ where: { token } });
+  if (!session) {
     return null;
   }
-  const session = mapSession(result.rows[0]);
-  if (session.expiresAt < Date.now()) {
+  const mapped = mapSession(session);
+  if (mapped.expiresAt < Date.now()) {
     await deleteSession(token);
     return null;
   }
-  return session;
+  return mapped;
 }
 
 export async function deleteSession(token: string): Promise<void> {
-  await query('DELETE FROM sessions WHERE token = $1', [token]);
+  await prisma.session.deleteMany({ where: { token } });
 }

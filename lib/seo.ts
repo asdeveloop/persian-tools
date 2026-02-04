@@ -10,7 +10,7 @@ type BuildMetadataInput = {
   title: string;
   description: string;
   path: string;
-  keywords?: string[];
+  keywords?: string[] | undefined;
 };
 
 export function buildMetadata({

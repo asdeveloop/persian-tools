@@ -1,5 +1,6 @@
 import { randomUUID } from 'node:crypto';
-import { query } from './db';
+import { prisma } from './db';
+import type { HistoryEntry as PrismaHistoryEntry } from '@prisma/client';
 
 export type HistoryEntry = {
   id: string;
@@ -7,35 +8,25 @@ export type HistoryEntry = {
   tool: string;
   inputSummary: string;
   outputSummary: string;
-  outputUrl?: string;
+  outputUrl?: string | undefined;
   createdAt: number;
 };
 
 export type HistoryFilter = {
-  search?: string;
-  tool?: string;
-  dateRange?: 'today' | 'week' | 'month';
+  search?: string | undefined;
+  tool?: string | undefined;
+  dateRange?: 'today' | 'week' | 'month' | undefined;
 };
 
-type HistoryRow = {
-  id: string;
-  user_id: string;
-  tool: string;
-  input_summary: string;
-  output_summary: string;
-  output_url: string | null;
-  created_at: number | string;
-};
-
-function mapHistory(row: HistoryRow): HistoryEntry {
+function mapHistory(row: PrismaHistoryEntry): HistoryEntry {
   return {
     id: row.id,
-    userId: row.user_id,
+    userId: row.userId,
     tool: row.tool,
-    inputSummary: row.input_summary,
-    outputSummary: row.output_summary,
-    outputUrl: row.output_url ?? undefined,
-    createdAt: Number(row.created_at),
+    inputSummary: row.inputSummary,
+    outputSummary: row.outputSummary,
+    outputUrl: row.outputUrl ?? undefined,
+    createdAt: Number(row.createdAt),
   };
 }
 
@@ -43,56 +34,40 @@ export async function addHistoryEntry(
   userId: string,
   data: Omit<HistoryEntry, 'id' | 'userId' | 'createdAt'>,
 ): Promise<HistoryEntry> {
-  const entry: HistoryEntry = {
-    id: randomUUID(),
-    userId,
-    createdAt: Date.now(),
-    ...data,
-  };
-  await query(
-    `INSERT INTO history_entries
-     (id, user_id, tool, input_summary, output_summary, output_url, created_at)
-     VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-    [
-      entry.id,
-      entry.userId,
-      entry.tool,
-      entry.inputSummary,
-      entry.outputSummary,
-      entry.outputUrl ?? null,
-      entry.createdAt,
-    ],
-  );
-  return entry;
+  const entry = await prisma.historyEntry.create({
+    data: {
+      id: randomUUID(),
+      userId,
+      tool: data.tool,
+      inputSummary: data.inputSummary,
+      outputSummary: data.outputSummary,
+      outputUrl: data.outputUrl ?? null,
+      createdAt: BigInt(Date.now()),
+    },
+  });
+  return mapHistory(entry);
 }
 
 export async function listHistoryEntries(userId: string, limit = 50): Promise<HistoryEntry[]> {
-  const result = await query<HistoryRow>(
-    `SELECT id, user_id, tool, input_summary, output_summary, output_url, created_at
-     FROM history_entries
-     WHERE user_id = $1
-     ORDER BY created_at DESC
-     LIMIT $2`,
-    [userId, limit],
-  );
-  return result.rows.map(mapHistory);
+  const entries = await prisma.historyEntry.findMany({
+    where: { userId },
+    orderBy: { createdAt: 'desc' },
+    take: limit,
+  });
+  return entries.map(mapHistory);
 }
 
 export async function getHistoryEntryById(
   userId: string,
   entryId: string,
 ): Promise<HistoryEntry | null> {
-  const result = await query<HistoryRow>(
-    `SELECT id, user_id, tool, input_summary, output_summary, output_url, created_at
-     FROM history_entries
-     WHERE user_id = $1 AND id = $2
-     LIMIT 1`,
-    [userId, entryId],
-  );
-  if (result.rows.length === 0) {
+  const entry = await prisma.historyEntry.findFirst({
+    where: { id: entryId, userId },
+  });
+  if (!entry) {
     return null;
   }
-  return mapHistory(result.rows[0]);
+  return mapHistory(entry);
 }
 
 export async function listHistoryEntriesFiltered(
@@ -100,19 +75,28 @@ export async function listHistoryEntriesFiltered(
   filters: HistoryFilter,
   limit = 50,
 ): Promise<HistoryEntry[]> {
-  const conditions: string[] = ['user_id = $1'];
-  const values: Array<string | number> = [userId];
+  const where: {
+    userId: string;
+    tool?: string;
+    createdAt?: { gte: bigint };
+    OR?: Array<{
+      tool?: { contains: string; mode: 'insensitive' };
+      inputSummary?: { contains: string; mode: 'insensitive' };
+      outputSummary?: { contains: string; mode: 'insensitive' };
+    }>;
+  } = { userId };
 
   if (filters.tool) {
-    values.push(filters.tool);
-    conditions.push(`tool = $${values.length}`);
+    where.tool = filters.tool;
   }
 
   if (filters.search) {
-    values.push(`%${filters.search.toLowerCase()}%`);
-    conditions.push(
-      `(LOWER(tool) LIKE $${values.length} OR LOWER(input_summary) LIKE $${values.length} OR LOWER(output_summary) LIKE $${values.length})`,
-    );
+    const term = filters.search.toLowerCase();
+    where.OR = [
+      { tool: { contains: term, mode: 'insensitive' } },
+      { inputSummary: { contains: term, mode: 'insensitive' } },
+      { outputSummary: { contains: term, mode: 'insensitive' } },
+    ];
   }
 
   if (filters.dateRange) {
@@ -120,25 +104,18 @@ export async function listHistoryEntriesFiltered(
     const dayMs = 24 * 60 * 60 * 1000;
     const rangeMs =
       filters.dateRange === 'today' ? dayMs : filters.dateRange === 'week' ? 7 * dayMs : 30 * dayMs;
-    values.push(now - rangeMs);
-    conditions.push(`created_at >= $${values.length}`);
+    where.createdAt = { gte: BigInt(now - rangeMs) };
   }
 
-  values.push(limit);
-  const where = conditions.join(' AND ');
-  const limitIndex = values.length;
+  const entries = await prisma.historyEntry.findMany({
+    where,
+    orderBy: { createdAt: 'desc' },
+    take: limit,
+  });
 
-  const result = await query<HistoryRow>(
-    `SELECT id, user_id, tool, input_summary, output_summary, output_url, created_at
-     FROM history_entries
-     WHERE ${where}
-     ORDER BY created_at DESC
-     LIMIT $${limitIndex}`,
-    values,
-  );
-  return result.rows.map(mapHistory);
+  return entries.map(mapHistory);
 }
 
 export async function clearHistory(userId: string): Promise<void> {
-  await query('DELETE FROM history_entries WHERE user_id = $1', [userId]);
+  await prisma.historyEntry.deleteMany({ where: { userId } });
 }

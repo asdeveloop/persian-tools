@@ -136,7 +136,7 @@ export function buildTopicJsonLd(input: {
     path: string;
     tools: Array<{ name: string; path: string }>;
   }>;
-  faq?: Array<{ question: string; answer: string }>;
+  faq?: Array<{ question: string; answer: string }> | undefined;
 }): JsonLdNode {
   const absoluteUrl = new URL(input.path, siteUrl).toString();
   const itemList: JsonLdNode[] = input.categories.map((category, index) => ({
@@ -199,7 +199,7 @@ export function buildPillarJsonLd(input: {
   path: string;
   category: { name: string; path: string };
   tools: Array<{ name: string; path: string }>;
-  faq?: Array<{ question: string; answer: string }>;
+  faq?: Array<{ question: string; answer: string }> | undefined;
 }): JsonLdNode {
   const absoluteUrl = new URL(input.path, siteUrl).toString();
 

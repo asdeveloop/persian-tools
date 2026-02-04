@@ -3,6 +3,6 @@ export type HistoryEntry = {
   tool: string;
   inputSummary: string;
   outputSummary: string;
-  outputUrl?: string;
+  outputUrl?: string | undefined;
   createdAt: number;
 };

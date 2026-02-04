@@ -1,5 +1,5 @@
 import type { InputHTMLAttributes, ReactNode } from 'react';
-import { useId } from 'react';
+import { forwardRef, useId } from 'react';
 
 type Props = InputHTMLAttributes<HTMLInputElement> & {
   label?: string;
@@ -10,17 +10,10 @@ type Props = InputHTMLAttributes<HTMLInputElement> & {
   endAction?: ReactNode;
 };
 
-export default function Input({
-  label,
-  error,
-  helperText,
-  startIcon,
-  endIcon,
-  endAction,
-  className,
-  id,
-  ...rest
-}: Props) {
+const Input = forwardRef<HTMLInputElement, Props>(function Input(
+  { label, error, helperText, startIcon, endIcon, endAction, className, id, ...rest },
+  ref,
+) {
   const autoId = useId();
   const inputId = id ?? `input-${autoId}`;
   const helperId = helperText ? `${inputId}-helper` : undefined;
@@ -61,6 +54,7 @@ export default function Input({
           `.trim()}
           aria-invalid={error ? true : undefined}
           aria-describedby={error ? errorId : helperId}
+          ref={ref}
           {...rest}
         />
 
@@ -88,4 +82,6 @@ export default function Input({
       )}
     </div>
   );
-}
+});
+
+export default Input;

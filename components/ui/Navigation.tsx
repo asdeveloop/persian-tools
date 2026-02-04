@@ -5,8 +5,8 @@ import {
   useMemo,
   useRef,
   useState,
-  type FocusEvent,
-  type KeyboardEvent,
+  type FocusEvent as ReactFocusEvent,
+  type KeyboardEvent as ReactKeyboardEvent,
   type ReactNode,
 } from 'react';
 import Link from 'next/link';
@@ -143,18 +143,6 @@ export default function Navigation() {
     }, {});
   }, [filteredSearchItems]);
 
-  useEffect(() => {
-    setActiveIndex(0);
-  }, [searchQuery]);
-
-  useEffect(() => {
-    if (!orderedSearchItems.length) {
-      setActiveIndex(0);
-      return;
-    }
-    setActiveIndex((prev) => Math.min(prev, orderedSearchItems.length - 1));
-  }, [orderedSearchItems.length]);
-
   const favoriteItems = useMemo(() => {
     if (!favoritePaths.length) {
       return [];
@@ -185,6 +173,18 @@ export default function Navigation() {
     return [...favoriteItems, ...recentItems, ...rest];
   }, [favoriteItems, filteredSearchItems, recentItems, searchItems, searchQuery]);
 
+  useEffect(() => {
+    setActiveIndex(0);
+  }, [searchQuery]);
+
+  useEffect(() => {
+    if (!orderedSearchItems.length) {
+      setActiveIndex(0);
+      return;
+    }
+    setActiveIndex((prev) => Math.min(prev, orderedSearchItems.length - 1));
+  }, [orderedSearchItems.length]);
+
   const groupedRestItems = useMemo(() => {
     const favoriteSet = new Set(favoriteItems.map((item) => item.href));
     const recentSet = new Set(recentItems.map((item) => item.href));
@@ -211,6 +211,7 @@ export default function Navigation() {
     const index = orderedSearchItems.findIndex((searchItem) => searchItem.href === item.href);
     const isActive = index === activeIndex;
     const isFavorite = favoritePaths.includes(item.href);
+    const usageCount = usageCounts[item.href];
 
     return (
       <Link
@@ -230,9 +231,9 @@ export default function Navigation() {
         <div className="flex flex-1 flex-col gap-1">
           <div className="flex items-center justify-between gap-2">
             <span className="text-sm font-bold text-[var(--text-primary)]">{item.title}</span>
-            {usageCounts[item.href] ? (
+            {typeof usageCount === 'number' && usageCount > 0 ? (
               <span className="text-[10px] font-semibold text-[var(--text-muted)]">
-                {usageCounts[item.href].toLocaleString('fa-IR')} بازدید
+                {usageCount.toLocaleString('fa-IR')} بازدید
               </span>
             ) : null}
           </div>
@@ -270,7 +271,7 @@ export default function Navigation() {
     setOpenDropdown(null);
   };
 
-  const handleMenuBlur = (menu: string) => (event: FocusEvent<HTMLElement>) => {
+  const handleMenuBlur = (menu: string) => (event: ReactFocusEvent<HTMLElement>) => {
     if (openDropdown !== menu) {
       return;
     }
@@ -280,7 +281,7 @@ export default function Navigation() {
     setOpenDropdown(null);
   };
 
-  const handleMenuKeyDown = (event: KeyboardEvent<HTMLElement>) => {
+  const handleMenuKeyDown = (event: ReactKeyboardEvent<HTMLElement>) => {
     if (event.key === 'Escape') {
       setOpenDropdown(null);
     }
@@ -337,6 +338,9 @@ export default function Navigation() {
       }
       const first = focusables[0];
       const last = focusables[focusables.length - 1];
+      if (!first || !last) {
+        return;
+      }
       if (event.shiftKey && document.activeElement === first) {
         last.focus();
         event.preventDefault();

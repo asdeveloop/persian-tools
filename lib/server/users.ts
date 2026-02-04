@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto';
-import { query } from './db';
+import { prisma } from './db';
 import { hashPassword, verifyPassword } from './passwords';
+import type { User as PrismaUser } from '@prisma/client';
 
 export type User = {
   id: string;
@@ -9,19 +10,12 @@ export type User = {
   createdAt: number;
 };
 
-type UserRow = {
-  id: string;
-  email: string;
-  password_hash: string;
-  created_at: number | string;
-};
-
-function mapUser(row: UserRow): User {
+function mapUser(user: PrismaUser): User {
   return {
-    id: row.id,
-    email: row.email,
-    passwordHash: row.password_hash,
-    createdAt: Number(row.created_at),
+    id: user.id,
+    email: user.email,
+    passwordHash: user.passwordHash,
+    createdAt: Number(user.createdAt),
   };
 }
 
@@ -30,54 +24,52 @@ function isUniqueViolation(error: unknown): boolean {
     typeof error === 'object' &&
     error !== null &&
     'code' in error &&
-    (error as { code?: string }).code === '23505'
+    (error as { code?: string }).code === 'P2002'
   );
 }
 
 export async function findUserByEmail(email: string): Promise<User | undefined> {
   const normalized = email.toLowerCase();
-  const result = await query<UserRow>(
-    'SELECT id, email, password_hash, created_at FROM users WHERE email = $1 LIMIT 1',
-    [normalized],
-  );
-  if (result.rowCount === 0) {
+  const user = await prisma.user.findUnique({ where: { email: normalized } });
+  if (!user) {
     return undefined;
   }
-  return mapUser(result.rows[0]);
+  return mapUser(user);
 }
 
 export async function getUserById(id: string): Promise<User | undefined> {
-  const result = await query<UserRow>(
-    'SELECT id, email, password_hash, created_at FROM users WHERE id = $1 LIMIT 1',
-    [id],
-  );
-  if (result.rowCount === 0) {
+  const user = await prisma.user.findUnique({ where: { id } });
+  if (!user) {
     return undefined;
   }
-  return mapUser(result.rows[0]);
+  return mapUser(user);
 }
 
 export async function createUser(email: string, password: string): Promise<User> {
   const normalized = email.toLowerCase();
-  const now = Date.now();
+  const now = BigInt(Date.now());
   const user: User = {
     id: randomUUID(),
     email: normalized,
     passwordHash: hashPassword(password),
-    createdAt: now,
+    createdAt: Number(now),
   };
   try {
-    await query(
-      'INSERT INTO users (id, email, password_hash, created_at) VALUES ($1, $2, $3, $4)',
-      [user.id, user.email, user.passwordHash, user.createdAt],
-    );
+    const created = await prisma.user.create({
+      data: {
+        id: user.id,
+        email: user.email,
+        passwordHash: user.passwordHash,
+        createdAt: now,
+      },
+    });
+    return mapUser(created);
   } catch (error) {
     if (isUniqueViolation(error)) {
       throw new Error('USER_EXISTS');
     }
     throw error;
   }
-  return user;
 }
 
 export async function validateUser(email: string, password: string): Promise<User | null> {

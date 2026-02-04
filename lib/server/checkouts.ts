@@ -1,6 +1,8 @@
 import { randomUUID } from 'node:crypto';
-import { query } from './db';
+import { prisma } from './db';
 import { type PlanId } from '@/lib/subscriptionPlans';
+import type { Checkout as PrismaCheckout } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 
 export type CheckoutStatus = 'pending' | 'paid' | 'canceled';
 
@@ -13,75 +15,54 @@ export type Checkout = {
   paidAt: number | null;
 };
 
-type CheckoutRow = {
-  id: string;
-  user_id: string;
-  plan_id: PlanId;
-  status: CheckoutStatus;
-  created_at: number | string;
-  paid_at: number | string | null;
-};
-
-function mapCheckout(row: CheckoutRow): Checkout {
+function mapCheckout(row: PrismaCheckout): Checkout {
   return {
     id: row.id,
-    userId: row.user_id,
-    planId: row.plan_id,
-    status: row.status,
-    createdAt: Number(row.created_at),
-    paidAt: row.paid_at === null ? null : Number(row.paid_at),
+    userId: row.userId,
+    planId: row.planId as PlanId,
+    status: row.status as CheckoutStatus,
+    createdAt: Number(row.createdAt),
+    paidAt: row.paidAt === null ? null : Number(row.paidAt),
   };
 }
 
 export async function createCheckout(userId: string, planId: PlanId): Promise<Checkout> {
-  const checkout: Checkout = {
-    id: randomUUID(),
-    userId,
-    planId,
-    status: 'pending',
-    createdAt: Date.now(),
-    paidAt: null,
-  };
-  await query(
-    `INSERT INTO checkouts (id, user_id, plan_id, status, created_at, paid_at)
-     VALUES ($1, $2, $3, $4, $5, $6)`,
-    [
-      checkout.id,
-      checkout.userId,
-      checkout.planId,
-      checkout.status,
-      checkout.createdAt,
-      checkout.paidAt,
-    ],
-  );
-  return checkout;
+  const checkout = await prisma.checkout.create({
+    data: {
+      id: randomUUID(),
+      userId,
+      planId,
+      status: 'pending',
+      createdAt: BigInt(Date.now()),
+      paidAt: null,
+    },
+  });
+  return mapCheckout(checkout);
 }
 
 export async function getCheckoutById(id: string): Promise<Checkout | null> {
-  const result = await query<CheckoutRow>(
-    `SELECT id, user_id, plan_id, status, created_at, paid_at
-     FROM checkouts
-     WHERE id = $1
-     LIMIT 1`,
-    [id],
-  );
-  if (result.rowCount === 0) {
+  const checkout = await prisma.checkout.findUnique({ where: { id } });
+  if (!checkout) {
     return null;
   }
-  return mapCheckout(result.rows[0]);
+  return mapCheckout(checkout);
 }
 
 export async function markCheckoutPaid(id: string): Promise<Checkout | null> {
-  const now = Date.now();
-  const result = await query<CheckoutRow>(
-    `UPDATE checkouts
-     SET status = $2, paid_at = $3
-     WHERE id = $1
-     RETURNING id, user_id, plan_id, status, created_at, paid_at`,
-    [id, 'paid', now],
-  );
-  if (result.rowCount === 0) {
-    return null;
+  const now = BigInt(Date.now());
+  try {
+    const checkout = await prisma.checkout.update({
+      where: { id },
+      data: {
+        status: 'paid',
+        paidAt: now,
+      },
+    });
+    return mapCheckout(checkout);
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
+      return null;
+    }
+    throw error;
   }
-  return mapCheckout(result.rows[0]);
 }

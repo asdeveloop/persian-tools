@@ -1,0 +1,89 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id              String             @id
+  email           String             @unique
+  passwordHash    String             @map("password_hash")
+  createdAt       BigInt             @map("created_at")
+  sessions        Session[]
+  subscriptions   Subscription[]
+  historyEntries  HistoryEntry[]
+  checkouts       Checkout[]
+  historyShareLinks HistoryShareLink[]
+
+  @@map("users")
+}
+
+model Session {
+  id        String @id
+  token     String @unique
+  userId    String @map("user_id")
+  createdAt BigInt @map("created_at")
+  expiresAt BigInt @map("expires_at")
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("sessions")
+}
+
+model Checkout {
+  id        String @id
+  userId    String @map("user_id")
+  planId    String @map("plan_id")
+  status    String
+  createdAt BigInt @map("created_at")
+  paidAt    BigInt? @map("paid_at")
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("checkouts")
+}
+
+model Subscription {
+  id        String @id
+  userId    String @map("user_id")
+  planId    String @map("plan_id")
+  status    String
+  startedAt BigInt @map("started_at")
+  expiresAt BigInt @map("expires_at")
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([userId, status])
+  @@map("subscriptions")
+}
+
+model HistoryEntry {
+  id            String @id
+  userId        String @map("user_id")
+  tool          String
+  inputSummary  String @map("input_summary")
+  outputSummary String @map("output_summary")
+  outputUrl     String? @map("output_url")
+  createdAt     BigInt @map("created_at")
+  user          User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  shareLinks    HistoryShareLink[]
+
+  @@index([userId])
+  @@map("history_entries")
+}
+
+model HistoryShareLink {
+  token     String @id
+  entryId   String @map("entry_id")
+  userId    String @map("user_id")
+  createdAt BigInt @map("created_at")
+  expiresAt BigInt @map("expires_at")
+  entry     HistoryEntry @relation(fields: [entryId], references: [id], onDelete: Cascade)
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([entryId])
+  @@index([userId])
+  @@map("history_share_links")
+}

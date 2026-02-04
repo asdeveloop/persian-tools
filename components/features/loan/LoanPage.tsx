@@ -193,8 +193,8 @@ export default function LoanPage() {
       onChange: (value: string) => void;
       placeholder?: string;
       required?: boolean;
-      max?: string;
-      note?: string;
+      max?: string | undefined;
+      note?: string | undefined;
       advanced?: boolean;
     }> = [];
 

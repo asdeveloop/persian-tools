@@ -9,6 +9,7 @@
 - Node.js 20+
 - pnpm 9+
 - PostgreSQL 14+ (برای اشتراک و تاریخچه)
+- Prisma CLI (از طریق `pnpm`)
 
 ## اجرا
 
@@ -23,10 +24,36 @@ pnpm start
 - مقداردهی اولیه دیتابیس:
 
 ```bash
-psql "$DATABASE_URL" -f scripts/db/schema.sql
+pnpm prisma:generate
+pnpm prisma:migrate
 ```
 
 - متغیر محیطی `DATABASE_URL` باید در محیط اجرا تنظیم شود.
+  - مثال: `postgresql://user:password@localhost:5432/persian_tools?schema=public`
+
+- Seed اختیاری (در صورت نیاز به کاربر اولیه):
+
+```bash
+pnpm prisma:seed
+```
+
+- برای seed متغیرهای `SEED_ADMIN_EMAIL` و `SEED_ADMIN_PASSWORD` را تنظیم کنید.
+
+### ریست Seed
+
+برای حذف کاربران seed:
+
+```bash
+pnpm prisma:seed:reset
+```
+
+## Prisma Studio
+
+برای بررسی دیتابیس به‌صورت بصری:
+
+```bash
+pnpm prisma:studio
+```
 
 ## داشبورد استفاده
 

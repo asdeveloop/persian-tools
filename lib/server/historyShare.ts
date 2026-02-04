@@ -1,16 +1,8 @@
 import { randomUUID } from 'node:crypto';
-import { query } from './db';
+import { prisma } from './db';
 import { getHistoryEntryById, type HistoryEntry } from './history';
 import { normalizeShareExpiryHours } from '@/shared/history/share';
-
-type HistoryShareRow = {
-  token: string;
-  entry_id: string;
-  user_id: string;
-  created_at: number | string;
-  expires_at: number | string;
-  output_url: string | null;
-};
+import type { HistoryShareLink as PrismaHistoryShareLink } from '@prisma/client';
 
 export type HistoryShareLink = {
   token: string;
@@ -20,6 +12,17 @@ export type HistoryShareLink = {
   expiresAt: number;
   outputUrl: string | null;
 };
+
+function mapShareLink(link: PrismaHistoryShareLink, outputUrl: string | null): HistoryShareLink {
+  return {
+    token: link.token,
+    entryId: link.entryId,
+    userId: link.userId,
+    createdAt: Number(link.createdAt),
+    expiresAt: Number(link.expiresAt),
+    outputUrl,
+  };
+}
 
 export async function createHistoryShareLink(
   userId: string,
@@ -36,51 +39,31 @@ export async function createHistoryShareLink(
   const hours = normalizeShareExpiryHours(expiresInHours);
   const expiresAt = createdAt + hours * 60 * 60 * 1000;
 
-  await query(
-    `INSERT INTO history_share_links (token, entry_id, user_id, created_at, expires_at)
-     VALUES ($1, $2, $3, $4, $5)`,
-    [token, entry.id, userId, createdAt, expiresAt],
-  );
-
-  return {
-    link: {
+  const link = await prisma.historyShareLink.create({
+    data: {
       token,
       entryId: entry.id,
       userId,
-      createdAt,
-      expiresAt,
-      outputUrl: entry.outputUrl ?? null,
+      createdAt: BigInt(createdAt),
+      expiresAt: BigInt(expiresAt),
     },
+  });
+
+  return {
+    link: mapShareLink(link, entry.outputUrl ?? null),
     entry,
   };
 }
 
 export async function getHistoryShareLink(token: string): Promise<HistoryShareLink | null> {
-  const result = await query<HistoryShareRow>(
-    `SELECT history_share_links.token,
-            history_share_links.entry_id,
-            history_share_links.user_id,
-            history_share_links.created_at,
-            history_share_links.expires_at,
-            history_entries.output_url
-     FROM history_share_links
-     JOIN history_entries ON history_entries.id = history_share_links.entry_id
-     WHERE history_share_links.token = $1
-     LIMIT 1`,
-    [token],
-  );
+  const link = await prisma.historyShareLink.findUnique({
+    where: { token },
+    include: { entry: true },
+  });
 
-  if (result.rows.length === 0) {
+  if (!link) {
     return null;
   }
 
-  const row = result.rows[0];
-  return {
-    token: row.token,
-    entryId: row.entry_id,
-    userId: row.user_id,
-    createdAt: Number(row.created_at),
-    expiresAt: Number(row.expires_at),
-    outputUrl: row.output_url,
-  };
+  return mapShareLink(link, link.entry.outputUrl ?? null);
 }

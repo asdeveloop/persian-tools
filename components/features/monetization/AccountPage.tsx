@@ -31,8 +31,8 @@ type HistoryFilterState = {
 type ShareLinkState = {
   url: string;
   expiresAt: number;
-  loading?: boolean;
-  error?: string;
+  loading?: boolean | undefined;
+  error?: string | undefined;
 };
 
 const SEARCH_DEBOUNCE_MS = 400;

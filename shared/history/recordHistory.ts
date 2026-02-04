@@ -2,13 +2,13 @@ export type HistoryPayload = {
   tool: string;
   inputSummary: string;
   outputSummary: string;
-  outputUrl?: string;
+  outputUrl?: string | undefined;
 };
 
 export type HistoryFilters = {
-  search?: string;
-  tool?: string;
-  dateRange?: 'today' | 'week' | 'month';
+  search?: string | undefined;
+  tool?: string | undefined;
+  dateRange?: 'today' | 'week' | 'month' | undefined;
 };
 
 export function buildHistoryQuery(filters?: HistoryFilters, limit = 50): string {

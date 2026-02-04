@@ -79,6 +79,30 @@ pnpm dev
 pnpm build
 ```
 
+## 🗄️ پایگاه داده و Prisma
+
+برای قابلیت‌های اشتراک و تاریخچه، PostgreSQL لازم است.
+
+```bash
+# تولید Prisma Client
+pnpm prisma:generate
+
+# ساخت جداول دیتابیس (برای دیتابیس جدید)
+pnpm prisma:migrate
+
+# اجرای seed (اختیاری)
+pnpm prisma:seed
+
+# مشاهده دیتابیس در Prisma Studio
+pnpm prisma:studio
+
+# حذف کاربران seed
+pnpm prisma:seed:reset
+```
+
+متغیر `DATABASE_URL` باید در محیط تنظیم شود (نمونه در `.env.example`).
+برای seed، متغیرهای `SEED_ADMIN_EMAIL` و `SEED_ADMIN_PASSWORD` را تنظیم کنید.
+
 ---
 
 ## 🧭 نقشه‌راه توسعه

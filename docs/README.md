@@ -21,7 +21,7 @@
 - `development-remaining-tasks.md` — تسک‌های باقی‌مانده توسعه (به‌روزرسانی دوره‌ای)
 
 نکته: خروجی کامل Typedoc بعد از اجرای `pnpm docs:api` در مسیر `docs/api/` قرار می‌گیرد.
-نکته: اسکیمای PostgreSQL برای اشتراک/تاریخچه در `scripts/db/schema.sql` قرار دارد و در `operations.md` توضیح داده شده است.
+نکته: مدیریت دیتابیس با Prisma انجام می‌شود و مراحل در `operations.md` آمده است.
 
 ## اسناد آرشیوی
 

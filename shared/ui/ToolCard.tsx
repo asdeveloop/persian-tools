@@ -7,7 +7,7 @@ type Props = {
   title: string;
   description: string;
   icon: ReactNode;
-  meta?: string;
+  meta?: string | undefined;
   className?: string;
   iconWrapClassName?: string;
 };

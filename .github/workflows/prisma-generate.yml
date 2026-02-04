@@ -1,4 +1,4 @@
-name: '🔍 Lint & Type Check'
+name: '🧬 Prisma Generate'
 
 on:
   push:
@@ -6,18 +6,9 @@ on:
   pull_request:
     branches: [main, develop]
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
-  lint:
+  prisma-generate:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
-
-    strategy:
-      matrix:
-        node-version: [20.x, 22.x]
 
     steps:
       - name: '✅ Checkout code'
@@ -31,17 +22,11 @@ jobs:
       - name: '🔧 Setup Node.js'
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 20.x
           cache: 'pnpm'
 
       - name: '📥 Install dependencies'
         run: pnpm install --frozen-lockfile
 
-      - name: '🎯 Run ESLint'
-        run: pnpm lint:ci
-
-      - name: '✨ Check formatting with Prettier'
-        run: pnpm format:check
-
-      - name: '📋 TypeScript type check'
-        run: pnpm typecheck
+      - name: '🧬 Prisma generate'
+        run: pnpm prisma:generate

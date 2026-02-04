@@ -58,7 +58,8 @@ module.exports = {
     quotes: ['error', 'single', { avoidEscape: true }],
     semi: ['error', 'always'],
     'comma-dangle': ['error', 'always-multiline'],
-    indent: ['error', 2, { SwitchCase: 1 }],
+    // Prettier handles indentation formatting.
+    indent: 'off',
     'max-len': ['error', { code: 200, ignoreUrls: true, ignoreStrings: true }],
     'no-trailing-spaces': 'error',
     'eol-last': 'error',
@@ -107,6 +108,12 @@ module.exports = {
       rules: {
         '@typescript-eslint/no-explicit-any': 'off',
         'jsx-a11y/no-autofocus': 'off',
+      },
+    },
+    {
+      files: ['prisma/seed.ts'],
+      rules: {
+        'no-console': 'off',
       },
     },
   ],
