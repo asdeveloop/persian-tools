@@ -1,15 +1,22 @@
-import dynamic from 'next/dynamic';
+import CompressPdfPage from '@/features/pdf-tools/compress/compress-pdf';
+import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import { buildMetadata } from '@/lib/seo';
-const CompressPdfPage = dynamic(() => import('@/features/pdf-tools/compress/compress-pdf'), {
-  ssr: false,
-});
+import { getToolByPathOrThrow } from '@/lib/tools-registry';
+
+const tool = getToolByPathOrThrow('/pdf-tools/compress/compress-pdf');
 
 export const metadata = buildMetadata({
-  title: 'فشرده‌سازی PDF - جعبه ابزار فارسی',
-  description: 'کاهش حجم فایل PDF بدون افت کیفیت قابل توجه',
-  path: '/pdf-tools/compress/compress-pdf',
+  title: tool.title,
+  description: tool.description,
+  keywords: tool.keywords,
+  path: tool.path,
 });
 
 export default function CompressPdfRoute() {
-  return <CompressPdfPage />;
+  return (
+    <div className="space-y-10">
+      <CompressPdfPage />
+      <ToolSeoContent tool={tool} />
+    </div>
+  );
 }

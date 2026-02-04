@@ -1,13 +1,22 @@
-import dynamic from 'next/dynamic';
+import SplitPdfPage from '@/features/pdf-tools/split/split-pdf';
+import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import { buildMetadata } from '@/lib/seo';
-const SplitPdfPage = dynamic(() => import('@/features/pdf-tools/split/split-pdf'), { ssr: false });
+import { getToolByPathOrThrow } from '@/lib/tools-registry';
+
+const tool = getToolByPathOrThrow('/pdf-tools/split/split-pdf');
 
 export const metadata = buildMetadata({
-  title: 'تقسیم PDF - جعبه ابزار فارسی',
-  description: 'تقسیم فایل PDF به صفحات جداگانه',
-  path: '/pdf-tools/split/split-pdf',
+  title: tool.title,
+  description: tool.description,
+  keywords: tool.keywords,
+  path: tool.path,
 });
 
 export default function SplitPdfRoute() {
-  return <SplitPdfPage />;
+  return (
+    <div className="space-y-10">
+      <SplitPdfPage />
+      <ToolSeoContent tool={tool} />
+    </div>
+  );
 }

@@ -1,21 +1,22 @@
-import dynamic from 'next/dynamic';
+import EncryptPdfPage from '@/features/pdf-tools/security/encrypt-pdf';
+import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import { buildMetadata } from '@/lib/seo';
-const EncryptPdfPage = dynamic(() => import('@/features/pdf-tools/security/encrypt-pdf'), {
-  ssr: false,
+import { getToolByPathOrThrow } from '@/lib/tools-registry';
+
+const tool = getToolByPathOrThrow('/pdf-tools/security/encrypt-pdf');
+
+export const metadata = buildMetadata({
+  title: tool.title,
+  description: tool.description,
+  keywords: tool.keywords,
+  path: tool.path,
 });
 
-export const metadata = {
-  ...buildMetadata({
-    title: 'رمزگذاری PDF - جعبه ابزار فارسی',
-    description: 'اضافه کردن رمز عبور روی فایل PDF',
-    path: '/pdf-tools/security/encrypt-pdf',
-  }),
-  robots: {
-    index: false,
-    follow: false,
-  },
-};
-
 export default function EncryptPdfRoute() {
-  return <EncryptPdfPage />;
+  return (
+    <div className="space-y-10">
+      <EncryptPdfPage />
+      <ToolSeoContent tool={tool} />
+    </div>
+  );
 }

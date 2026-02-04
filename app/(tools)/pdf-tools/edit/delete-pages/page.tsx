@@ -1,16 +1,22 @@
-import dynamic from 'next/dynamic';
+import DeletePagesPage from '@/features/pdf-tools/edit/delete-pages';
+import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import { buildMetadata } from '@/lib/seo';
+import { getToolByPathOrThrow } from '@/lib/tools-registry';
 
-const DeletePagesPage = dynamic(() => import('@/features/pdf-tools/edit/delete-pages'), {
-  ssr: false,
-});
+const tool = getToolByPathOrThrow('/pdf-tools/edit/delete-pages');
 
 export const metadata = buildMetadata({
-  title: 'حذف صفحات PDF - جعبه ابزار فارسی',
-  description: 'حذف صفحات انتخابی از فایل PDF',
-  path: '/pdf-tools/edit/delete-pages',
+  title: tool.title,
+  description: tool.description,
+  keywords: tool.keywords,
+  path: tool.path,
 });
 
 export default function DeletePagesRoute() {
-  return <DeletePagesPage />;
+  return (
+    <div className="space-y-10">
+      <DeletePagesPage />
+      <ToolSeoContent tool={tool} />
+    </div>
+  );
 }

@@ -1,11 +1,17 @@
 import { buildMetadata } from '@/lib/seo';
 import OfflineActions from '@/components/ui/OfflineActions';
 
-export const metadata = buildMetadata({
-  title: 'آفلاین - جعبه ابزار فارسی',
-  description: 'در حال حاضر آفلاین هستید. لطفاً اتصال اینترنت را بررسی کنید.',
-  path: '/offline',
-});
+export const metadata = {
+  ...buildMetadata({
+    title: 'آفلاین - جعبه ابزار فارسی',
+    description: 'در حال حاضر آفلاین هستید. لطفاً اتصال اینترنت را بررسی کنید.',
+    path: '/offline',
+  }),
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
 
 export default function OfflinePage() {
   return (

@@ -1,15 +1,22 @@
-import dynamic from 'next/dynamic';
+import PdfToImagePage from '@/features/pdf-tools/convert/pdf-to-image';
+import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import { buildMetadata } from '@/lib/seo';
-const PdfToImagePage = dynamic(() => import('@/features/pdf-tools/convert/pdf-to-image'), {
-  ssr: false,
-});
+import { getToolByPathOrThrow } from '@/lib/tools-registry';
+
+const tool = getToolByPathOrThrow('/pdf-tools/convert/pdf-to-image');
 
 export const metadata = buildMetadata({
-  title: 'تبدیل PDF به عکس - جعبه ابزار فارسی',
-  description: 'تبدیل صفحات PDF به تصاویر PNG یا JPG با تنظیمات کیفیت',
-  path: '/pdf-tools/convert/pdf-to-image',
+  title: tool.title,
+  description: tool.description,
+  keywords: tool.keywords,
+  path: tool.path,
 });
 
 export default function PdfToImageRoute() {
-  return <PdfToImagePage />;
+  return (
+    <div className="space-y-10">
+      <PdfToImagePage />
+      <ToolSeoContent tool={tool} />
+    </div>
+  );
 }

@@ -1,23 +1,22 @@
 import LoanPage from '@/components/features/loan/LoanPage';
+import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import { buildMetadata } from '@/lib/seo';
+import { getToolByPathOrThrow } from '@/lib/tools-registry';
+
+const tool = getToolByPathOrThrow('/loan');
 
 export const metadata = buildMetadata({
-  title: 'محاسبه‌گر وام - جعبه ابزار فارسی',
-  description:
-    'محاسبه قسط ماهانه، سود کل و پرداخت کل وام‌های مختلف (مسکن، خودرو، شخصی) - رایگان و دقیق',
-  keywords: [
-    'محاسبه وام',
-    'محاسبه قسط',
-    'محاسبه سود وام',
-    'وام مسکن',
-    'وام خودرو',
-    'وام شخصی',
-    'محاسبه گر وام',
-    'اقساط وام',
-  ],
-  path: '/loan',
+  title: tool.title,
+  description: tool.description,
+  keywords: tool.keywords,
+  path: tool.path,
 });
 
 export default function LoanRoute() {
-  return <LoanPage />;
+  return (
+    <div className="space-y-10">
+      <LoanPage />
+      <ToolSeoContent tool={tool} />
+    </div>
+  );
 }

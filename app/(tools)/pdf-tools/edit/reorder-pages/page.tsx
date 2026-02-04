@@ -1,16 +1,22 @@
-import dynamic from 'next/dynamic';
+import ReorderPagesPage from '@/features/pdf-tools/edit/reorder-pages';
+import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import { buildMetadata } from '@/lib/seo';
+import { getToolByPathOrThrow } from '@/lib/tools-registry';
 
-const ReorderPagesPage = dynamic(() => import('@/features/pdf-tools/edit/reorder-pages'), {
-  ssr: false,
-});
+const tool = getToolByPathOrThrow('/pdf-tools/edit/reorder-pages');
 
 export const metadata = buildMetadata({
-  title: 'جابجایی صفحات PDF - جعبه ابزار فارسی',
-  description: 'تغییر ترتیب صفحات PDF به شکل دلخواه',
-  path: '/pdf-tools/edit/reorder-pages',
+  title: tool.title,
+  description: tool.description,
+  keywords: tool.keywords,
+  path: tool.path,
 });
 
 export default function ReorderPagesRoute() {
-  return <ReorderPagesPage />;
+  return (
+    <div className="space-y-10">
+      <ReorderPagesPage />
+      <ToolSeoContent tool={tool} />
+    </div>
+  );
 }

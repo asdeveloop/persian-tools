@@ -1,13 +1,22 @@
-import dynamic from 'next/dynamic';
+import MergePdfPage from '@/features/pdf-tools/merge/merge-pdf';
+import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import { buildMetadata } from '@/lib/seo';
-const MergePdfPage = dynamic(() => import('@/features/pdf-tools/merge/merge-pdf'), { ssr: false });
+import { getToolByPathOrThrow } from '@/lib/tools-registry';
+
+const tool = getToolByPathOrThrow('/pdf-tools/merge/merge-pdf');
 
 export const metadata = buildMetadata({
-  title: 'ادغام PDF - جعبه ابزار فارسی',
-  description: 'ادغام چند فایل PDF در یک فایل واحد',
-  path: '/pdf-tools/merge/merge-pdf',
+  title: tool.title,
+  description: tool.description,
+  keywords: tool.keywords,
+  path: tool.path,
 });
 
 export default function MergePdfRoute() {
-  return <MergePdfPage />;
+  return (
+    <div className="space-y-10">
+      <MergePdfPage />
+      <ToolSeoContent tool={tool} />
+    </div>
+  );
 }

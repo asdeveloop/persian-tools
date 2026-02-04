@@ -3,6 +3,8 @@ import ButtonLink from '@/shared/ui/ButtonLink';
 import ToolCard from '@/shared/ui/ToolCard';
 import PopularTools from '@/components/home/PopularTools';
 import RecentTools from '@/components/home/RecentTools';
+import { siteUrl } from '@/lib/seo';
+import { getCategories, getToolsByCategory } from '@/lib/tools-registry';
 import {
   IconCalculator,
   IconCalendar,
@@ -15,6 +17,77 @@ import {
 } from '@/shared/ui/icons';
 
 export default function HomePage() {
+  const categories = getCategories();
+  const homeFaq = [
+    {
+      question: 'آیا فایل‌ها و داده‌ها به سرور ارسال می‌شوند؟',
+      answer: 'خیر، پردازش‌ها در مرورگر انجام می‌شود و فایل‌ها ارسال نمی‌شوند.',
+    },
+    {
+      question: 'آیا برای استفاده باید ثبت‌نام کنم؟',
+      answer: 'خیر، همه ابزارها بدون ثبت‌نام قابل استفاده هستند.',
+    },
+    {
+      question: 'آیا ابزارها روی موبایل هم کار می‌کنند؟',
+      answer: 'بله، رابط کاربری واکنش‌گراست و روی موبایل قابل استفاده است.',
+    },
+  ];
+  const homeJsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'CollectionPage',
+        name: 'جعبه ابزار فارسی - صفحه اصلی',
+        description: 'ابزارهای PDF، محاسبات مالی و پردازش تصویر - همه در یک مکان، رایگان و آسان',
+        url: siteUrl,
+        inLanguage: 'fa-IR',
+      },
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          {
+            '@type': 'ListItem',
+            position: 1,
+            name: 'صفحه اصلی',
+            item: siteUrl,
+          },
+        ],
+      },
+      {
+        '@type': 'ItemList',
+        name: 'دسته‌بندی ابزارها',
+        itemListOrder: 'https://schema.org/ItemListUnordered',
+        itemListElement: categories.map((category, index) => ({
+          '@type': 'ListItem',
+          position: index + 1,
+          name: category.name,
+          url: new URL(category.path, siteUrl).toString(),
+          item: {
+            '@type': 'ItemList',
+            name: category.name,
+            itemListOrder: 'https://schema.org/ItemListUnordered',
+            itemListElement: getToolsByCategory(category.id).map((tool, toolIndex) => ({
+              '@type': 'ListItem',
+              position: toolIndex + 1,
+              name: tool.title.replace(' - جعبه ابزار فارسی', ''),
+              url: new URL(tool.path, siteUrl).toString(),
+            })),
+          },
+        })),
+      },
+      {
+        '@type': 'FAQPage',
+        mainEntity: homeFaq.map((item) => ({
+          '@type': 'Question',
+          name: item.question,
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: item.answer,
+          },
+        })),
+      },
+    ],
+  };
   const quickTasks = [
     {
       title: 'ادغام PDF',
@@ -55,6 +128,10 @@ export default function HomePage() {
 
   return (
     <div className="space-y-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(homeJsonLd) }}
+      />
       <section
         className="relative overflow-hidden section-surface p-6 md:p-10 lg:p-14"
         aria-labelledby="hero-heading"
@@ -117,6 +194,22 @@ export default function HomePage() {
                   <div className="text-xs font-semibold text-[var(--text-muted)]">{item.label}</div>
                 </div>
               ))}
+            </div>
+
+            <div className="space-y-4 text-sm text-[var(--text-secondary)] leading-7">
+              <p>
+                جعبه ابزار فارسی مجموعه‌ای از ابزارهای کاربردی برای PDF، تصویر، تاریخ، متن و امور
+                مالی است که به‌صورت محلی در مرورگر اجرا می‌شوند. این یعنی فایل‌ها و داده‌های شما از
+                دستگاه خارج نمی‌شوند و حریم خصوصی حفظ می‌شود.
+              </p>
+              <p>
+                هر ابزار یک راهنمای کوتاه و سوالات متداول دارد تا سریع‌تر به نتیجه برسید. اگر به
+                دنبال ابزار مناسب هستید، از داشبورد ابزارها یا صفحات موضوعی استفاده کنید.
+              </p>
+              <p>
+                هدف ما ساده‌سازی کارهای روزمره و ارائه ابزارهای قابل اتکا برای کاربران فارسی‌زبان
+                است؛ بدون نیاز به نصب نرم‌افزار یا ثبت‌نام.
+              </p>
             </div>
           </div>
 
@@ -286,6 +379,25 @@ export default function HomePage() {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      <section className="section-surface p-6 md:p-8 lg:p-10" aria-labelledby="home-faq-heading">
+        <h2 id="home-faq-heading" className="text-2xl font-black text-[var(--text-primary)]">
+          سوالات متداول
+        </h2>
+        <div className="mt-4 space-y-3">
+          {homeFaq.map((item) => (
+            <details
+              key={item.question}
+              className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3"
+            >
+              <summary className="cursor-pointer text-[var(--text-primary)] font-semibold">
+                {item.question}
+              </summary>
+              <p className="mt-2 text-[var(--text-secondary)] leading-7">{item.answer}</p>
+            </details>
+          ))}
         </div>
       </section>
 

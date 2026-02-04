@@ -1,16 +1,22 @@
-import dynamic from 'next/dynamic';
+import RotatePagesPage from '@/features/pdf-tools/edit/rotate-pages';
+import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import { buildMetadata } from '@/lib/seo';
+import { getToolByPathOrThrow } from '@/lib/tools-registry';
 
-const RotatePagesPage = dynamic(() => import('@/features/pdf-tools/edit/rotate-pages'), {
-  ssr: false,
-});
+const tool = getToolByPathOrThrow('/pdf-tools/edit/rotate-pages');
 
 export const metadata = buildMetadata({
-  title: 'چرخش صفحات PDF - جعبه ابزار فارسی',
-  description: 'چرخاندن صفحات انتخابی در فایل PDF',
-  path: '/pdf-tools/edit/rotate-pages',
+  title: tool.title,
+  description: tool.description,
+  keywords: tool.keywords,
+  path: tool.path,
 });
 
 export default function RotatePagesRoute() {
-  return <RotatePagesPage />;
+  return (
+    <div className="space-y-10">
+      <RotatePagesPage />
+      <ToolSeoContent tool={tool} />
+    </div>
+  );
 }

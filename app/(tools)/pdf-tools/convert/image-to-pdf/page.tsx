@@ -1,15 +1,22 @@
-import dynamic from 'next/dynamic';
+import ImageToPdfPage from '@/features/pdf-tools/convert/image-to-pdf';
+import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import { buildMetadata } from '@/lib/seo';
-const ImageToPdfPage = dynamic(() => import('@/features/pdf-tools/convert/image-to-pdf'), {
-  ssr: false,
-});
+import { getToolByPathOrThrow } from '@/lib/tools-registry';
+
+const tool = getToolByPathOrThrow('/pdf-tools/convert/image-to-pdf');
 
 export const metadata = buildMetadata({
-  title: 'تبدیل عکس به PDF - جعبه ابزار فارسی',
-  description: 'تبدیل چند تصویر به یک فایل PDF با تنظیمات کیفیت و اندازه صفحه',
-  path: '/pdf-tools/convert/image-to-pdf',
+  title: tool.title,
+  description: tool.description,
+  keywords: tool.keywords,
+  path: tool.path,
 });
 
 export default function ImageToPdfRoute() {
-  return <ImageToPdfPage />;
+  return (
+    <div className="space-y-10">
+      <ImageToPdfPage />
+      <ToolSeoContent tool={tool} />
+    </div>
+  );
 }

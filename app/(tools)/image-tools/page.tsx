@@ -1,24 +1,51 @@
-import dynamic from 'next/dynamic';
+import ImageToolsPage from '@/features/image-tools/image-tools';
+import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import { buildMetadata } from '@/lib/seo';
-const ImageToolsPage = dynamic(() => import('@/features/image-tools/image-tools'), { ssr: false });
+import { getCategoryContent, getToolByPathOrThrow } from '@/lib/tools-registry';
+
+const tool = getToolByPathOrThrow('/image-tools');
+const categoryContent = getCategoryContent('image-tools');
 
 export const metadata = buildMetadata({
-  title: 'ابزارهای تصویر - جعبه ابزار فارسی',
-  description:
-    'فشرده‌سازی و بهینه‌سازی تصاویر با کنترل کیفیت، اندازه و فرمت خروجی - پردازش کاملاً آفلاین',
-  keywords: [
-    'ابزار تصویر',
-    'فشرده سازی عکس',
-    'کاهش حجم عکس',
-    'بهینه سازی تصویر',
-    'فشرده ساز JPG',
-    'فشرده ساز PNG',
-    'فشرده ساز WebP',
-    'کاهش حجم تصویر',
-  ],
-  path: '/image-tools',
+  title: tool.title,
+  description: tool.description,
+  keywords: categoryContent?.keywords ?? tool.keywords,
+  path: tool.path,
 });
 
 export default function ImageToolsRoute() {
-  return <ImageToolsPage />;
+  return (
+    <div className="space-y-10">
+      <ImageToolsPage />
+      {categoryContent && (
+        <section className="space-y-6">
+          <h2 className="text-2xl font-bold text-[var(--text-primary)]">راهنمای موضوعی تصویر</h2>
+          <div className="space-y-4 text-[var(--text-secondary)] leading-7">
+            {categoryContent.paragraphs.map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
+          </div>
+          {categoryContent.faq.length > 0 && (
+            <div className="space-y-3">
+              <h3 className="text-xl font-semibold text-[var(--text-primary)]">سوالات متداول</h3>
+              <div className="space-y-3">
+                {categoryContent.faq.map((item) => (
+                  <details
+                    key={item.question}
+                    className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3"
+                  >
+                    <summary className="cursor-pointer text-[var(--text-primary)] font-semibold">
+                      {item.question}
+                    </summary>
+                    <p className="mt-2 text-[var(--text-secondary)] leading-7">{item.answer}</p>
+                  </details>
+                ))}
+              </div>
+            </div>
+          )}
+        </section>
+      )}
+      <ToolSeoContent tool={tool} />
+    </div>
+  );
 }
