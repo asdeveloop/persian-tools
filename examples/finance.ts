@@ -3,7 +3,7 @@ import {
   calculateTax,
   convertRialToToman,
   convertTomanToRial,
-} from '../dist/index.js';
+} from 'persian-tools/finance';
 
 const compound = calculateCompoundInterest({
   principal: 1_000_000,

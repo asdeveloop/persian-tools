@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useCallback } from 'react';
 
 export default function OfflineActions() {
@@ -22,9 +23,9 @@ export default function OfflineActions() {
       <button type="button" onClick={onClearCache} className="btn btn-tertiary px-6 py-2 text-sm">
         پاک‌سازی کش
       </button>
-      <a href="/" className="btn btn-secondary px-6 py-2 text-sm">
+      <Link href="/" className="btn btn-secondary px-6 py-2 text-sm">
         بازگشت به خانه
-      </a>
+      </Link>
     </div>
   );
 }

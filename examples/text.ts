@@ -1,4 +1,8 @@
-import { cleanPersianText, normalizePersianChars, stripPersianDiacritics } from '../dist/index.js';
+import {
+  cleanPersianText,
+  normalizePersianChars,
+  stripPersianDiacritics,
+} from 'persian-tools/localization';
 
 console.log(normalizePersianChars('كباب و يار'));
 console.log(stripPersianDiacritics('سَلام'));

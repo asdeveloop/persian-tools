@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { formatMoneyFa, numberToWordsFa, parseLooseNumber } from '../dist/index.js';
+import { formatMoneyFa, numberToWordsFa, parseLooseNumber } from 'persian-tools/numbers';
 
 const input = '۱۲٬۳۴۵٫۶۷';
 const parsed = parseLooseNumber(input);

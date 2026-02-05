@@ -1,9 +1,9 @@
-node_modules
 dist
-.next
+node_modules
+build
 coverage
-next-env.d.ts
+.next
+docs/api
 playwright-report
-test-results
-public/sw.js
 examples
+next-env.d.ts
