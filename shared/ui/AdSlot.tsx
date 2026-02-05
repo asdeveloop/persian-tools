@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { recordAdView, recordAdClick } from '@/shared/analytics/ads';
+import { getAdsConsent, updateAdsConsent, type AdsConsentState } from '@/shared/consent/adsConsent';
 
 interface StaticAdSlotProps {
   slotId: string;
@@ -32,6 +33,7 @@ export function StaticAdSlot({
 }: StaticAdSlotProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [hasTracked, setHasTracked] = useState(false);
+  const [consent, setConsent] = useState<AdsConsentState>(() => getAdsConsent());
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -59,6 +61,16 @@ export function StaticAdSlot({
     }
   }, [isVisible, hasTracked, slotId, campaignId]);
 
+  const handleAccept = () => {
+    const next = updateAdsConsent({ contextualAds: true, targetedAds: false });
+    setConsent(next);
+  };
+
+  const handleDecline = () => {
+    const next = updateAdsConsent({ contextualAds: false, targetedAds: false });
+    setConsent(next);
+  };
+
   const handleClick = () => {
     recordAdClick(slotId, campaignId);
   };
@@ -69,6 +81,40 @@ export function StaticAdSlot({
     low: 'border-gray-100 dark:border-gray-800',
   };
 
+  if (!consent.contextualAds) {
+    return (
+      <div
+        ref={ref}
+        className={`rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 text-[var(--text-primary)] shadow-[var(--shadow-subtle)] ${className}`}
+        style={{ maxWidth: width }}
+      >
+        <div className="flex flex-col gap-3">
+          <div className="text-sm font-semibold">نمایش تبلیغات؟</div>
+          <p className="text-xs text-[var(--text-muted)] leading-relaxed">
+            برای تامین هزینه‌ها از تبلیغات نمایشی استفاده می‌کنیم. اطلاعات شما ارسال نمی‌شود و فقط
+            بنر محلی نمایش داده می‌شود.
+          </p>
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              className="rounded-[var(--radius-md)] bg-[var(--color-primary)] px-3 py-2 text-xs font-semibold text-[var(--text-inverted)] shadow-[var(--shadow-subtle)]"
+              onClick={handleAccept}
+            >
+              قبول نمایش تبلیغات
+            </button>
+            <button
+              type="button"
+              className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-3 py-2 text-xs font-semibold text-[var(--text-primary)]"
+              onClick={handleDecline}
+            >
+              فعلاً نه
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div
       ref={ref}
@@ -76,7 +122,10 @@ export function StaticAdSlot({
       style={{ maxWidth: width }}
     >
       {showLabel && (
-        <span className="absolute top-2 left-2 text-xs bg-black/50 text-white px-2 py-1 rounded">
+        <span
+          className="absolute top-2 text-xs bg-black/50 text-white px-2 py-1 rounded"
+          style={{ insetInlineStart: '0.5rem' }}
+        >
           تبلیغات
         </span>
       )}
