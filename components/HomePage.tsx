@@ -295,10 +295,12 @@ export default function HomePage() {
                       <option value="validation">اعتبارسنجی</option>
                       <option value="finance">محاسبات مالی</option>
                     </select>
-                    <IconChevronDown
-                      className="pointer-events-none absolute top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--text-muted)]"
+                    <span
+                      className="pointer-events-none absolute top-1/2 -translate-y-1/2"
                       style={{ insetInlineStart: '0.75rem' }}
-                    />
+                    >
+                      <IconChevronDown className="h-4 w-4 text-[var(--text-muted)]" />
+                    </span>
                   </div>
                 </div>
               </div>
