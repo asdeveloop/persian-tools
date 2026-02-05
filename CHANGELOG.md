@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Storybook dev stack moved to v9 alpha to align with Next 16 (peer warning acceptable in dev).
 - CI now runs full coverage (`pnpm test:ci`) by default.
 - API docs and README now document NPM subpath imports.
 - Restructured shared utilities into domain-focused modules.
