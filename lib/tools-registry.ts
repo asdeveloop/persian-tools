@@ -243,7 +243,7 @@ export const toolsRegistry: ToolEntry[] = [
     indexable: true,
     lastModified: '2026-02-04',
     kind: 'category',
-    category: categories.pdf,
+    category: categories['pdf']!,
     content: {
       intro: 'تمام ابزارهای PDF در یکجا: از ادغام و تقسیم گرفته تا فشرده‌سازی و امنیت فایل‌ها.',
       tips: [
@@ -467,7 +467,7 @@ export const toolsRegistry: ToolEntry[] = [
     indexable: true,
     lastModified: '2026-02-04',
     kind: 'tool',
-    category: categories.pdf,
+    category: categories['pdf']!,
     content: {
       intro: 'چند فایل PDF را به یک فایل واحد و منظم تبدیل کنید.',
       steps: [
@@ -504,7 +504,7 @@ export const toolsRegistry: ToolEntry[] = [
     indexable: true,
     lastModified: '2026-02-04',
     kind: 'tool',
-    category: categories.pdf,
+    category: categories['pdf']!,
     content: {
       intro: 'صفحات مورد نیاز را جدا کنید و فایل‌های کوچک‌تر بسازید.',
       steps: [
@@ -536,7 +536,7 @@ export const toolsRegistry: ToolEntry[] = [
     indexable: true,
     lastModified: '2026-02-04',
     kind: 'tool',
-    category: categories.pdf,
+    category: categories['pdf']!,
     content: {
       intro: 'حجم فایل PDF را کاهش دهید تا ارسال و اشتراک آسان‌تر شود.',
       steps: [
@@ -569,7 +569,7 @@ export const toolsRegistry: ToolEntry[] = [
     indexable: true,
     lastModified: '2026-02-04',
     kind: 'tool',
-    category: categories.pdf,
+    category: categories['pdf']!,
     content: {
       intro: 'هر صفحه PDF را به تصویر جداگانه تبدیل کنید.',
       steps: [
@@ -601,7 +601,7 @@ export const toolsRegistry: ToolEntry[] = [
     indexable: true,
     lastModified: '2026-02-04',
     kind: 'tool',
-    category: categories.pdf,
+    category: categories['pdf']!,
     content: {
       intro: 'چند تصویر را به یک فایل PDF واحد تبدیل کنید.',
       steps: [
@@ -632,7 +632,7 @@ export const toolsRegistry: ToolEntry[] = [
     indexable: true,
     lastModified: '2026-02-04',
     kind: 'tool',
-    category: categories.pdf,
+    category: categories['pdf']!,
     content: {
       intro: 'با وارد کردن رمز صحیح، محدودیت فایل PDF را بردارید.',
       steps: [
@@ -663,7 +663,7 @@ export const toolsRegistry: ToolEntry[] = [
     indexable: true,
     lastModified: '2026-02-04',
     kind: 'tool',
-    category: categories.pdf,
+    category: categories['pdf']!,
     content: {
       intro: 'برای محافظت از فایل‌های PDF رمزگذاری انجام دهید.',
       steps: [
@@ -694,7 +694,7 @@ export const toolsRegistry: ToolEntry[] = [
     indexable: true,
     lastModified: '2026-02-04',
     kind: 'tool',
-    category: categories.pdf,
+    category: categories['pdf']!,
     content: {
       intro: 'با افزودن واترمارک، مالکیت یا برند خود را روی PDF ثبت کنید.',
       steps: [
@@ -719,7 +719,7 @@ export const toolsRegistry: ToolEntry[] = [
     indexable: true,
     lastModified: '2026-02-04',
     kind: 'tool',
-    category: categories.pdf,
+    category: categories['pdf']!,
     content: {
       intro: 'صفحات PDF را در جهت درست بچرخانید و ذخیره کنید.',
       steps: [
@@ -738,7 +738,7 @@ export const toolsRegistry: ToolEntry[] = [
     indexable: true,
     lastModified: '2026-02-04',
     kind: 'tool',
-    category: categories.pdf,
+    category: categories['pdf']!,
     content: {
       intro: 'صفحات PDF را با ترتیب دلخواه بچینید.',
       steps: [
@@ -757,7 +757,7 @@ export const toolsRegistry: ToolEntry[] = [
     indexable: true,
     lastModified: '2026-02-04',
     kind: 'tool',
-    category: categories.pdf,
+    category: categories['pdf']!,
     content: {
       intro: 'صفحات غیرضروری را حذف کنید و فایل بهینه بسازید.',
       steps: [
@@ -781,7 +781,7 @@ export const toolsRegistry: ToolEntry[] = [
     indexable: true,
     lastModified: '2026-02-04',
     kind: 'tool',
-    category: categories.pdf,
+    category: categories['pdf']!,
     content: {
       intro: 'تنها صفحات مورد نیاز را جدا کرده و به فایل جدید تبدیل کنید.',
       steps: [

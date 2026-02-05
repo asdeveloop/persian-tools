@@ -4,15 +4,14 @@ import withBundleAnalyzer from '@next/bundle-analyzer';
 
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: false,
   images: {
-    domains: ['localhost'],
     formats: ['image/webp', 'image/avif'],
-  },
-
-  i18n: {
-    locales: ['fa'],
-    defaultLocale: 'fa',
+    remotePatterns: [
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+      },
+    ],
   },
 
   async headers() {
@@ -25,7 +24,7 @@ const nextConfig = {
       "img-src 'self' data: blob:",
       "font-src 'self' data:",
       "style-src 'self' 'unsafe-inline'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+      "script-src 'self'",
       "connect-src 'self'",
       "manifest-src 'self'",
       "worker-src 'self' blob:",

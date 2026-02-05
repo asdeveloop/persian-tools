@@ -9,7 +9,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     /* Strict Type Checking - docs/project-standards.md Requirement */
     "strict": true,
     "noUnusedLocals": true,
@@ -54,7 +54,8 @@
     "lib",
     "components",
     "features",
-    "shared"
+    "shared",
+    ".next/dev/types/**/*.ts"
   ],
-  "exclude": ["node_modules", "dist", "examples"]
+  "exclude": ["node_modules", "dist", "examples", ".next"]
 }
