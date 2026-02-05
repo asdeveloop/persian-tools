@@ -15,14 +15,18 @@ export default function ServiceWorkerRegistration() {
     }
 
     const onControllerChange = () => {
-      if (didReload.current) return;
+      if (didReload.current) {
+        return;
+      }
       didReload.current = true;
       window.location.reload();
     };
 
     const listenForMessages = (event: MessageEvent) => {
       const message = event.data;
-      if (!message || !message.type) return;
+      if (!message?.type) {
+        return;
+      }
 
       if (message.type === 'UPDATE_AVAILABLE') {
         setUpdateReady(true);
@@ -44,7 +48,9 @@ export default function ServiceWorkerRegistration() {
 
         registration.addEventListener('updatefound', () => {
           const installing = registration.installing;
-          if (!installing) return;
+          if (!installing) {
+            return;
+          }
           installing.addEventListener('statechange', () => {
             if (installing.state === 'installed' && navigator.serviceWorker.controller) {
               waitingWorker.current = registration.waiting ?? installing;
