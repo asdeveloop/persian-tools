@@ -46,7 +46,7 @@ export async function getActiveSubscription(userId: string): Promise<Subscriptio
   if (result.rowCount === 0) {
     return null;
   }
-  return mapSubscription(result.rows[0]);
+  return result.rows[0] ? mapSubscription(result.rows[0]) : null;
 }
 
 export async function createSubscription(userId: string, planId: PlanId): Promise<Subscription> {

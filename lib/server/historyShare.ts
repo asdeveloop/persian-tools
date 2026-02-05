@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import { prisma } from './db';
-import { getHistoryEntryById, type HistoryEntry } from './history';
+import { listHistoryEntries, type HistoryEntry } from './history';
 import { normalizeShareExpiryHours } from '@/shared/history/share';
 import type { HistoryShareLink as PrismaHistoryShareLink } from '@prisma/client';
 
@@ -29,8 +29,9 @@ export async function createHistoryShareLink(
   entryId: string,
   expiresInHours?: number,
 ): Promise<{ link: HistoryShareLink; entry: HistoryEntry } | null> {
-  const entry = await getHistoryEntryById(userId, entryId);
-  if (!entry?.outputUrl) {
+  const entries = await listHistoryEntries(userId, 1000);
+  const entry = entries.find((item) => item.id === entryId);
+  if (!entry?.outputUrl || entry.outputUrl === '') {
     return null;
   }
 
@@ -39,7 +40,8 @@ export async function createHistoryShareLink(
   const hours = normalizeShareExpiryHours(expiresInHours);
   const expiresAt = createdAt + hours * 60 * 60 * 1000;
 
-  const link = await prisma.historyShareLink.create({
+  const historyClient = prisma.historyShareLink;
+  const link = (await historyClient.create({
     data: {
       token,
       entryId: entry.id,
@@ -47,7 +49,7 @@ export async function createHistoryShareLink(
       createdAt: BigInt(createdAt),
       expiresAt: BigInt(expiresAt),
     },
-  });
+  })) as PrismaHistoryShareLink;
 
   return {
     link: mapShareLink(link, entry.outputUrl ?? null),
@@ -56,14 +58,16 @@ export async function createHistoryShareLink(
 }
 
 export async function getHistoryShareLink(token: string): Promise<HistoryShareLink | null> {
-  const link = await prisma.historyShareLink.findUnique({
+  const historyClient = prisma.historyShareLink;
+  const link = (await historyClient.findUnique({
     where: { token },
     include: { entry: true },
-  });
+  })) as (PrismaHistoryShareLink & { entry?: { outputUrl?: string | null } | null }) | null;
 
   if (!link) {
     return null;
   }
 
-  return mapShareLink(link, link.entry.outputUrl ?? null);
+  const entryOutput = link.entry?.outputUrl ?? null;
+  return mapShareLink(link, entryOutput);
 }

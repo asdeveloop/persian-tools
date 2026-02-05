@@ -6,8 +6,8 @@ import {
   useRef,
   useState,
   type FocusEvent,
-  type KeyboardEvent,
   type ReactNode,
+  type KeyboardEvent as ReactKeyboardEvent,
 } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -143,18 +143,6 @@ export default function Navigation() {
     }, {});
   }, [filteredSearchItems]);
 
-  useEffect(() => {
-    setActiveIndex(0);
-  }, [searchQuery]);
-
-  useEffect(() => {
-    if (!orderedSearchItems.length) {
-      setActiveIndex(0);
-      return;
-    }
-    setActiveIndex((prev) => Math.min(prev, orderedSearchItems.length - 1));
-  }, [orderedSearchItems.length]);
-
   const favoriteItems = useMemo(() => {
     if (!favoritePaths.length) {
       return [];
@@ -184,6 +172,18 @@ export default function Navigation() {
     );
     return [...favoriteItems, ...recentItems, ...rest];
   }, [favoriteItems, filteredSearchItems, recentItems, searchItems, searchQuery]);
+
+  useEffect(() => {
+    setActiveIndex(0);
+  }, [searchQuery]);
+
+  useEffect(() => {
+    if (!orderedSearchItems.length) {
+      setActiveIndex(0);
+      return;
+    }
+    setActiveIndex((prev) => Math.min(prev, orderedSearchItems.length - 1));
+  }, [orderedSearchItems.length]);
 
   const groupedRestItems = useMemo(() => {
     const favoriteSet = new Set(favoriteItems.map((item) => item.href));
@@ -230,11 +230,14 @@ export default function Navigation() {
         <div className="flex flex-1 flex-col gap-1">
           <div className="flex items-center justify-between gap-2">
             <span className="text-sm font-bold text-[var(--text-primary)]">{item.title}</span>
-            {usageCounts[item.href] ? (
-              <span className="text-[10px] font-semibold text-[var(--text-muted)]">
-                {usageCounts[item.href].toLocaleString('fa-IR')} بازدید
-              </span>
-            ) : null}
+            {(() => {
+              const count = usageCounts[item.href];
+              return count ? (
+                <span className="text-[10px] font-semibold text-[var(--text-muted)]">
+                  {count.toLocaleString('fa-IR')} بازدید
+                </span>
+              ) : null;
+            })()}
           </div>
           <span className="text-xs text-[var(--text-muted)]">{item.description}</span>
         </div>
@@ -280,14 +283,14 @@ export default function Navigation() {
     setOpenDropdown(null);
   };
 
-  const handleMenuKeyDown = (event: KeyboardEvent<HTMLElement>) => {
+  const handleMenuKeyDown = (event: ReactKeyboardEvent<HTMLElement>) => {
     if (event.key === 'Escape') {
       setOpenDropdown(null);
     }
   };
 
   useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
+    const handleKeyDown = (event: globalThis.KeyboardEvent) => {
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
         event.preventDefault();
         setIsSearchOpen(true);
@@ -296,8 +299,8 @@ export default function Navigation() {
         setIsSearchOpen(false);
       }
     };
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    document.addEventListener('keydown', handleKeyDown as EventListener);
+    return () => document.removeEventListener('keydown', handleKeyDown as EventListener);
   }, []);
 
   useEffect(() => {
@@ -336,7 +339,16 @@ export default function Navigation() {
         return;
       }
       const first = focusables[0];
+      if (!first) {
+        return;
+      }
       const last = focusables[focusables.length - 1];
+      if (!last) {
+        return;
+      }
+      if (!first || !last) {
+        return;
+      }
       if (event.shiftKey && document.activeElement === first) {
         last.focus();
         event.preventDefault();
@@ -346,10 +358,10 @@ export default function Navigation() {
       }
     };
 
-    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('keydown', handleKeyDown as EventListener);
     return () => {
       clearTimeout(timer);
-      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('keydown', handleKeyDown as EventListener);
       previousActive?.focus();
     };
   }, [isSearchOpen, searchItems]);

@@ -16,7 +16,7 @@ type ToolEntry = {
   iconWrapClassName: string;
 };
 
-const toolIndex: ToolEntry[] = [
+const toolIndex: DisplayTool[] = [
   {
     id: 'merge-pdf',
     title: 'ادغام PDF',
@@ -68,8 +68,8 @@ const toolIndex: ToolEntry[] = [
 ];
 
 type DisplayTool = ToolEntry & {
-  meta?: string;
-  count?: number;
+  meta?: string | undefined;
+  count?: number | undefined;
 };
 
 export default function RecentTools() {
@@ -89,9 +89,9 @@ export default function RecentTools() {
       return;
     }
     const sorted = [...withCounts].sort((a, b) => b.count - a.count);
-    const selected = sorted.slice(0, 4).map((tool) => ({
+    const selected: DisplayTool[] = sorted.slice(0, 4).map((tool) => ({
       ...tool,
-      meta: tool.count > 0 ? `${toPersianNumbers(tool.count)} بازدید اخیر` : undefined,
+      meta: tool.count > 0 ? `${toPersianNumbers(tool.count)} بازدید اخیر` : '',
     }));
     setItems(selected);
   }, []);
@@ -119,7 +119,7 @@ export default function RecentTools() {
             title={tool.title}
             description={tool.description}
             icon={tool.icon}
-            meta={tool.meta}
+            meta={tool.meta ?? ''}
             iconWrapClassName={tool.iconWrapClassName}
           />
         ))}

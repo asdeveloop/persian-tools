@@ -28,7 +28,7 @@ function mapHistory(row: HistoryRow): HistoryEntry {
     tool: row.tool,
     inputSummary: row.input_summary,
     outputSummary: row.output_summary,
-    outputUrl: row.output_url ?? undefined,
+    ...(row.output_url ? { outputUrl: row.output_url } : {}),
     createdAt: Number(row.created_at),
   };
 }

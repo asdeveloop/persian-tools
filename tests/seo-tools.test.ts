@@ -45,7 +45,7 @@ describe('seo-tools', () => {
           ],
         },
       ],
-      faq: categoryContent?.faq,
+      faq: categoryContent?.faq ?? [],
     });
 
     const graph = jsonLd['@graph'] as Array<Record<string, unknown>>;

@@ -68,7 +68,7 @@ export async function getCheckoutById(id: string): Promise<Checkout | null> {
   if (result.rowCount === 0) {
     return null;
   }
-  return mapCheckout(result.rows[0]);
+  return mapCheckout(result.rows[0]!);
 }
 
 export async function markCheckoutPaid(id: string): Promise<Checkout | null> {
@@ -83,5 +83,5 @@ export async function markCheckoutPaid(id: string): Promise<Checkout | null> {
   if (result.rowCount === 0) {
     return null;
   }
-  return mapCheckout(result.rows[0]);
+  return mapCheckout(result.rows[0]!);
 }

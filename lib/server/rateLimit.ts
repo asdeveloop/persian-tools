@@ -5,6 +5,20 @@ type RateLimitOptions = {
   windowMs: number;
 };
 
+type RateLimitTx = {
+  rateLimit: {
+    findUnique: (args: {
+      where: { key: string };
+    }) => Promise<{ key: string; count: number; windowStart: bigint } | null>;
+    upsert: (args: {
+      where: { key: string };
+      update: { count: number; windowStart: bigint };
+      create: { key: string; count: number; windowStart: bigint };
+    }) => Promise<unknown>;
+    update: (args: { where: { key: string }; data: { count: number } }) => Promise<unknown>;
+  };
+};
+
 export type RateLimitResult = {
   allowed: boolean;
   remaining: number;
@@ -22,7 +36,8 @@ async function recordRateLimitBlock(key: string, timestamp: number) {
     return;
   }
   const bucketDay = getDayBucket(timestamp);
-  await prisma.rateLimitMetric.upsert({
+  const metricClient = prisma.rateLimitMetric;
+  await metricClient.upsert({
     where: { key_bucketDay: { key, bucketDay } },
     update: { blocked: { increment: 1 } },
     create: { key, bucketDay, blocked: 1 },
@@ -60,7 +75,7 @@ export async function rateLimit(
   const now = Date.now();
   const windowStart = BigInt(now);
 
-  return prisma.$transaction(async (tx) => {
+  return prisma.$transaction(async (tx: RateLimitTx) => {
     const existing = await tx.rateLimit.findUnique({ where: { key } });
 
     if (!existing || now - Number(existing.windowStart) >= windowMs) {

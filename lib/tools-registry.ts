@@ -272,7 +272,7 @@ export const toolsRegistry: ToolEntry[] = [
     indexable: true,
     lastModified: '2026-02-04',
     kind: 'category',
-    category: categories.image,
+    category: categories['image']!!,
     content: {
       intro: 'ابزارهای تصویر برای کاهش حجم، بهینه‌سازی و آماده‌سازی تصاویر بدون ارسال فایل‌ها.',
       tips: [
@@ -311,7 +311,7 @@ export const toolsRegistry: ToolEntry[] = [
     indexable: true,
     lastModified: '2026-02-04',
     kind: 'category',
-    category: categories.date,
+    category: categories['date']!!,
     content: {
       intro: 'تبدیل و محاسبات تاریخ را سریع و دقیق انجام دهید؛ شامل شمسی، میلادی و قمری.',
       tips: [
@@ -340,7 +340,7 @@ export const toolsRegistry: ToolEntry[] = [
     indexable: true,
     lastModified: '2026-02-04',
     kind: 'category',
-    category: categories.text,
+    category: categories['text']!!,
     content: {
       intro:
         'ابزارهای متنی برای ویرایش و استانداردسازی متن فارسی، شمارش کلمات و تبدیل عدد به حروف.',
@@ -365,7 +365,7 @@ export const toolsRegistry: ToolEntry[] = [
     indexable: true,
     lastModified: '2026-02-04',
     kind: 'category',
-    category: categories.validation,
+    category: categories['validation']!!,
     content: {
       intro:
         'برای بررسی صحت شماره ملی، موبایل و سایر داده‌ها، ابزارهای اعتبارسنجی سریع و دقیق را استفاده کنید.',
@@ -399,7 +399,7 @@ export const toolsRegistry: ToolEntry[] = [
     indexable: true,
     lastModified: '2026-02-04',
     kind: 'tool',
-    category: categories.finance,
+    category: categories['finance']!!,
     content: {
       intro: 'اقساط وام خود را دقیق محاسبه کنید و جدول بازپرداخت را مشاهده کنید.',
       steps: [
@@ -434,7 +434,7 @@ export const toolsRegistry: ToolEntry[] = [
     indexable: true,
     lastModified: '2026-02-04',
     kind: 'tool',
-    category: categories.finance,
+    category: categories['finance']!,
     content: {
       intro: 'حقوق خالص و کسورات را سریع محاسبه کنید.',
       steps: [

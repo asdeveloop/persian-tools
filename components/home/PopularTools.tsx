@@ -14,7 +14,7 @@ type ToolEntry = {
   path: string;
   icon: ReactNode;
   iconWrapClassName: string;
-  meta?: string;
+  meta?: string | undefined;
 };
 
 const toolIndex: ToolEntry[] = [
@@ -121,7 +121,7 @@ export default function PopularTools() {
             title={tool.title}
             description={tool.description}
             icon={tool.icon}
-            meta={tool.meta}
+            meta={tool.meta ?? ''}
             iconWrapClassName={tool.iconWrapClassName}
           />
         ))}
