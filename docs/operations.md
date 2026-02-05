@@ -85,3 +85,10 @@ pnpm prisma:studio
 - در صورت نیاز به پاک‌سازی کامل کش در کلاینت، پیام `CLEAR_CACHES` به Service Worker ارسال کنید.
 - برای ثبت لاگ‌های rate limit، متغیر `RATE_LIMIT_LOG=true` را تنظیم کنید.
 - در صورت فعال بودن `RATE_LIMIT_LOG`, شمارنده‌های روزانه در جدول `rate_limit_metrics` ذخیره می‌شوند.
+
+## پاک‌سازی آرتیفکت‌ها و انطباق با استانداردها (Post-audit 2026-02-05)
+
+- پوشه‌های خروجی و گزارش (`dist/`, `coverage/`, `playwright-report/`, `test-results/`) نباید در مخزن نگه‌داری شوند؛ قبل از هر PR این مسیرها را حذف کنید و مطمئن شوید در `.gitignore` پوشش داده شده‌اند.
+- برای ممیزی‌های بعدی Lighthouse روی ۵ مسیر اصلی (`/`, `/pdf-tools/merge/merge-pdf`, `/image-tools`, `/loan`, `/salary`) خروجی JSON را در پوشهٔ موقت محلی نگه دارید و داخل ریپو کامیت نکنید.
+- در هنگام سفت‌تر کردن CSP و حذف `unsafe-inline/unsafe-eval`, از `next/script` یا hash/csp nonce استفاده کنید و پس از تغییر، مسیرهای حیاتی را با Playwright اطمینان بگیرید.
+- پیش از استقرار، مطمئن شوید `NEXT_PUBLIC_ANALYTICS_ID` روی محیط پروداکشن خالی است تا رهگیری بدون رضایت فعال نشود؛ فعال‌سازی فقط بعد از اضافه شدن UI رضایت کاربر مجاز است.
