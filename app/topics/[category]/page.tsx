@@ -50,7 +50,7 @@ export default function TopicCategoryPage({ params }: Props) {
       name: tool.title.replace(' - جعبه ابزار فارسی', ''),
       path: tool.path,
     })),
-    faq: content?.faq,
+    faq: content?.faq ?? [],
   });
 
   return (

@@ -216,8 +216,7 @@ export default function LoanPage() {
             onChange: (value: string) => setForm((s) => ({ ...s, annualRateText: value })),
             placeholder: getPlaceholder('annualRate'),
             required: true,
-            max: form.loanType === 'qarzolhasaneh' ? '4' : undefined,
-            note: form.loanType === 'qarzolhasaneh' ? 'حداکثر 4%' : undefined,
+            ...(form.loanType === 'qarzolhasaneh' ? { max: '4', note: 'حداکثر 4%' } : {}),
           },
           {
             id: 'months',
@@ -276,8 +275,7 @@ export default function LoanPage() {
             onChange: (value: string) => setForm((s) => ({ ...s, annualRateText: value })),
             placeholder: getPlaceholder('annualRate'),
             required: true,
-            max: form.loanType === 'qarzolhasaneh' ? '4' : undefined,
-            note: form.loanType === 'qarzolhasaneh' ? 'حداکثر 4%' : undefined,
+            ...(form.loanType === 'qarzolhasaneh' ? { max: '4', note: 'حداکثر 4%' } : {}),
           },
           {
             id: 'months',
@@ -307,8 +305,7 @@ export default function LoanPage() {
             onChange: (value: string) => setForm((s) => ({ ...s, annualRateText: value })),
             placeholder: getPlaceholder('annualRate'),
             required: true,
-            max: form.loanType === 'qarzolhasaneh' ? '4' : undefined,
-            note: form.loanType === 'qarzolhasaneh' ? 'حداکثر 4%' : undefined,
+            ...(form.loanType === 'qarzolhasaneh' ? { max: '4', note: 'حداکثر 4%' } : {}),
           },
           {
             id: 'monthlyPayment',

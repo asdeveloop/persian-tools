@@ -58,7 +58,7 @@ export async function POST(request: Request) {
     tool: body.tool,
     inputSummary: body.inputSummary,
     outputSummary: body.outputSummary,
-    outputUrl: body.outputUrl,
+    outputUrl: body.outputUrl ?? '',
   });
 
   return NextResponse.json({ ok: true, entry });

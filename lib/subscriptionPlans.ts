@@ -52,3 +52,11 @@ export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
 export function getPlanById(planId: PlanId): SubscriptionPlan | undefined {
   return SUBSCRIPTION_PLANS.find((plan) => plan.id === planId);
 }
+
+export function getUpgradePlanId(planId: PlanId): PlanId | null {
+  const map: Partial<Record<PlanId, PlanId>> = {
+    basic_monthly: 'pro_monthly',
+    basic_yearly: 'pro_yearly',
+  };
+  return map[planId] ?? null;
+}

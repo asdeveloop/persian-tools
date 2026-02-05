@@ -69,6 +69,7 @@ const toolIndex: ToolEntry[] = [
 
 type DisplayTool = ToolEntry & {
   meta?: string;
+  count?: number;
 };
 
 export default function RecentTools() {

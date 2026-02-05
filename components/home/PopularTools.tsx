@@ -14,6 +14,7 @@ type ToolEntry = {
   path: string;
   icon: ReactNode;
   iconWrapClassName: string;
+  meta?: string;
 };
 
 const toolIndex: ToolEntry[] = [

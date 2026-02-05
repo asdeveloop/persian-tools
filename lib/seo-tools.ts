@@ -40,7 +40,7 @@ export function buildToolJsonLd(tool: ToolEntry): JsonLdNode {
 
   if (tool.kind === 'category') {
     const tools = getToolsByCategory(tool.category?.id ?? tool.id);
-    const categoryFaq = tool.content?.faq;
+    const categoryFaq = tool.content?.faq ?? [];
     if (tools.length > 0) {
       const itemListElements = tools.map((item, index) => ({
         '@type': 'ListItem',
@@ -77,19 +77,17 @@ export function buildToolJsonLd(tool: ToolEntry): JsonLdNode {
       });
     }
 
-    if (categoryFaq && categoryFaq.length > 0) {
-      graphs.push({
-        '@type': 'FAQPage',
-        mainEntity: categoryFaq.map((item) => ({
-          '@type': 'Question',
-          name: item.question,
-          acceptedAnswer: {
-            '@type': 'Answer',
-            text: item.answer,
-          },
-        })),
-      });
-    }
+    graphs.push({
+      '@type': 'FAQPage',
+      mainEntity: categoryFaq.map((item) => ({
+        '@type': 'Question',
+        name: item.question,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: item.answer,
+        },
+      })),
+    });
   }
 
   if (tool.content?.faq && tool.content.faq.length > 0) {
