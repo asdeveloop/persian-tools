@@ -1,6 +1,22 @@
+import fs from 'fs';
 import { defineConfig, devices } from '@playwright/test';
 
 const baseURL = process.env['PLAYWRIGHT_TEST_BASE_URL'] ?? 'http://127.0.0.1:3000';
+const enableFirefox = !process.env['PLAYWRIGHT_SKIP_FIREFOX'];
+
+const resolveExecutable = (envVar: string | undefined, fallbacks: string[]) => {
+  if (envVar) {
+    return envVar;
+  }
+  const found = fallbacks.find((candidate) => fs.existsSync(candidate));
+  return found;
+};
+
+const chromiumPath = resolveExecutable(process.env['PLAYWRIGHT_CHROMIUM_PATH'], [
+  '/usr/bin/google-chrome',
+  '/usr/bin/chromium',
+]);
+const firefoxPath = resolveExecutable(process.env['PLAYWRIGHT_FIREFOX_PATH'], ['/usr/bin/firefox']);
 
 export default defineConfig({
   testDir: './tests/e2e',
@@ -17,17 +33,27 @@ export default defineConfig({
     baseURL,
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
-    video: 'retain-on-failure',
+    video: process.env['PLAYWRIGHT_DISABLE_VIDEO'] ? 'off' : 'retain-on-failure',
   },
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: {
+        ...devices['Desktop Chrome'],
+        ...(chromiumPath ? { launchOptions: { executablePath: chromiumPath } } : {}),
+      },
     },
-    {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
-    },
+    ...(enableFirefox
+      ? [
+          {
+            name: 'firefox',
+            use: {
+              ...devices['Desktop Firefox'],
+              ...(firefoxPath ? { launchOptions: { executablePath: firefoxPath } } : {}),
+            },
+          },
+        ]
+      : []),
   ],
   webServer: {
     command: 'pnpm dev',
