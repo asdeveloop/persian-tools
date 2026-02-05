@@ -84,6 +84,27 @@ pnpm build
 نکته توسعه: برای جلوگیری از هشدارهای Next.js در دسترسی از `127.0.0.1`، گزینه
 `allowedDevOrigins` در `next.config.mjs` تنظیم شده است.
 
+### استقرار (Deployment)
+
+```bash
+pnpm install --frozen-lockfile
+pnpm build
+pnpm start -- --hostname 0.0.0.0 --port 3000
+```
+
+- متغیرهای ضروری: `DATABASE_URL` (در صورت نیاز به ویژگی اشتراک/تاریخچه)، `NEXT_PUBLIC_SITE_URL`.
+- PWA و Service Worker در نسخه build فعال است؛ برای آپدیت کلاینت، `CACHE_VERSION` در `public/sw.js` را افزایش دهید.
+- برای اجرای سرور پشت پروکسی، هدر `X-Forwarded-Proto` تنظیم شود.
+
+### تست و کنترل کیفیت
+
+```bash
+pnpm ci:quick           # lint + typecheck + unit
+pnpm test:e2e:ci        # E2E فقط کروم (headless)
+```
+
+استاندارد PR: همه تست‌ها باید سبز باشند و پوشش حداقل ابزارهای اصلی حفظ شود.
+
 ## 🗄️ پایگاه داده و Prisma
 
 برای قابلیت‌های اشتراک و تاریخچه، PostgreSQL لازم است.
@@ -222,7 +243,24 @@ console.log(convertTomanToRial(150_000));
 
 ## 📚 مرجع API
 
-ماژول‌های عمومی از مسیر `shared/utils` صادر می‌شوند. خلاصه مستندات در `docs/api.md` و خروجی کامل Typedoc در `docs/api/` قرار دارد. امضاها:
+کتابخانه NPM در مسیرهای زیر در دسترس است (هر مسیر ESM/CJS + d.ts):
+
+- `persian-tools` (کل API)
+- `persian-tools/numbers`
+- `persian-tools/localization`
+- `persian-tools/validation`
+- `persian-tools/finance`
+- `persian-tools/date-tools`
+
+نمونه وارد کردن ماژول تفکیک‌شده:
+
+```ts
+import { toEnglishDigits, numberToWordsFa } from 'persian-tools/numbers';
+import { formatPersianCurrency } from 'persian-tools/localization';
+import { convertDate } from 'persian-tools/date-tools';
+```
+
+خلاصه امضاها (اطلاعات کامل در `docs/api.md` و خروجی Typedoc در `docs/api/`):
 
 ```ts
 // numbers
