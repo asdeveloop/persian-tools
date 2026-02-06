@@ -6,7 +6,7 @@ import Input from '@/shared/ui/Input';
 import { convertDate } from '@/features/date-tools/date-tools.logic';
 import { numberToWordsFa, parseLooseNumber, toEnglishDigits } from '@/shared/utils/numbers';
 import { cleanPersianText, slugifyPersian } from '@/shared/utils/localization';
-import { useToast } from '@/shared/ui/ToastProvider';
+import { useToast } from '@/shared/ui/toast-context';
 import { recordHistory } from '@/shared/history/recordHistory';
 import RecentHistoryCard from '@/components/features/history/RecentHistoryCard';
 

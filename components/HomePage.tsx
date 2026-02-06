@@ -1,10 +1,12 @@
 import Link from 'next/link';
+import Script from 'next/script';
 import ButtonLink from '@/shared/ui/ButtonLink';
 import ToolCard from '@/shared/ui/ToolCard';
 import PopularTools from '@/components/home/PopularTools';
 import RecentTools from '@/components/home/RecentTools';
 import { siteUrl } from '@/lib/seo';
 import { getCategories, getToolsByCategory } from '@/lib/tools-registry';
+import { getCspNonce } from '@/lib/csp';
 import {
   IconCalculator,
   IconCalendar,
@@ -125,11 +127,15 @@ export default function HomePage() {
     { label: 'تبدیل تصویر', query: 'تبدیل', category: 'image' },
     { label: 'کد ملی', query: 'کد ملی', category: 'validation' },
   ];
+  const nonce = getCspNonce();
 
   return (
     <div className="space-y-16">
-      <script
+      <Script
+        id="home-json-ld"
         type="application/ld+json"
+        strategy="afterInteractive"
+        nonce={nonce ?? undefined}
         dangerouslySetInnerHTML={{ __html: JSON.stringify(homeJsonLd) }}
       />
       <section

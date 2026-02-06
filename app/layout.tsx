@@ -1,10 +1,13 @@
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
+import Script from 'next/script';
 import { defaultOgImage, siteDescription, siteName, siteUrl } from '@/lib/seo';
 import MotionProvider from '@/components/ui/MotionProvider';
 import ServiceWorkerRegistration from '@/components/ui/ServiceWorkerRegistration';
 import UsageTracker from '@/components/ui/UsageTracker';
+import AdsConsentBanner from '@/components/ads/AdsConsentBanner';
 import ToastProvider from '@/shared/ui/ToastProvider';
+import { getCspNonce } from '@/lib/csp';
 import './globals.css';
 
 const googleVerification = process.env['NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION'];
@@ -78,6 +81,7 @@ export const viewport: Viewport = {
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
+  const nonce = getCspNonce();
   const structuredData = {
     '@context': 'https://schema.org',
     '@graph': [
@@ -105,8 +109,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="fa" dir="rtl">
       <head>
-        <script
+        <Script
+          id="root-structured-data"
           type="application/ld+json"
+          strategy="afterInteractive"
+          nonce={nonce ?? undefined}
           dangerouslySetInnerHTML={{
             __html: JSON.stringify(structuredData),
           }}
@@ -118,6 +125,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             <ServiceWorkerRegistration />
             <UsageTracker />
             {children}
+            <AdsConsentBanner />
           </ToastProvider>
         </MotionProvider>
       </body>

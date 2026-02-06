@@ -1,28 +1,13 @@
 'use client';
 
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  type ReactNode,
-} from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { ToastContext } from '@/shared/ui/toast-context';
 
 type Toast = {
   id: string;
   message: string;
   tone?: 'success' | 'error' | 'info';
 };
-
-type ToastContextValue = {
-  showToast: (message: string, tone?: Toast['tone']) => void;
-  recordCopy: (label: string, value: string) => void;
-};
-
-const ToastContext = createContext<ToastContextValue | null>(null);
 
 type CopyItem = {
   id: string;
@@ -35,14 +20,6 @@ type CopyItem = {
 const COPY_STORAGE_KEY = 'persian-tools.copy-history.v1';
 const MAX_COPY_ITEMS = 10;
 const COPY_TTL_MS = 7 * 24 * 60 * 60 * 1000;
-
-export function useToast() {
-  const ctx = useContext(ToastContext);
-  if (!ctx) {
-    throw new Error('useToast must be used within ToastProvider');
-  }
-  return ctx;
-}
 
 export default function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([]);

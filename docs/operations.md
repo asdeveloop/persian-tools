@@ -91,4 +91,6 @@ pnpm prisma:studio
 - پوشه‌های خروجی و گزارش (`dist/`, `coverage/`, `playwright-report/`, `test-results/`) نباید در مخزن نگه‌داری شوند؛ قبل از هر PR این مسیرها را حذف کنید و مطمئن شوید در `.gitignore` پوشش داده شده‌اند.
 - برای ممیزی‌های بعدی Lighthouse روی ۵ مسیر اصلی (`/`, `/pdf-tools/merge/merge-pdf`, `/image-tools`, `/loan`, `/salary`) خروجی JSON را در پوشهٔ موقت محلی نگه دارید و داخل ریپو کامیت نکنید.
 - در هنگام سفت‌تر کردن CSP و حذف `unsafe-inline/unsafe-eval`, از `next/script` یا hash/csp nonce استفاده کنید و پس از تغییر، مسیرهای حیاتی را با Playwright اطمینان بگیرید.
+- CSP اکنون از `middleware.ts` صادر می‌شود؛ هر درخواست `Content-Security-Policy` و `x-csp-nonce` جدید دریافت می‌کند و اسکریپت‌های JSON-LD باید از `next/script` استفاده و `getCspNonce()` را بخوانند تا بلاک نشوند.
 - پیش از استقرار، مطمئن شوید `NEXT_PUBLIC_ANALYTICS_ID` روی محیط پروداکشن خالی است تا رهگیری بدون رضایت فعال نشود؛ فعال‌سازی فقط بعد از اضافه شدن UI رضایت کاربر مجاز است.
+- تبلیغات محلی صرفاً پس از رضایت کاربر نمایش داده می‌شوند؛ بنر `AdsConsentBanner` در `layout` نصب شده و `shared/consent/adsConsent.ts` وضعیت را ذخیره می‌کند. تست‌های Playwright باید این بنر و رفتار `AdSlot` را در حالت‌های consent مختلف بررسی کنند.

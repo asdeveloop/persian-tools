@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react';
 import { Card } from '@/components/ui';
 import Input from '@/shared/ui/Input';
-import { useToast } from '@/shared/ui/ToastProvider';
+import { useToast } from '@/shared/ui/toast-context';
 import { recordHistory } from '@/shared/history/recordHistory';
 import RecentHistoryCard from '@/components/features/history/RecentHistoryCard';
 import {

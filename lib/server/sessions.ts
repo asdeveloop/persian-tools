@@ -58,7 +58,10 @@ export async function getSessionByToken(token: string): Promise<Session | null> 
   if (result.rowCount === 0) {
     return null;
   }
-  const row = result.rows[0]!;
+  const row = result.rows[0];
+  if (!row) {
+    return null;
+  }
   const session = mapSession(row);
   if (session.expiresAt < Date.now()) {
     await deleteSession(token);

@@ -1,9 +1,11 @@
 import Container from '@/components/ui/Container';
 import Navigation from '@/components/ui/Navigation';
 import Footer from '@/components/ui/Footer';
+import Script from 'next/script';
 import { buildMetadata } from '@/lib/seo';
 import { buildTopicJsonLd } from '@/lib/seo-tools';
 import { getCategories, getCategoryContent, getToolsByCategory } from '@/lib/tools-registry';
+import { getCspNonce } from '@/lib/csp';
 import Link from 'next/link';
 
 export const metadata = buildMetadata({
@@ -53,14 +55,19 @@ export default function TopicsPage() {
     faq,
   });
 
+  const nonce = getCspNonce();
+
   return (
     <div className="min-h-dvh flex flex-col page-shell">
       <Navigation />
 
       <main className="flex-1">
         <Container className="py-10 space-y-10">
-          <script
+          <Script
+            id="topics-json-ld"
             type="application/ld+json"
+            strategy="afterInteractive"
+            nonce={nonce ?? undefined}
             dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
           />
           <header className="space-y-3">

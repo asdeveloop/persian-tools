@@ -14,7 +14,7 @@ import type { SalaryInput, SalaryOutput, MinimumWageOutput } from '@/features/sa
 import { AnimatedCard, FadeIn } from '@/shared/ui/AnimatedComponents';
 import Button from '@/shared/ui/Button';
 import { tokens, toolCategories } from '@/shared/constants/tokens';
-import { useToast } from '@/shared/ui/ToastProvider';
+import { useToast } from '@/shared/ui/toast-context';
 import { recordHistory } from '@/shared/history/recordHistory';
 import RecentHistoryCard from '@/components/features/history/RecentHistoryCard';
 

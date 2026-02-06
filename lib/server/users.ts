@@ -43,7 +43,11 @@ export async function findUserByEmail(email: string): Promise<User | undefined> 
   if (result.rowCount === 0) {
     return undefined;
   }
-  return mapUser(result.rows[0]!);
+  const row = result.rows[0];
+  if (!row) {
+    return undefined;
+  }
+  return mapUser(row);
 }
 
 export async function getUserById(id: string): Promise<User | undefined> {
@@ -54,7 +58,11 @@ export async function getUserById(id: string): Promise<User | undefined> {
   if (result.rowCount === 0) {
     return undefined;
   }
-  return mapUser(result.rows[0]!);
+  const row = result.rows[0];
+  if (!row) {
+    return undefined;
+  }
+  return mapUser(row);
 }
 
 export async function createUser(email: string, password: string): Promise<User> {

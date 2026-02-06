@@ -60,9 +60,9 @@
 
 ## گام‌های پس از ممیزی 2026-02-05 (Actionable)
 
-- پاک‌سازی مخزن از آرتیفکت‌های خروجی (`dist/`, `coverage/`, `playwright-report/`, `test-results/`) و جلوگیری از اضافه‌شدن دوباره در PRها.
-- سخت‌گیری CSP و حذف `unsafe-inline/unsafe-eval` پس از جابجایی اسکریپت‌های inline به `next/script` یا hash/nonce؛ تست رگرسیون با Playwright.
-- افزودن `SoftwareApplication` JSON-LD برای همه صفحات ابزار با استفاده از داده‌های `lib/tools-registry` و تزریق در `ToolSeoContent`.
+- ✅ پاک‌سازی مخزن از آرتیفکت‌های خروجی (`dist/`, `coverage/`, `playwright-report/`, `test-results/`) و جلوگیری از اضافه‌شدن دوباره در PRها. (انجام شد 2026-02-06)
+- ✅ سخت‌گیری CSP با middleware و `next/script` همراه nonce؛ `unsafe-inline`/`unsafe-eval` حذف شده و Playwright باید رگرسیون CSP را پوشش دهد (انجام شد 2026-02-06).
+- ✅ افزودن `SoftwareApplication` JSON-LD برای همه صفحات ابزار با داده‌های `lib/tools-registry` و تزریق خودکار در `ToolSeoContent` (انجام شد 2026-02-06).
 - اجرای Lighthouse موبایل برای ۵ صفحه کلیدی و مستندسازی نتایج در wiki/داخلی (خارج از مخزن).
 - رفع خطاهای فاصله RTL و کلاس‌های `left/right` با کلاس‌های منطقی (`start/end`) مخصوصاً در صفحات PDF و فرم‌های انتخاب فایل.
-- اضافه‌کردن بنر رضایت تبلیغات پیش از رندر `AdSlot` و اتصال به `shared/consent/adsConsent.ts` برای شفافیت.
+- ✅ اضافه‌کردن بنر رضایت تبلیغات پیش از رندر `AdSlot` و اتصال به `shared/consent/adsConsent.ts` برای شفافیت (انجام شد 2026-02-06).
