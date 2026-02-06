@@ -171,6 +171,7 @@ pnpm prisma:seed:reset
 - خلاصه ممیزی: `docs/technical-audit-summary.md`
 - درآمدزایی: `docs/monetization/`
 - بورد گرافیکی: `docs/roadmap-board.html`
+- بورد داخلی: `/roadmap-board`
 </details>
 
 ---
