@@ -166,12 +166,15 @@ pnpm prisma:seed:reset
 - عملیات: `docs/operations.md`
 - API: `docs/api.md`
 - نقشه راه: `docs/roadmap.md`
+- نقشه استقرار: `docs/deployment-roadmap.md`
 - چک‌لیست روزانه: `docs/daily-checklist.md`
 - ممیزی: `docs/technical-audit.md`
 - خلاصه ممیزی: `docs/technical-audit-summary.md`
 - درآمدزایی: `docs/monetization/`
 - بورد گرافیکی: `docs/roadmap-board.html`
 - بورد داخلی: `/roadmap-board`
+- نقشه استقرار: `docs/deployment-roadmap.html`
+- نقشه استقرار داخلی: `/deployment-roadmap`
 </details>
 
 ---

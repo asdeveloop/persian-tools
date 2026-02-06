@@ -8,6 +8,7 @@
 - `docs/operations.md` — راهنمای عملیاتی و self‑host.
 - `docs/api.md` — مرجع خلاصه API و لینک Typedoc.
 - `docs/roadmap.md` — نقشه راه و تسک‌های توسعه.
+- `docs/deployment-roadmap.md` — نقشه آماده‌سازی استقرار.
 - `docs/daily-checklist.md` — چک‌لیست روزانه توسعه.
 
 ## قوانین و نقش‌ها
@@ -32,3 +33,5 @@
 
 - `docs/roadmap-board.html` — بورد HTML با چک‌باکس برای مدیریت مراحل.
 - مسیر داخلی اپ: `/roadmap-board`
+- `docs/deployment-roadmap.html` — نقشه استقرار با چک‌باکس.
+- مسیر داخلی اپ: `/deployment-roadmap`
