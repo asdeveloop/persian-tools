@@ -62,6 +62,23 @@
         font-size: 12px;
         min-width: 240px;
       }
+      .snapshot-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: center;
+        padding: 6px 20px 0;
+      }
+      .snapshot-controls input,
+      .snapshot-controls select {
+        border: 1px solid var(--border);
+        background: var(--card);
+        color: var(--text);
+        padding: 6px 10px;
+        border-radius: 8px;
+        font-size: 12px;
+        min-width: 200px;
+      }
       .filters {
         display: flex;
         flex-wrap: wrap;
@@ -173,7 +190,19 @@
       <button type="button" id="mark-all">علامت‌زدن همه</button>
       <button type="button" id="clear-all">پاک‌کردن همه</button>
       <button type="button" id="export-json">خروجی JSON</button>
+      <button type="button" id="export-csv">خروجی CSV</button>
+      <button type="button" id="import-json">ورودی JSON</button>
       <input type="search" id="search" placeholder="جست‌وجو در مراحل..." />
+    </div>
+
+    <div class="snapshot-controls">
+      <select id="snapshot-list">
+        <option value="">انتخاب اسنپ‌شات ذخیره‌شده</option>
+      </select>
+      <input type="text" id="snapshot-name" placeholder="نام اسنپ‌شات (مثلاً: پیش از لانچ)" />
+      <button type="button" id="save-snapshot">ذخیره اسنپ‌شات</button>
+      <button type="button" id="load-snapshot">بارگذاری اسنپ‌شات</button>
+      <button type="button" id="delete-snapshot">حذف اسنپ‌شات</button>
     </div>
 
     <div class="filters" id="tag-filters"></div>
@@ -269,6 +298,7 @@
     <div class="footer">منبع: docs/deployment-roadmap.md</div>
     <script>
       const STORAGE_KEY = 'persian-tools.deployment.v1';
+      const SNAPSHOT_KEY = 'persian-tools.deployment.snapshots.v1';
       const checkboxes = Array.from(document.querySelectorAll('input[type="checkbox"]'));
       const tasks = Array.from(document.querySelectorAll('.task'));
       const searchInput = document.getElementById('search');
@@ -276,7 +306,35 @@
       const statsText = document.getElementById('stats-text');
       const statsPercent = document.getElementById('stats-percent');
       const progressBar = document.getElementById('progress-bar');
+      const snapshotNameInput = document.getElementById('snapshot-name');
+      const snapshotList = document.getElementById('snapshot-list');
       let activeTag = 'همه';
+
+      function readSnapshots() {
+        try {
+          const raw = localStorage.getItem(SNAPSHOT_KEY);
+          return raw ? JSON.parse(raw) : {};
+        } catch (err) {
+          return {};
+        }
+      }
+
+      function writeSnapshots(next) {
+        localStorage.setItem(SNAPSHOT_KEY, JSON.stringify(next));
+        refreshSnapshotList();
+      }
+
+      function refreshSnapshotList() {
+        const snapshots = readSnapshots();
+        const names = Object.keys(snapshots).sort();
+        snapshotList.innerHTML = '<option value="">انتخاب اسنپ‌شات ذخیره‌شده</option>';
+        names.forEach((name) => {
+          const opt = document.createElement('option');
+          opt.value = name;
+          opt.textContent = name;
+          snapshotList.appendChild(opt);
+        });
+      }
 
       function loadState() {
         try {
@@ -299,6 +357,46 @@
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
         updateStats();
       }
+
+      function captureState() {
+        const state = {};
+        checkboxes.forEach((box) => {
+          state[box.id] = box.checked;
+        });
+        return state;
+      }
+
+      function tasksToCsv() {
+        const header = ['id', 'title', 'tags', 'phase', 'done'];
+        const rows = tasks.map((task) => {
+          const box = task.querySelector('input[type="checkbox"]');
+          const label = task.querySelector('label');
+          const title = (label ? label.childNodes[0].textContent : '').trim();
+          return [
+            box ? box.id : '',
+            title,
+            task.dataset.tags || '',
+            task.dataset.phase || '',
+            box && box.checked ? 'true' : 'false',
+          ];
+        });
+        return [header, ...rows]
+          .map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+          .join('\n');
+      }
+
+      checkboxes.forEach((box) => {
+        box.addEventListener('change', saveState);
+      });
+
+      document.getElementById('mark-all').addEventListener('click', () => {
+        checkboxes.forEach((box) => (box.checked = true));
+        saveState();
+      });
+      document.getElementById('clear-all').addEventListener('click', () => {
+        checkboxes.forEach((box) => (box.checked = false));
+        saveState();
+      });
 
       function buildTagFilters() {
         const tags = new Set(['همه']);
@@ -350,22 +448,119 @@
         progressBar.style.width = `${percent}%`;
       }
 
-      checkboxes.forEach((box) => {
-        box.addEventListener('change', saveState);
+      function exportState() {
+        const state = {};
+        checkboxes.forEach((box) => {
+          state[box.id] = box.checked;
+        });
+        const payload = { version: 1, updatedAt: new Date().toISOString(), state };
+        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'deployment-roadmap.json';
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+
+      function exportCsv() {
+        const csv = tasksToCsv();
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'deployment-roadmap.csv';
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+
+      function importState() {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'application/json';
+        input.addEventListener('change', () => {
+          const file = input.files && input.files[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = () => {
+            try {
+              const data = JSON.parse(String(reader.result || '{}'));
+              const state = data.state || {};
+              checkboxes.forEach((box) => {
+                if (box.id in state) box.checked = Boolean(state[box.id]);
+              });
+              saveState();
+              applyFilters();
+            } catch (err) {
+              // ignore invalid JSON
+            }
+          };
+          reader.readAsText(file);
+        });
+        input.click();
+      }
+
+      function saveSnapshot() {
+        const name = snapshotNameInput.value.trim();
+        if (!name) return;
+        const snapshots = readSnapshots();
+        snapshots[name] = {
+          savedAt: new Date().toISOString(),
+          state: captureState(),
+        };
+        writeSnapshots(snapshots);
+        snapshotNameInput.value = name;
+        snapshotList.value = name;
+      }
+
+      function loadSnapshotByName(name) {
+        if (!name) return;
+        const snapshots = readSnapshots();
+        const snapshot = snapshots[name];
+        if (!snapshot) return;
+        const state = snapshot.state || {};
+        checkboxes.forEach((box) => {
+          if (box.id in state) box.checked = Boolean(state[box.id]);
+        });
+        saveState();
+        applyFilters();
+      }
+
+      function loadSnapshot() {
+        const name = snapshotNameInput.value.trim();
+        loadSnapshotByName(name);
+      }
+
+      function deleteSnapshot() {
+        const name = snapshotNameInput.value.trim();
+        if (!name) return;
+        const snapshots = readSnapshots();
+        if (snapshots[name]) {
+          delete snapshots[name];
+          writeSnapshots(snapshots);
+          if (snapshotList.value === name) snapshotList.value = '';
+        }
+      }
+
+      snapshotList.addEventListener('change', (event) => {
+        const name = event.target.value;
+        if (name) {
+          snapshotNameInput.value = name;
+          loadSnapshotByName(name);
+        }
       });
 
-      document.getElementById('mark-all').addEventListener('click', () => {
-        checkboxes.forEach((box) => (box.checked = true));
-        saveState();
-      });
-      document.getElementById('clear-all').addEventListener('click', () => {
-        checkboxes.forEach((box) => (box.checked = false));
-        saveState();
-      });
+      document.getElementById('export-json').addEventListener('click', exportState);
+      document.getElementById('export-csv').addEventListener('click', exportCsv);
+      document.getElementById('import-json').addEventListener('click', importState);
+      document.getElementById('save-snapshot').addEventListener('click', saveSnapshot);
+      document.getElementById('load-snapshot').addEventListener('click', loadSnapshot);
+      document.getElementById('delete-snapshot').addEventListener('click', deleteSnapshot);
       searchInput.addEventListener('input', applyFilters);
 
       loadState();
       buildTagFilters();
+      refreshSnapshotList();
       applyFilters();
     </script>
   </body>
