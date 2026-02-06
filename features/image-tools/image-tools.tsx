@@ -655,6 +655,7 @@ export default function ImageToolsPage() {
                 <input
                   type="text"
                   value={settings.backgroundColor}
+                  aria-label="مقدار رنگ پس‌زمینه JPG"
                   onChange={(event) =>
                     setSettings((prev) => ({ ...prev, backgroundColor: event.target.value }))
                   }

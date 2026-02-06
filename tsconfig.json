@@ -62,7 +62,7 @@
     "tests/**/*.tsx",
     "bench/**/*.ts",
     "public/**/*.js",
-    "middleware.ts",
+    "proxy.ts",
     "playwright.config.ts",
     "tailwind.config.ts",
     "tsup.config.ts",

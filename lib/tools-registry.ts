@@ -44,6 +44,14 @@ const categories: Record<string, ToolCategory> = {
   finance: { id: 'finance-tools', name: 'ابزارهای مالی', path: '/tools' },
 };
 
+function categoryOrThrow(key: string): ToolCategory {
+  const category = categories[key];
+  if (!category) {
+    throw new Error(`Unknown category key: ${key}`);
+  }
+  return category;
+}
+
 const categoryContent: Record<string, CategoryContent> = {
   'pdf-tools': {
     paragraphs: [
@@ -243,7 +251,7 @@ export const toolsRegistry: ToolEntry[] = [
     indexable: true,
     lastModified: '2026-02-04',
     kind: 'category',
-    category: categories['pdf']!,
+    category: categoryOrThrow('pdf'),
     content: {
       intro: 'تمام ابزارهای PDF در یکجا: از ادغام و تقسیم گرفته تا فشرده‌سازی و امنیت فایل‌ها.',
       tips: [
@@ -272,7 +280,7 @@ export const toolsRegistry: ToolEntry[] = [
     indexable: true,
     lastModified: '2026-02-04',
     kind: 'category',
-    category: categories['image']!!,
+    category: categoryOrThrow('image'),
     content: {
       intro: 'ابزارهای تصویر برای کاهش حجم، بهینه‌سازی و آماده‌سازی تصاویر بدون ارسال فایل‌ها.',
       tips: [
@@ -311,7 +319,7 @@ export const toolsRegistry: ToolEntry[] = [
     indexable: true,
     lastModified: '2026-02-04',
     kind: 'category',
-    category: categories['date']!!,
+    category: categoryOrThrow('date'),
     content: {
       intro: 'تبدیل و محاسبات تاریخ را سریع و دقیق انجام دهید؛ شامل شمسی، میلادی و قمری.',
       tips: [
@@ -340,7 +348,7 @@ export const toolsRegistry: ToolEntry[] = [
     indexable: true,
     lastModified: '2026-02-04',
     kind: 'category',
-    category: categories['text']!!,
+    category: categoryOrThrow('text'),
     content: {
       intro:
         'ابزارهای متنی برای ویرایش و استانداردسازی متن فارسی، شمارش کلمات و تبدیل عدد به حروف.',
@@ -365,7 +373,7 @@ export const toolsRegistry: ToolEntry[] = [
     indexable: true,
     lastModified: '2026-02-04',
     kind: 'category',
-    category: categories['validation']!!,
+    category: categoryOrThrow('validation'),
     content: {
       intro:
         'برای بررسی صحت شماره ملی، موبایل و سایر داده‌ها، ابزارهای اعتبارسنجی سریع و دقیق را استفاده کنید.',
@@ -399,7 +407,7 @@ export const toolsRegistry: ToolEntry[] = [
     indexable: true,
     lastModified: '2026-02-04',
     kind: 'tool',
-    category: categories['finance']!!,
+    category: categoryOrThrow('finance'),
     content: {
       intro: 'اقساط وام خود را دقیق محاسبه کنید و جدول بازپرداخت را مشاهده کنید.',
       steps: [
@@ -434,7 +442,7 @@ export const toolsRegistry: ToolEntry[] = [
     indexable: true,
     lastModified: '2026-02-04',
     kind: 'tool',
-    category: categories['finance']!,
+    category: categoryOrThrow('finance'),
     content: {
       intro: 'حقوق خالص و کسورات را سریع محاسبه کنید.',
       steps: [
@@ -467,7 +475,7 @@ export const toolsRegistry: ToolEntry[] = [
     indexable: true,
     lastModified: '2026-02-04',
     kind: 'tool',
-    category: categories['pdf']!,
+    category: categoryOrThrow('pdf'),
     content: {
       intro: 'چند فایل PDF را به یک فایل واحد و منظم تبدیل کنید.',
       steps: [
@@ -504,7 +512,7 @@ export const toolsRegistry: ToolEntry[] = [
     indexable: true,
     lastModified: '2026-02-04',
     kind: 'tool',
-    category: categories['pdf']!,
+    category: categoryOrThrow('pdf'),
     content: {
       intro: 'صفحات مورد نیاز را جدا کنید و فایل‌های کوچک‌تر بسازید.',
       steps: [
@@ -536,7 +544,7 @@ export const toolsRegistry: ToolEntry[] = [
     indexable: true,
     lastModified: '2026-02-04',
     kind: 'tool',
-    category: categories['pdf']!,
+    category: categoryOrThrow('pdf'),
     content: {
       intro: 'حجم فایل PDF را کاهش دهید تا ارسال و اشتراک آسان‌تر شود.',
       steps: [
@@ -569,7 +577,7 @@ export const toolsRegistry: ToolEntry[] = [
     indexable: true,
     lastModified: '2026-02-04',
     kind: 'tool',
-    category: categories['pdf']!,
+    category: categoryOrThrow('pdf'),
     content: {
       intro: 'هر صفحه PDF را به تصویر جداگانه تبدیل کنید.',
       steps: [
@@ -601,7 +609,7 @@ export const toolsRegistry: ToolEntry[] = [
     indexable: true,
     lastModified: '2026-02-04',
     kind: 'tool',
-    category: categories['pdf']!,
+    category: categoryOrThrow('pdf'),
     content: {
       intro: 'چند تصویر را به یک فایل PDF واحد تبدیل کنید.',
       steps: [
@@ -632,7 +640,7 @@ export const toolsRegistry: ToolEntry[] = [
     indexable: true,
     lastModified: '2026-02-04',
     kind: 'tool',
-    category: categories['pdf']!,
+    category: categoryOrThrow('pdf'),
     content: {
       intro: 'با وارد کردن رمز صحیح، محدودیت فایل PDF را بردارید.',
       steps: [
@@ -663,7 +671,7 @@ export const toolsRegistry: ToolEntry[] = [
     indexable: true,
     lastModified: '2026-02-04',
     kind: 'tool',
-    category: categories['pdf']!,
+    category: categoryOrThrow('pdf'),
     content: {
       intro: 'برای محافظت از فایل‌های PDF رمزگذاری انجام دهید.',
       steps: [
@@ -694,7 +702,7 @@ export const toolsRegistry: ToolEntry[] = [
     indexable: true,
     lastModified: '2026-02-04',
     kind: 'tool',
-    category: categories['pdf']!,
+    category: categoryOrThrow('pdf'),
     content: {
       intro: 'با افزودن واترمارک، مالکیت یا برند خود را روی PDF ثبت کنید.',
       steps: [
@@ -719,7 +727,7 @@ export const toolsRegistry: ToolEntry[] = [
     indexable: true,
     lastModified: '2026-02-04',
     kind: 'tool',
-    category: categories['pdf']!,
+    category: categoryOrThrow('pdf'),
     content: {
       intro: 'صفحات PDF را در جهت درست بچرخانید و ذخیره کنید.',
       steps: [
@@ -738,7 +746,7 @@ export const toolsRegistry: ToolEntry[] = [
     indexable: true,
     lastModified: '2026-02-04',
     kind: 'tool',
-    category: categories['pdf']!,
+    category: categoryOrThrow('pdf'),
     content: {
       intro: 'صفحات PDF را با ترتیب دلخواه بچینید.',
       steps: [
@@ -757,7 +765,7 @@ export const toolsRegistry: ToolEntry[] = [
     indexable: true,
     lastModified: '2026-02-04',
     kind: 'tool',
-    category: categories['pdf']!,
+    category: categoryOrThrow('pdf'),
     content: {
       intro: 'صفحات غیرضروری را حذف کنید و فایل بهینه بسازید.',
       steps: [
@@ -781,7 +789,7 @@ export const toolsRegistry: ToolEntry[] = [
     indexable: true,
     lastModified: '2026-02-04',
     kind: 'tool',
-    category: categories['pdf']!,
+    category: categoryOrThrow('pdf'),
     content: {
       intro: 'تنها صفحات مورد نیاز را جدا کرده و به فایل جدید تبدیل کنید.',
       steps: [

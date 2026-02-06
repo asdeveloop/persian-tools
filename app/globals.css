@@ -91,22 +91,22 @@
 
   --text-primary: #0f172a;
   --text-secondary: #334155;
-  --text-muted: #64748b;
+  --text-muted: #526079;
   --text-inverted: #ffffff;
 
   --color-primary: #2563eb;
   --color-primary-hover: #1d4ed8;
   --color-primary-pressed: #1e40af;
   --color-secondary: #64748b;
-  --color-success: #10b981;
-  --color-danger: #ef4444;
+  --color-success: #046c4f;
+  --color-danger: #b91c1c;
   --color-warning: #f59e0b;
-  --color-info: #3b82f6;
+  --color-info: #1d4ed8;
   --color-primary-rgb: 37 99 235;
-  --color-success-rgb: 16 185 129;
-  --color-danger-rgb: 239 68 68;
+  --color-success-rgb: 4 108 79;
+  --color-danger-rgb: 185 28 28;
   --color-warning-rgb: 245 158 11;
-  --color-info-rgb: 59 130 246;
+  --color-info-rgb: 29 78 216;
 
   --color-primary-50: #eff6ff;
   --color-primary-100: #dbeafe;

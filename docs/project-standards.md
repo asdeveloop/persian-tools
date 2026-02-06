@@ -103,5 +103,5 @@
 | UI Components | `components/`, `shared/ui/`                                      | استفاده از کلاس‌های منطقی RTL و دسترس‌پذیری |
 | SEO           | `app/`, `lib/`, `features/`                                      | متادیتا و JSON‑LD برای صفحات ابزار          |
 | PWA           | `public/sw.js`, `app/manifest.ts`                                | چرخه آپدیت، صفحه آفلاین، نسخه کش            |
-| Security      | `middleware.ts`, `shared/consent/`                               | CSP سخت‌گیرانه، رضایت تبلیغات/تحلیل‌گر      |
+| Security      | `proxy.ts`, `shared/consent/`                                    | CSP سخت‌گیرانه، رضایت تبلیغات/تحلیل‌گر      |
 | Docs          | `README.md`, `docs/`                                             | هم‌راستایی مستندات با رفتار واقعی           |

@@ -7,7 +7,8 @@ test.describe('Home Page', () => {
     const hero = page.locator('h1');
     await expect(hero).toContainText('ابزارهای فارسی که');
 
-    const toolCards = page.locator('[data-testid="tool-card"]');
+    const toolsSection = page.locator('section[aria-labelledby="tools-heading"]');
+    const toolCards = toolsSection.locator('[data-testid="tool-card"]');
     await expect(toolCards).toHaveCount(7);
   });
 

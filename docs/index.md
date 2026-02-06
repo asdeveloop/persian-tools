@@ -5,6 +5,8 @@
 ## مستندات هسته
 
 - `docs/project-standards.md` — استانداردهای فنی و طراحی پروژه.
+- `docs/developer-guide.md` — راهنمای توسعه ابزارها، UI و چک‌لیست‌های اجرایی.
+- `docs/review-policy.md` — سیاست بازبینی PR و معیارهای تایید.
 - `docs/operations.md` — راهنمای عملیاتی و self‑host.
 - `docs/api.md` — مرجع خلاصه API و لینک Typedoc.
 - `docs/roadmap.md` — نقشه راه و تسک‌های توسعه.
@@ -23,6 +25,8 @@
 - `docs/technical-audit-summary.md` — خلاصه اجرایی متنی.
 - `docs/technical-audit-summary.pptx` — خلاصه اجرایی اسلایدی.
 - `docs/snapshots/2026-02-06-phase1-4-progress.md` — اسنپ‌شات پیشرفت فازهای ۱ تا ۴ برای ادامه توسعه.
+- `docs/snapshots/2026-02-06-phase5-kickoff.md` — شروع فاز ۵ با ممیزی مستندات، بازآرایی مشارکت و راهنمای توسعه.
+- `docs/snapshots/2026-02-06-phase5-complete-handoff.md` — تکمیل فاز ۵، سبز شدن baseline تست‌ها و نقطه شروع چت بعدی.
 
 ## درآمدزایی و پایداری
 

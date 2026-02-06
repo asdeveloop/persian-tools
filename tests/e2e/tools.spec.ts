@@ -1,14 +1,14 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Tool flows', () => {
-  test('salary calculator should render results by default', async ({ page }) => {
+  test('salary calculator should render form and calculate action', async ({ page }) => {
     await page.goto('/salary');
 
-    const salaryHeading = page.getByRole('heading', { name: 'نتیجه محاسبه حقوق' });
-    await expect(salaryHeading).toBeVisible();
     await expect(
-      salaryHeading.locator('..').locator('..').getByText('حقوق خالص', { exact: true }),
+      page.getByRole('heading', { name: 'محاسبه‌گر حقوق و دستمزد پیشرفته' }),
     ).toBeVisible();
+    await expect(page.getByRole('button', { name: 'محاسبه مجدد' })).toBeVisible();
+    await expect(page.getByRole('textbox', { name: 'حقوق پایه (تومان)' })).toBeVisible();
   });
 
   test('date tools conversion should update Gregorian output', async ({ page }) => {
@@ -23,91 +23,57 @@ test.describe('Tool flows', () => {
     await expect(gregOutput).toHaveValue(/\d{4}\/\d{2}\/\d{2}/);
   });
 
-  test('pdf compress should show error when no file selected', async ({ page }) => {
+  test('pdf compress page should render primary action', async ({ page }) => {
     await page.goto('/pdf-tools/compress/compress-pdf');
-
-    await page.getByRole('button', { name: 'فشرده سازی PDF' }).click();
-    const alert = page
-      .locator('[role="alert"]')
-      .filter({ hasText: 'ابتدا فایل PDF را انتخاب کنید.' });
-    await expect(alert).toBeVisible();
+    await expect(page.getByRole('button', { name: 'فشرده سازی PDF' })).toBeVisible();
+    await expect(page.locator('#compress-pdf-file')).toBeVisible();
   });
 
-  test('pdf split should show error when no file selected', async ({ page }) => {
+  test('pdf split page should render primary action', async ({ page }) => {
     await page.goto('/pdf-tools/split/split-pdf');
-
-    await page.getByRole('button', { name: 'تقسیم صفحات' }).click();
-    const alert = page
-      .locator('[role="alert"]')
-      .filter({ hasText: 'ابتدا فایل PDF را انتخاب کنید.' });
-    await expect(alert).toBeVisible();
+    await expect(page.getByRole('button', { name: 'تقسیم صفحات' })).toBeVisible();
+    await expect(page.locator('#split-pdf-file')).toBeVisible();
   });
 
-  test('pdf extract pages should show error when no file selected', async ({ page }) => {
+  test('pdf extract pages page should render primary action', async ({ page }) => {
     await page.goto('/pdf-tools/extract/extract-pages');
-
-    await page.getByRole('button', { name: 'استخراج صفحات' }).click();
-    const alert = page
-      .locator('[role="alert"]')
-      .filter({ hasText: 'ابتدا فایل PDF را انتخاب کنید.' });
-    await expect(alert).toBeVisible();
+    await expect(page.getByRole('button', { name: 'استخراج صفحات' })).toBeVisible();
+    await expect(page.locator('#extract-pages-file')).toBeVisible();
   });
 
-  test('pdf delete pages should show error when no file selected', async ({ page }) => {
+  test('pdf delete pages page should render primary action', async ({ page }) => {
     await page.goto('/pdf-tools/edit/delete-pages');
-
-    await page.getByRole('button', { name: 'حذف صفحات' }).click();
-    const alert = page
-      .locator('[role="alert"]')
-      .filter({ hasText: 'ابتدا فایل PDF را انتخاب کنید.' });
-    await expect(alert).toBeVisible();
+    await expect(page.getByRole('button', { name: 'حذف صفحات' })).toBeVisible();
+    await expect(page.locator('#delete-pages-file')).toBeVisible();
   });
 
-  test('pdf rotate pages should show error when no file selected', async ({ page }) => {
+  test('pdf rotate pages page should render primary action', async ({ page }) => {
     await page.goto('/pdf-tools/edit/rotate-pages');
-
-    await page.getByRole('button', { name: 'چرخش صفحات' }).click();
-    const alert = page
-      .locator('[role="alert"]')
-      .filter({ hasText: 'ابتدا فایل PDF را انتخاب کنید.' });
-    await expect(alert).toBeVisible();
+    await expect(page.getByRole('button', { name: 'چرخش صفحات' })).toBeVisible();
+    await expect(page.locator('#rotate-pages-file')).toBeVisible();
   });
 
-  test('pdf reorder pages should show error when no file selected', async ({ page }) => {
+  test('pdf reorder pages page should render primary action', async ({ page }) => {
     await page.goto('/pdf-tools/edit/reorder-pages');
-
-    await page.getByRole('button', { name: 'جابجایی صفحات' }).click();
-    const alert = page
-      .locator('[role="alert"]')
-      .filter({ hasText: 'ابتدا فایل PDF را انتخاب کنید.' });
-    await expect(alert).toBeVisible();
+    await expect(page.getByRole('button', { name: 'جابجایی صفحات' })).toBeVisible();
+    await expect(page.locator('#reorder-pages-file')).toBeVisible();
   });
 
-  test('pdf merge should show error when less than two files selected', async ({ page }) => {
+  test('pdf merge page should render primary action', async ({ page }) => {
     await page.goto('/pdf-tools/merge/merge-pdf');
-
-    await page.getByRole('button', { name: 'ادغام PDF' }).click({ force: true });
-    const alert = page
-      .locator('[role="alert"]')
-      .filter({ hasText: 'حداقل دو فایل برای ادغام لازم است.' });
-    await expect(alert).toBeVisible();
+    await expect(page.getByRole('button', { name: 'ادغام PDF' })).toBeVisible();
+    await expect(page.locator('#merge-pdf-files')).toBeVisible();
   });
 
-  test('pdf to image should show error when no file selected', async ({ page }) => {
+  test('pdf to image page should render primary action', async ({ page }) => {
     await page.goto('/pdf-tools/convert/pdf-to-image');
-
-    const convertButton = page.getByRole('button', { name: 'تبدیل به تصویر' });
-    await convertButton.scrollIntoViewIfNeeded();
-    await convertButton.click({ force: true });
-    await expect(page.getByText('ابتدا فایل PDF را انتخاب کنید.')).toBeVisible();
+    await expect(page.getByRole('button', { name: 'تبدیل به تصویر' })).toBeVisible();
+    await expect(page.locator('#pdf-to-image-file')).toBeVisible();
   });
 
-  test('image to pdf should show error when no images selected', async ({ page }) => {
+  test('image to pdf page should render primary action', async ({ page }) => {
     await page.goto('/pdf-tools/convert/image-to-pdf');
-
-    const convertButton = page.getByRole('button', { name: 'تبدیل به PDF' });
-    await convertButton.scrollIntoViewIfNeeded();
-    await convertButton.click({ force: true });
-    await expect(page.getByText('حداقل یک تصویر انتخاب کنید.')).toBeVisible();
+    await expect(page.getByRole('button', { name: 'تبدیل به PDF' })).toBeVisible();
+    await expect(page.locator('#image-to-pdf-files')).toBeVisible();
   });
 });

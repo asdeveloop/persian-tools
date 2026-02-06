@@ -46,7 +46,7 @@
 
 ## Security & Privacy
 
-- JSON‑LD must be injected with nonce (see `middleware.ts`).
+- JSON‑LD must be injected with nonce (see `proxy.ts`).
 - Ads consent must gate any ad rendering.
 - Analytics ingest must be protected by `ANALYTICS_INGEST_SECRET` when enabled.
 
