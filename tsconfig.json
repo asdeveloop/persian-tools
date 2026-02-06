@@ -61,11 +61,14 @@
     "tests/**/*.ts",
     "tests/**/*.tsx",
     "bench/**/*.ts",
+    "public/**/*.js",
     "middleware.ts",
     "playwright.config.ts",
     "tailwind.config.ts",
     "tsup.config.ts",
-    "vitest.config.ts"
+    "vitest.config.ts",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts"
   ],
   "exclude": ["node_modules", "dist", "examples", ".next"]
 }

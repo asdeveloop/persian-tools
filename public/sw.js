@@ -1,11 +1,35 @@
-const CACHE_VERSION = 'v5-2026-02-05';
+const CACHE_VERSION = 'v6-2026-02-06';
 const SHELL_CACHE = `persian-tools-shell-${CACHE_VERSION}`;
 const RUNTIME_CACHE = `persian-tools-runtime-${CACHE_VERSION}`;
 
 const OFFLINE_URL = '/offline';
-const SHELL_ASSETS = ['/', OFFLINE_URL, '/manifest.webmanifest'];
+const SHELL_ASSETS = [
+  '/',
+  OFFLINE_URL,
+  '/manifest.webmanifest',
+  '/tools',
+  '/pdf-tools',
+  '/image-tools',
+  '/date-tools',
+  '/text-tools',
+  '/validation-tools',
+  '/loan',
+  '/salary',
+];
 const STATIC_CACHE_PATHS = ['/_next/static/', '/icons/', '/images/', '/fonts/'];
-const STATIC_FILE_EXTENSIONS = ['.css', '.js', '.woff2', '.woff', '.ttf', '.png', '.jpg', '.jpeg', '.svg', '.webp', '.ico'];
+const STATIC_FILE_EXTENSIONS = [
+  '.css',
+  '.js',
+  '.woff2',
+  '.woff',
+  '.ttf',
+  '.png',
+  '.jpg',
+  '.jpeg',
+  '.svg',
+  '.webp',
+  '.ico',
+];
 
 const UPDATE_CHECK_INTERVAL = 60 * 60 * 1000; // 1 hour
 
@@ -27,7 +51,9 @@ const notifyClients = async (type, payload = {}) => {
 };
 
 self.addEventListener('message', (event) => {
-  if (!event.data || !event.data.type) return;
+  if (!event.data?.type) {
+    return;
+  }
 
   switch (event.data.type) {
     case 'SKIP_WAITING': {
@@ -146,7 +172,9 @@ const networkFirst = async (request) => {
     return response;
   } catch {
     const cached = await caches.match(request);
-    if (cached) return cached;
+    if (cached) {
+      return cached;
+    }
     throw new Error('Network error and no cache available');
   }
 };
@@ -170,7 +198,9 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
       networkFirst(request).catch(() => {
         return caches.match(request).then((cached) => {
-          if (cached) return cached;
+          if (cached) {
+            return cached;
+          }
           return caches.match(OFFLINE_URL);
         });
       }),
@@ -185,7 +215,5 @@ self.addEventListener('fetch', (event) => {
   }
 
   // API/other requests: Network First with fallback
-  event.respondWith(
-    networkFirst(request).catch(() => caches.match(request) || Promise.reject()),
-  );
+  event.respondWith(networkFirst(request).catch(() => caches.match(request) || Promise.reject()));
 });

@@ -18,7 +18,7 @@ import {
   IconZap,
 } from '@/shared/ui/icons';
 
-export default function HomePage() {
+export default async function HomePage() {
   const categories = getCategories();
   const homeFaq = [
     {
@@ -127,7 +127,7 @@ export default function HomePage() {
     { label: 'تبدیل تصویر', query: 'تبدیل', category: 'image' },
     { label: 'کد ملی', query: 'کد ملی', category: 'validation' },
   ];
-  const nonce = getCspNonce();
+  const nonce = await getCspNonce();
 
   return (
     <div className="space-y-16">

@@ -22,6 +22,7 @@
 - `docs/technical-audit.md` — ممیزی فنی و راهبردی کامل.
 - `docs/technical-audit-summary.md` — خلاصه اجرایی متنی.
 - `docs/technical-audit-summary.pptx` — خلاصه اجرایی اسلایدی.
+- `docs/snapshots/2026-02-06-phase1-4-progress.md` — اسنپ‌شات پیشرفت فازهای ۱ تا ۴ برای ادامه توسعه.
 
 ## درآمدزایی و پایداری
 

@@ -177,6 +177,10 @@ export default function PdfToolsPage() {
     const matchesSearch = tool.title.includes(searchTerm) || tool.description.includes(searchTerm);
     return matchesCategory && matchesSearch;
   });
+  const resultsStatusText =
+    filteredTools.length > 0
+      ? `تعداد ${filteredTools.length} ابزار PDF نمایش داده می‌شود.`
+      : 'هیچ ابزار PDF مطابق فیلتر فعلی پیدا نشد.';
 
   return (
     <div className="space-y-10">
@@ -215,11 +219,11 @@ export default function PdfToolsPage() {
               placeholder="جستجوی ابزار مورد نظر..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="input-field pr-12"
-              aria-describedby="pdf-search-hint"
+              className="input-field pe-12"
+              aria-describedby="pdf-search-hint pdf-results-status"
             />
             <svg
-              className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[var(--text-muted)]"
+              className="absolute end-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[var(--text-muted)]"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -233,6 +237,9 @@ export default function PdfToolsPage() {
             </svg>
             <p id="pdf-search-hint" className="mt-2 text-xs text-[var(--text-muted)]">
               جستجو بر اساس نام یا توضیحات ابزار انجام می‌شود.
+            </p>
+            <p id="pdf-results-status" className="sr-only" role="status" aria-live="polite">
+              {resultsStatusText}
             </p>
           </div>
         </div>
@@ -250,7 +257,7 @@ export default function PdfToolsPage() {
                 : 'bg-[var(--surface-1)] text-[var(--text-primary)] border border-[var(--border-light)] hover:bg-[var(--bg-subtle)]'
             }`}
           >
-            <span className="ml-2">{category.icon}</span>
+            <span className="ms-2">{category.icon}</span>
             {category.name}
           </button>
         ))}
@@ -288,7 +295,7 @@ export default function PdfToolsPage() {
                   >
                     {isComingSoon ? 'در حال توسعه' : 'شروع کنید'}
                     <svg
-                      className="mr-2 h-4 w-4"
+                      className="me-2 h-4 w-4"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"

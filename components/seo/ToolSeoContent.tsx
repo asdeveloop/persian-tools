@@ -7,12 +7,12 @@ type Props = {
   tool: ToolEntry;
 };
 
-export default function ToolSeoContent({ tool }: Props) {
+export default async function ToolSeoContent({ tool }: Props) {
   if (!tool.content) {
     return null;
   }
 
-  const nonce = getCspNonce();
+  const nonce = await getCspNonce();
   const { intro, steps, tips, faq } = tool.content;
   const jsonLd = buildToolJsonLd(tool);
 

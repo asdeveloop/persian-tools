@@ -4,21 +4,21 @@ import type JSZip from 'jszip';
 
 let jszipPromise: Promise<typeof JSZip> | null = null;
 
-export async function loadPdfJs() {
+export function loadPdfJs() {
   if (!pdfjsPromise) {
     pdfjsPromise = import('pdfjs-dist');
   }
   return pdfjsPromise;
 }
 
-export async function loadPdfLib() {
+export function loadPdfLib() {
   if (!pdfLibPromise) {
     pdfLibPromise = import('pdf-lib');
   }
   return pdfLibPromise;
 }
 
-export async function loadJsZip() {
+export function loadJsZip() {
   if (!jszipPromise) {
     jszipPromise = import('jszip').then((mod) => mod.default);
   }

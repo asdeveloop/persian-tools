@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { defineConfig, devices } from '@playwright/test';
 
-const baseURL = process.env['PLAYWRIGHT_TEST_BASE_URL'] ?? 'http://127.0.0.1:3000';
+const baseURL = process.env['PLAYWRIGHT_TEST_BASE_URL'] ?? 'http://localhost:3100';
 const enableFirefox = !process.env['PLAYWRIGHT_SKIP_FIREFOX'];
 
 const resolveExecutable = (envVar: string | undefined, fallbacks: string[]) => {
@@ -56,9 +56,9 @@ export default defineConfig({
       : []),
   ],
   webServer: {
-    command: 'pnpm dev',
+    command: 'pnpm exec next dev --webpack --hostname localhost --port 3100',
     url: baseURL,
-    reuseExistingServer: !process.env['CI'],
+    reuseExistingServer: false,
     timeout: 120000,
   },
 });

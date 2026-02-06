@@ -112,7 +112,7 @@ export default function MergePdfPage() {
           </p>
         </div>
 
-        <Card className="p-6 space-y-4">
+        <Card className="p-6 space-y-4" aria-busy={busy}>
           <div className="flex flex-col gap-3">
             <label
               htmlFor="merge-pdf-files"
@@ -127,7 +127,12 @@ export default function MergePdfPage() {
               multiple
               onChange={(e) => onSelectFiles(e.target.files)}
               className="input-field"
+              aria-invalid={Boolean(error)}
+              aria-describedby={error ? 'merge-pdf-error' : 'merge-pdf-help'}
             />
+            <div id="merge-pdf-help" className="text-xs text-[var(--text-muted)]">
+              می‌توانید چند فایل PDF را هم‌زمان انتخاب کنید.
+            </div>
           </div>
 
           {files.length > 0 && (
@@ -179,11 +184,17 @@ export default function MergePdfPage() {
                   style={{ width: `${progress}%` }}
                 />
               </div>
-              <div className="text-xs text-[var(--text-muted)]">{progress}%</div>
+              <div className="text-xs text-[var(--text-muted)]" role="status" aria-live="polite">
+                {progress}%
+              </div>
             </div>
           )}
 
-          {error && <Alert variant="danger">{error}</Alert>}
+          {error && (
+            <Alert id="merge-pdf-error" variant="danger">
+              {error}
+            </Alert>
+          )}
 
           {downloadUrl && (
             <Alert variant="success">

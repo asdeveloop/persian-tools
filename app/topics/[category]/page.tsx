@@ -32,7 +32,7 @@ export async function generateMetadata({ params }: Props) {
   });
 }
 
-export default function TopicCategoryPage({ params }: Props) {
+export default async function TopicCategoryPage({ params }: Props) {
   const category = getCategories().find((item) => item.id === params.category);
   if (!category) {
     notFound();
@@ -55,7 +55,7 @@ export default function TopicCategoryPage({ params }: Props) {
     faq: content?.faq ?? [],
   });
 
-  const nonce = getCspNonce();
+  const nonce = await getCspNonce();
 
   return (
     <div className="min-h-dvh flex flex-col page-shell">

@@ -2,6 +2,7 @@
 
 import { headers } from 'next/headers';
 
-export function getCspNonce(): string | null {
-  return headers().get('x-csp-nonce');
+export async function getCspNonce(): Promise<string | null> {
+  const requestHeaders = await headers();
+  return requestHeaders.get('x-csp-nonce');
 }

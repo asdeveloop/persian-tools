@@ -276,6 +276,9 @@ export default function ToolsDashboardPage() {
   }, [searchTerm, selectedCategory]);
 
   const hasResults = filteredTools.length > 0;
+  const resultsStatusText = isFiltering
+    ? 'در حال به‌روزرسانی نتایج ابزارها...'
+    : `تعداد ${filteredTools.length} ابزار نمایش داده می‌شود.`;
 
   return (
     <div className="space-y-10">
@@ -308,10 +311,13 @@ export default function ToolsDashboardPage() {
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="جستجوی ابزار..."
             className="input-field"
-            aria-describedby="tools-search-hint"
+            aria-describedby="tools-search-hint tools-results-status"
           />
           <p id="tools-search-hint" className="text-xs text-[var(--text-muted)]">
             می‌توانید بر اساس عنوان یا توضیح ابزار جست‌وجو کنید.
+          </p>
+          <p id="tools-results-status" className="sr-only" role="status" aria-live="polite">
+            {resultsStatusText}
           </p>
         </div>
         <div className="flex flex-wrap gap-2">

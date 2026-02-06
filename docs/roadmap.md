@@ -65,5 +65,6 @@
 - ✅ سخت‌گیری CSP با middleware و `next/script` همراه nonce؛ `unsafe-inline`/`unsafe-eval` حذف شده و Playwright باید رگرسیون CSP را پوشش دهد (انجام شد 2026-02-06).
 - ✅ افزودن `SoftwareApplication` JSON-LD برای همه صفحات ابزار با داده‌های `lib/tools-registry` و تزریق خودکار در `ToolSeoContent` (انجام شد 2026-02-06).
 - اجرای Lighthouse موبایل برای ۵ صفحه کلیدی و مستندسازی نتایج در wiki/داخلی (خارج از مخزن).
-- رفع خطاهای فاصله RTL و کلاس‌های `left/right` با کلاس‌های منطقی (`start/end`) مخصوصاً در صفحات PDF و فرم‌های انتخاب فایل.
+- ✅ رفع خطاهای فاصله RTL و کلاس‌های `left/right` با کلاس‌های منطقی (`start/end`) مخصوصاً در صفحات PDF و فرم‌های انتخاب فایل. (انجام شد 2026-02-06)
 - ✅ اضافه‌کردن بنر رضایت تبلیغات پیش از رندر `AdSlot` و اتصال به `shared/consent/adsConsent.ts` برای شفافیت (انجام شد 2026-02-06).
+- ✅ رفع تداخل `app/manifest.ts` با `public/manifest.webmanifest` و تقویت کش اولیه Service Worker برای مسیرهای کلیدی آفلاین (انجام شد 2026-02-06).

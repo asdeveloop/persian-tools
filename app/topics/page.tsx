@@ -22,7 +22,7 @@ export const metadata = buildMetadata({
   path: '/topics',
 });
 
-export default function TopicsPage() {
+export default async function TopicsPage() {
   const categories = getCategories();
   const faq = [
     {
@@ -55,7 +55,7 @@ export default function TopicsPage() {
     faq,
   });
 
-  const nonce = getCspNonce();
+  const nonce = await getCspNonce();
 
   return (
     <div className="min-h-dvh flex flex-col page-shell">

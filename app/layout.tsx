@@ -80,8 +80,8 @@ export const viewport: Viewport = {
   colorScheme: 'light dark',
 };
 
-export default function RootLayout({ children }: { children: ReactNode }) {
-  const nonce = getCspNonce();
+export default async function RootLayout({ children }: { children: ReactNode }) {
+  const nonce = await getCspNonce();
   const structuredData = {
     '@context': 'https://schema.org',
     '@graph': [

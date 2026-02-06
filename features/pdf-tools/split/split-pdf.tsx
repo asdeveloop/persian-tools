@@ -117,7 +117,7 @@ export default function SplitPdfPage() {
           </p>
         </div>
 
-        <Card className="p-6 space-y-4">
+        <Card className="p-6 space-y-4" aria-busy={busy}>
           <div className="flex flex-col gap-3">
             <label
               htmlFor="split-pdf-file"
@@ -131,6 +131,8 @@ export default function SplitPdfPage() {
               accept="application/pdf"
               onChange={(e) => onSelectFile(e.target.files)}
               className="input-field"
+              aria-invalid={Boolean(error)}
+              aria-describedby={error ? 'split-pdf-error' : undefined}
             />
           </div>
 
@@ -154,9 +156,13 @@ export default function SplitPdfPage() {
               onChange={(e) => setPagesInput(e.target.value)}
               placeholder="مثال: 1-3,5,8"
               className="input-field"
+              aria-invalid={Boolean(error)}
+              aria-describedby={
+                error ? 'split-pdf-pages-help split-pdf-error' : 'split-pdf-pages-help'
+              }
             />
-            <div className="text-xs text-[var(--text-muted)]">
-              می توانید از بازه استفاده کنید (1-3) یا صفحات جداگانه را با کاما جدا کنید.
+            <div id="split-pdf-pages-help" className="text-xs text-[var(--text-muted)]">
+              می‌توانید از بازه استفاده کنید (1-3) یا صفحات جداگانه را با کاما جدا کنید.
             </div>
           </div>
 
@@ -170,7 +176,7 @@ export default function SplitPdfPage() {
               تغییر فایل
             </Button>
             <Button type="button" onClick={onSplit} disabled={busy}>
-              {busy ? 'در حال استخراج...' : 'استخراج صفحات'}
+              {busy ? 'در حال تقسیم...' : 'تقسیم صفحات'}
             </Button>
           </div>
 
@@ -182,11 +188,17 @@ export default function SplitPdfPage() {
                   style={{ width: `${progress}%` }}
                 />
               </div>
-              <div className="text-xs text-[var(--text-muted)]">{progress}%</div>
+              <div className="text-xs text-[var(--text-muted)]" role="status" aria-live="polite">
+                {progress}%
+              </div>
             </div>
           )}
 
-          {error && <Alert variant="danger">{error}</Alert>}
+          {error && (
+            <Alert id="split-pdf-error" variant="danger">
+              {error}
+            </Alert>
+          )}
 
           {downloadUrl && (
             <Alert variant="success">
@@ -199,7 +211,7 @@ export default function SplitPdfPage() {
                   void recordHistory({
                     tool: 'pdf-split',
                     inputSummary: `صفحات: ${pagesInput}`,
-                    outputSummary: 'دانلود فایل صفحات جدا شده',
+                    outputSummary: 'دانلود فایل تقسیم‌شده',
                   })
                 }
               >

@@ -36,7 +36,7 @@ test.describe('Tool flows', () => {
   test('pdf split should show error when no file selected', async ({ page }) => {
     await page.goto('/pdf-tools/split/split-pdf');
 
-    await page.getByRole('button', { name: 'استخراج صفحات' }).click();
+    await page.getByRole('button', { name: 'تقسیم صفحات' }).click();
     const alert = page
       .locator('[role="alert"]')
       .filter({ hasText: 'ابتدا فایل PDF را انتخاب کنید.' });

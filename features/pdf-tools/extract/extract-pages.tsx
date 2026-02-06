@@ -117,7 +117,7 @@ export default function ExtractPagesPage() {
           </p>
         </div>
 
-        <Card className="p-6 space-y-4">
+        <Card className="p-6 space-y-4" aria-busy={busy}>
           <div className="flex flex-col gap-3">
             <label
               htmlFor="extract-pages-file"
@@ -131,6 +131,8 @@ export default function ExtractPagesPage() {
               accept="application/pdf"
               onChange={(e) => onSelectFile(e.target.files)}
               className="input-field"
+              aria-invalid={Boolean(error)}
+              aria-describedby={error ? 'extract-pages-error' : undefined}
             />
           </div>
 
@@ -154,9 +156,13 @@ export default function ExtractPagesPage() {
               onChange={(e) => setPagesInput(e.target.value)}
               placeholder="مثال: 1-3,5,8"
               className="input-field"
+              aria-invalid={Boolean(error)}
+              aria-describedby={
+                error ? 'extract-pages-help extract-pages-error' : 'extract-pages-help'
+              }
             />
-            <div className="text-xs text-[var(--text-muted)]">
-              می توانید از بازه استفاده کنید (1-3) یا صفحات جداگانه را با کاما جدا کنید.
+            <div id="extract-pages-help" className="text-xs text-[var(--text-muted)]">
+              می‌توانید از بازه استفاده کنید (1-3) یا صفحات جداگانه را با کاما جدا کنید.
             </div>
           </div>
 
@@ -182,11 +188,17 @@ export default function ExtractPagesPage() {
                   style={{ width: `${progress}%` }}
                 />
               </div>
-              <div className="text-xs text-[var(--text-muted)]">{progress}%</div>
+              <div className="text-xs text-[var(--text-muted)]" role="status" aria-live="polite">
+                {progress}%
+              </div>
             </div>
           )}
 
-          {error && <Alert variant="danger">{error}</Alert>}
+          {error && (
+            <Alert id="extract-pages-error" variant="danger">
+              {error}
+            </Alert>
+          )}
 
           {downloadUrl && (
             <Alert variant="success">

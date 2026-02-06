@@ -4,12 +4,14 @@ import { useEffect, useMemo, useState } from 'react';
 import { Button, Card } from '@/components/ui';
 import { IconShield, IconZap, IconHeart } from '@/shared/ui/icons';
 import { analytics } from '@/lib/monitoring';
+import { getAdStats } from '@/shared/analytics/ads';
 import {
   clearAdsConsent,
   getAdsConsent,
   type AdsConsentState,
   updateAdsConsent,
 } from '@/shared/consent/adsConsent';
+import { AdContainer, StaticAdSlot } from '@/shared/ui/AdSlot';
 
 const formatDate = (value: number) =>
   new Intl.DateTimeFormat('fa-IR', {
@@ -19,9 +21,18 @@ const formatDate = (value: number) =>
 
 export default function AdsTransparencyPage() {
   const [consent, setConsent] = useState<AdsConsentState | null>(null);
+  const [slotStats, setSlotStats] = useState<{ views: number; clicks: number }>({
+    views: 0,
+    clicks: 0,
+  });
 
   useEffect(() => {
     setConsent(getAdsConsent());
+    const stats = getAdStats('ads-transparency-demo-slot', 30)['ads-transparency-demo-slot'];
+    setSlotStats({
+      views: stats?.views ?? 0,
+      clicks: stats?.clicks ?? 0,
+    });
   }, []);
 
   const statusText = useMemo(() => {
@@ -29,7 +40,7 @@ export default function AdsTransparencyPage() {
       return 'در حال خواندن تنظیمات…';
     }
     if (!consent.contextualAds && !consent.targetedAds) {
-      return 'فقط تبلیغات استاتیک بدون ردیابی فعال است.';
+      return 'تبلیغات غیرفعال است و بدون رضایت شما نمایش داده نمی‌شود.';
     }
     if (consent.contextualAds && !consent.targetedAds) {
       return 'تبلیغات زمینه‌ای با رضایت شما فعال است.';
@@ -50,6 +61,14 @@ export default function AdsTransparencyPage() {
     const next = clearAdsConsent();
     setConsent(next);
     analytics.trackEvent('ads_consent_reset');
+  };
+
+  const refreshStats = () => {
+    const stats = getAdStats('ads-transparency-demo-slot', 30)['ads-transparency-demo-slot'];
+    setSlotStats({
+      views: stats?.views ?? 0,
+      clicks: stats?.clicks ?? 0,
+    });
   };
 
   const contextualEnabled = consent?.contextualAds ?? false;
@@ -198,6 +217,45 @@ export default function AdsTransparencyPage() {
           <li>تاریخچه کامل مرور شما در سایت‌های دیگر</li>
         </ul>
       </Card>
+
+      <section className="space-y-4" aria-labelledby="ads-demo-slot-heading">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h2 id="ads-demo-slot-heading" className="text-xl font-black text-[var(--text-primary)]">
+            نمونه تبلیغ استاتیک محلی
+          </h2>
+          <Button type="button" variant="secondary" size="sm" onClick={refreshStats}>
+            بروزرسانی آمار
+          </Button>
+        </div>
+
+        <Card className="p-5 md:p-6 space-y-4">
+          <p className="text-sm text-[var(--text-muted)] leading-6">
+            این بنر از مسیر محلی `public/ads` بارگذاری می‌شود و فقط پس از رضایت تبلیغات نمایش داده
+            خواهد شد.
+          </p>
+          <AdContainer className="my-0 justify-start">
+            <StaticAdSlot
+              slotId="ads-transparency-demo-slot"
+              campaignId="local-sponsor-2026-q1"
+              imageUrl="/ads/local-sponsor-banner.svg"
+              alt="بنر نمونه اسپانسر محلی"
+              href="/support"
+              width={728}
+              height={90}
+            />
+          </AdContainer>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)]">
+              نمایش در ۳۰ روز اخیر:{' '}
+              <span className="font-bold text-[var(--text-primary)]">{slotStats.views}</span>
+            </div>
+            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)]">
+              کلیک در ۳۰ روز اخیر:{' '}
+              <span className="font-bold text-[var(--text-primary)]">{slotStats.clicks}</span>
+            </div>
+          </div>
+        </Card>
+      </section>
     </div>
   );
 }

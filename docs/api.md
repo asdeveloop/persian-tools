@@ -162,3 +162,15 @@ const handled = fromError(new Error('Boom'), 'خطای عمومی');
 - API عمومی از مسیر `shared/utils` صادر می‌شود.
 - تغییرات ناسازگار باید با نسخه MAJOR منتشر شوند.
 - در صورت نیاز به عملکرد سنگین، از lazy-load استفاده کنید.
+
+## نمونه‌های واقعی داخل مخزن
+
+- قرارداد خروجی `shared/utils` با تست پایدار کنترل می‌شود:
+  - `tests/unit/exports.test.ts`
+- lazy-load ماژول‌های سنگین PDF با import پویا و memoization انجام می‌شود:
+  - `features/pdf-tools/lazy-deps.ts`
+  - `features/pdf-tools/lazy-deps.test.ts`
+- مصرف واقعی lazy-load در ابزارها:
+  - `features/pdf-tools/convert/pdf-to-image.tsx`
+  - `features/pdf-tools/convert/image-to-pdf.tsx`
+  - `features/pdf-tools/security/decrypt-pdf.tsx`
