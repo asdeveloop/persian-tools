@@ -151,9 +151,27 @@ pnpm prisma:seed:reset
 
 ## 💰 درآمدزایی و پایداری
 
-- استراتژی درآمدزایی و اصول حریم خصوصی در `docs/monetization-strategy.md`
-- نسخه کوتاه و اجرایی در `docs/monetization-roadmap.md`
-- برنامه اجرایی مرحله‌ای در `docs/monetization-task-plan.md`
+- استراتژی درآمدزایی و اصول حریم خصوصی در `docs/monetization/strategy.md`
+- نسخه کوتاه و اجرایی در `docs/monetization/roadmap.md`
+- برنامه اجرایی مرحله‌ای در `docs/monetization/task-plan.md`
+
+## 🗂️ فهرست مستندات
+
+برای مشاهده همه مستندات فنی و مدیریتی، فایل `docs/index.md` را ببینید.
+
+<details>
+  <summary>نمایش فهرست سریع مستندات</summary>
+
+- استانداردها: `docs/project-standards.md`
+- عملیات: `docs/operations.md`
+- API: `docs/api.md`
+- نقشه راه: `docs/roadmap.md`
+- چک‌لیست روزانه: `docs/daily-checklist.md`
+- ممیزی: `docs/technical-audit.md`
+- خلاصه ممیزی: `docs/technical-audit-summary.md`
+- درآمدزایی: `docs/monetization/`
+- بورد گرافیکی: `docs/roadmap-board.html`
+</details>
 
 ---
 
